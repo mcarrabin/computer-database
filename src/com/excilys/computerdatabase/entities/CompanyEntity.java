@@ -4,6 +4,11 @@ public class CompanyEntity {
 	private int id;
 	private String name;
 	
+	public CompanyEntity(){
+		id = -1;
+		name = "";
+	}
+	
 	public CompanyEntity(int pId, String pName){
 		this.id = pId;
 		this.name = pName;

@@ -21,12 +21,11 @@ public class DBConnection {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		this._instance = this;
 	}
 	
 	synchronized public static DBConnection getInstance(){
 		if(_instance == null){
-			new DBConnection();
+			_instance = new DBConnection();
 		}	
 		return _instance;
 	}
@@ -38,6 +37,7 @@ public class DBConnection {
 	public void closeConnection(){
 		try {
 			this.conn.close();
+			this._instance = null;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
