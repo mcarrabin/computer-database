@@ -7,9 +7,12 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.excilys.computerdatabase.entities.CompanyEntity;
 import com.excilys.computerdatabase.entities.ComputerEntity;
+
+import Mappers.ComputerMapper;
 
 public class ComputerDAO {
 	
@@ -23,22 +26,17 @@ public class ComputerDAO {
 		ArrayList<ComputerEntity> computers = new ArrayList<ComputerEntity>();
 		DBConnection dbConn = DBConnection.getInstance();
 		Connection conn = dbConn.getConnection();
-		ResultSet results = null;
+		ResultSet result = null;
 		String query = "select * from computer c left join company comp on comp.id = c.company_id order by c.name";
 
 		try {
-			Statement statement = conn.createStatement();
-			results = statement.executeQuery(query);
-			while (results.next()) {
-				String name = results.getString("c.name");
-				LocalDateTime introduced = results.getTimestamp("c.introduced") == null ? null : results.getTimestamp("introduced").toLocalDateTime();
-				LocalDateTime discontinued = results.getTimestamp("c.discontinued") == null ? null : results.getTimestamp("discontinued").toLocalDateTime();
-				int companyId = results.getInt("comp.id");
-				String companyName = results.getString("comp.name");
-				int id = results.getInt("id");
+			PreparedStatement statement = conn.prepareStatement(query);
+			result = statement.executeQuery();
+			while (result.next()) {
+				
+				ComputerMapper cm = ComputerMapper.getInstance();
+				ComputerEntity computer = cm.map(result);
 
-				CompanyEntity company = new CompanyEntity(companyId, companyName);
-				ComputerEntity computer = new ComputerEntity(id, name, introduced, discontinued, company);
 				computers.add(computer);
 			}
 			return computers;
@@ -51,106 +49,25 @@ public class ComputerDAO {
 
 		return null;
 	}
-	/**
-	 * Méthode qui va retourner un ensemble d'ordinateurs en se basant sur le
-	 * nom passé en paramètre
-	 * 
-	 * @param name:
-	 *            nom de l'ordinateur à afficher
-	 * @return le ou les ordinateurs dont le nom correspond au paramètre
-	 */
-	public ArrayList<ComputerEntity> getComputerByName(String name) {
-		DBConnection dbConn = DBConnection.getInstance();
-		Connection conn = dbConn.getConnection();
-		String query = "select * from computer c left join company comp on comp.id = c.company_id where c.name like ? ";
-		ResultSet results = null;
-		ArrayList<ComputerEntity> computers = new ArrayList<ComputerEntity>();
-
-		try {
-			PreparedStatement stmt = conn.prepareStatement(query);
-			stmt.setString(1, "%" + name + "%");
-			results = stmt.executeQuery();
-			while (results.next()) {
-				int id = results.getInt("c.id");
-				LocalDateTime introduced = results.getTimestamp("c.introduced") == null ? null
-						: results.getTimestamp("c.introduced").toLocalDateTime();
-				LocalDateTime discontinued = results.getTimestamp("c.discontinued") == null ? null
-						: results.getTimestamp("c.discontinued").toLocalDateTime();
-				int companyId = results.getInt("c.company_id");
-				String companyName = results.getString("comp.name");
-				
-				CompanyEntity company = new CompanyEntity(companyId, companyName);
-				ComputerEntity computer = new ComputerEntity(id, name, introduced, discontinued, company);
-				computers.add(computer);
-			}
-		} catch (Exception e) {
-			System.out.println("Erreur lors de l'exécution de la requête: \n" + e.getMessage());
-		} finally {
-			dbConn.closeConnection();
-		}
-		return computers;
-	}
-	
-	public ArrayList<ComputerEntity> getComputerPage(int start, int end){
-		DBConnection dbConn = DBConnection.getInstance();
-		Connection conn = dbConn.getConnection();
-		String query = "SELECT * FROM computer c LEFT JOIN company comp ON comp.id = c.company_id LIMIT ? OFFSET ? ";
-		ResultSet results = null;
-		ArrayList<ComputerEntity> computers = new ArrayList<ComputerEntity>();
-
-		try {
-			PreparedStatement stmt = conn.prepareStatement(query);
-			stmt.setInt(1, start);
-			stmt.setInt(2, end);
-			results = stmt.executeQuery();
-			while (results.next()) {
-				int id = results.getInt("c.id");
-				LocalDateTime introduced = results.getTimestamp("c.introduced") == null ? null
-						: results.getTimestamp("c.introduced").toLocalDateTime();
-				LocalDateTime discontinued = results.getTimestamp("c.discontinued") == null ? null
-						: results.getTimestamp("c.discontinued").toLocalDateTime();
-				String name = results.getString("c.name");
-				int companyId = results.getInt("c.company_id");
-				String companyName = results.getString("comp.name");
-				
-				CompanyEntity company = new CompanyEntity(companyId, companyName);
-				ComputerEntity computer = new ComputerEntity(id, name, introduced, discontinued, company);
-				computers.add(computer);
-			}
-		} catch (Exception e) {
-			System.out.println("Erreur lors de l'exécution de la requête: \n" + e.getMessage());
-		} finally {
-			dbConn.closeConnection();
-		}
-		return computers;
-	}
 	
 	/**
 	 * Méthode qui va récupérer une entree de la table computer en se basant sur l'id passé en paramètre
 	 * @param id: id de l'ordinateur à récupérer
 	 * @return l'ordinateur récupéré en BDD
 	 */
-	public ComputerEntity getComputerById(int id){
+	public ComputerEntity getById(Long id){
 		DBConnection dbConn = DBConnection.getInstance();
 		String query = "select * from computer c left join company comp on comp.id = c.company_id where c.id = ? ";
-		ResultSet results = null;
-		ComputerEntity computer = new ComputerEntity();
+		ResultSet result = null;
+		ComputerEntity computer = null;
 
 		try (Connection conn = dbConn.getConnection()) {
 			PreparedStatement stmt = conn.prepareStatement(query);
-			stmt.setInt(1, id);
-			results = stmt.executeQuery();
-			while (results.next()) {
-				LocalDateTime introduced = results.getTimestamp("c.introduced") == null ? null
-						: results.getTimestamp("c.introduced").toLocalDateTime();
-				LocalDateTime discontinued = results.getTimestamp("c.discontinued") == null ? null
-						: results.getTimestamp("c.discontinued").toLocalDateTime();
-				String name = results.getString("c.name");
-				int companyId = results.getInt("c.company_id");
-				String companyName = results.getString("comp.name");
-				
-				CompanyEntity company = new CompanyEntity(companyId, companyName);
-				computer = new ComputerEntity(id, name, introduced, discontinued, company);
+			stmt.setLong(1, id);
+			result = stmt.executeQuery();
+			while (result.next()) {
+				ComputerMapper cm = ComputerMapper.getInstance();
+				computer = cm.map(result);
 			}
 		} catch (Exception e) {
 			System.out.println("Erreur lors de l'exécution de la requête: \n" + e.getMessage());
@@ -158,14 +75,6 @@ public class ComputerDAO {
 			dbConn.closeConnection();
 		}
 		return computer;
-	}
-	
-	public ArrayList<ComputerEntity> getComputersByPage(int start, int end){
-		DBConnection dbConn = DBConnection.getInstance();
-		Connection conn = dbConn.getConnection();
-		ArrayList<ComputerEntity> computers = new ArrayList<ComputerEntity>();
-		
-		return computers;
 	}
 
 	/**
@@ -180,7 +89,7 @@ public class ComputerDAO {
 
 		try {
 			PreparedStatement stmt = conn.prepareStatement(query);
-			stmt.setInt(1, computer.getId());
+			stmt.setLong(1, computer.getId());
 			stmt.executeUpdate();
 		} catch (Exception e) {
 			System.out.println("Erreur dans l'exécution de la requête: "+e.getMessage());
@@ -214,8 +123,8 @@ public class ComputerDAO {
 				ArrayList<ComputerEntity> computers = new ArrayList<ComputerEntity>();
 				stmt.setNull(3, java.sql.Types.TIMESTAMP);
 			}
-			stmt.setInt(4, computer.getCompany().getId());
-			stmt.setInt(5, computer.getId());
+			stmt.setLong(4, computer.getCompany().getId());
+			stmt.setLong(5, computer.getId());
 			stmt.executeUpdate();
 		} catch (Exception e) {
 			System.out.println("Erreur dans l'exécution de la requête: " + e.getMessage());
@@ -249,7 +158,7 @@ public class ComputerDAO {
 				stm.setNull(3, java.sql.Types.TIMESTAMP);
 			}
 			
-			stm.setInt(4, computer.getCompany().getId());
+			stm.setLong(4, computer.getCompany().getId());
 			stm.executeUpdate();
 			System.out.println("l'ordinateur suivant a été inséré: \n" + computer.toString());
 		} catch (Exception e) {
@@ -264,7 +173,7 @@ public class ComputerDAO {
 	 * @param id: id à chercher en base
 	 * @return true si l'id est en bdd, false sinon
 	 */
-	public boolean checkComputerExists(int id) {
+	public boolean checkComputerExists(Long id) {
 		DBConnection dbConn = DBConnection.getInstance();
 		Connection conn = dbConn.getConnection();
 		String query = "select 1 from computer where id = ?";
@@ -273,7 +182,7 @@ public class ComputerDAO {
 
 		try {
 			PreparedStatement stm = conn.prepareStatement(query);
-			stm.setInt(1, id);
+			stm.setLong(1, id);
 			res = stm.executeQuery();
 			if (res.next())
 				ok = true;

@@ -54,19 +54,19 @@ public class ComputerService {
 	 *            début ou nom complet de(s) l'ordinateur(s) voulu(s)
 	 * @return la liste des ordinnateurs dont le nom commence par "name"
 	 */
-	public ArrayList<ComputerEntity> getComputerByName(String name) {
-		ArrayList<ComputerEntity> computers = new ArrayList<ComputerEntity>();
-		computers = computerDao.getComputerByName(name);
+	public ComputerEntity getComputerById(Long id) {
+		ComputerEntity computer = new ComputerEntity();
+		computer = computerDao.getById(id);
 
-		return computers;
+		return computer;
 	}
 
 	/**
 	 * Méthode qui va demander à l'utilisateur de mettre à jour un ordinateur
 	 */
 	public void updateComputer() {
-		int id = getIdByUser();
-		ComputerEntity computer = computerDao.getComputerById(id);
+		Long id = getIdByUser();
+		ComputerEntity computer = computerDao.getById(id);
 		computer.updateComputer(companyDao.getCompanies());
 		computerDao.updateComputer(computer);
 	}
@@ -76,8 +76,8 @@ public class ComputerService {
 	 * l'utilisateur puis appeler la méthode de suppression du DAO
 	 */
 	public void deleteComputer() {
-		int id = getIdByUser();
-		ComputerEntity computer = computerDao.getComputerById(id);
+		Long id = getIdByUser();
+		ComputerEntity computer = computerDao.getById(id);
 		computerDao.deleteComputer(computer);
 	}
 
@@ -88,12 +88,12 @@ public class ComputerService {
 	 * 
 	 * @return l'id de l'ordinateur à mettre à jour
 	 */
-	public int getIdByUser() {
+	public Long getIdByUser() {
 		Scanner sc = new Scanner(System.in);
-		int id;
+		Long id;
 		while (true) {
 			System.out.println("quel est l'id de l'ordinateur à changer?");
-			id = ComputerEntity.intEntry(sc, 0, -1);
+			id = new Long(ComputerEntity.intEntry(sc, 0, -1));
 			if (computerDao.checkComputerExists(id))
 				break;
 			else

@@ -1,11 +1,9 @@
 package com.excilys.computerdatabase.ui;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-import com.excilys.computerdatabase.DAO.CompanyDAO;
-import com.excilys.computerdatabase.DAO.ComputerDAO;
 import com.excilys.computerdatabase.entities.CompanyEntity;
 import com.excilys.computerdatabase.entities.ComputerEntity;
 import com.excilys.computerdatabase.services.ComputerService;
@@ -33,7 +31,7 @@ public class Main {
 			System.out.println(" 5. Modifier un ordinateur");
 			System.out.println(" 6. Supprimer un ordinateur");
 			System.out.println(" 7. Afficher tous les ordinateurs avec pagination");
-			result = newEntry(sc);
+			result = newEntry(sc, 1, 7);
 
 			if (result != -1)
 				isReponseCorrecte = true;
@@ -43,11 +41,11 @@ public class Main {
 		return result;
 	}
 
-	public static int newEntry(Scanner sc) {
+	public static int newEntry(Scanner sc, int min, int max) {
 		String result = sc.nextLine();
 		try {
 			int i = Integer.parseInt(result);
-			if (i < 2 || i > 7){
+			if ((i < min || min == -1) && (i > max || max == -1)){
 				throw new Exception();
 			}
 			return i;
@@ -74,6 +72,8 @@ public class Main {
 	}
 
 	public static void doAction(int action, ComputerService computerService) {
+		ComputerEntity computer = new ComputerEntity();
+		List<ComputerEntity> computers = new ArrayList<ComputerEntity>();
 		switch (action) {
 		case 1:
 			ArrayList<CompanyEntity> companies = new ArrayList<CompanyEntity>();
@@ -84,21 +84,19 @@ public class Main {
 			break;
 
 		case 2:
-			ArrayList<ComputerEntity> computers = new ArrayList<ComputerEntity>();
 			computers = computerService.getComputers();
-			for (ComputerEntity computer : computers) {
-				System.out.println(computer.toString());
+			for (ComputerEntity c : computers) {
+				System.out.println(c.toString());
 			}
 			break;
 
 		case 3:
 			Scanner sc = new Scanner(System.in);
 			System.out.println("Quel ordinateur voulez-vous afficher? ");
-			String name = sc.nextLine();
-			computers = computerService.getComputerByName(name);
-			for (ComputerEntity c : computers) {
-				System.out.println(c.toString());
-			}
+//			sc.nextLine();
+			Long id = new Long(newEntry(sc, 0, -1));
+			computer = computerService.getComputerById(id);
+			System.out.println(computer.toString());
 			break;
 
 		case 4:

@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ComputerEntity {
-	private int id;
+	private Long id;
 	private LocalDateTime introduced;
 	private LocalDateTime discontinued;
 	private CompanyEntity company;
 	private String name;
 
-	public ComputerEntity(int pId, String pName, LocalDateTime pIntroduced, LocalDateTime pDiscontinued,
+	public ComputerEntity(Long pId, String pName, LocalDateTime pIntroduced, LocalDateTime pDiscontinued,
 			CompanyEntity company) {
 		this.id = pId;
 		this.name = pName;
@@ -21,14 +21,14 @@ public class ComputerEntity {
 	}
 
 	public ComputerEntity() {
-		this.id = -1;
+		this.id = -1L;
 		this.name = "";
 		this.introduced = null;
 		this.discontinued = null;
 		this.company = new CompanyEntity();
 	}
 
-	public int getId() {
+	public Long getId() {
 		return this.id;
 	}
 
@@ -48,7 +48,7 @@ public class ComputerEntity {
 		return this.name;
 	}
 
-	public void setId(int pId) {
+	public void setId(Long pId) {
 		this.id = pId;
 	}
 
@@ -129,7 +129,7 @@ public class ComputerEntity {
 		Scanner sc = new Scanner(System.in);
 		int company_id;
 		CompanyEntity company = new CompanyEntity();
-		
+
 		System.out.println("Saisissez un nom: ");
 		name = sc.nextLine();
 		System.out.println("Saisie de la date de début: ");
@@ -138,7 +138,7 @@ public class ComputerEntity {
 		discontinued = typeDate();
 
 		company = chooseCompany(companies);
-		
+
 		this.setName(name);
 		this.setIntroduced(introduced);
 		this.setDiscontinued(discontinued);
@@ -223,41 +223,88 @@ public class ComputerEntity {
 
 	/**
 	 * Méthode qui va gérer le choix d'une société par l'utilisateur
-	 * @param companies: liste des Company présentes dans la BDD
+	 * 
+	 * @param companies:
+	 *            liste des Company présentes dans la BDD
 	 * @return l'objet CompanyEntity correspondant au choix de l'utilisateur
 	 */
 	public CompanyEntity chooseCompany(ArrayList<CompanyEntity> companies) {
 		Scanner sc = new Scanner(System.in);
-		int idCompany = -1;
+		Long idCompany = -1L;
 		for (CompanyEntity c : companies) {
 			System.out.println(c.toString());
 		}
-		while(true) {
+		while (true) {
 			System.out.println("Quelle compagnie voulez-vous? (tapez l'id)");
-			id = intEntry(sc, -1, -1);
-			if(isCompanyOk(id, companies))
+			id = new Long(intEntry(sc, -1, -1));
+			if (isCompanyOk(id, companies))
 				break;
 			System.out.println("L'id saisi ne correspond à aucune société, veuillez recommencer");
 		}
-		
-		for(CompanyEntity c: companies){
-			if(c.getId() == id)
+
+		for (CompanyEntity c : companies) {
+			if (c.getId() == id)
 				return c;
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Méthode qui vérifie que l'id de la société choisi est correcte
-	 * @param id: id de la société à vérifier
-	 * @param companies: liste des company présentes dans la BDD
+	 * 
+	 * @param id:
+	 *            id de la société à vérifier
+	 * @param companies:
+	 *            liste des company présentes dans la BDD
 	 * @return true si l'id existe, false sinon
 	 */
-	public boolean isCompanyOk(int id, ArrayList<CompanyEntity> companies){
-		for(CompanyEntity c : companies){
-			if(c.getId() == id)
+	public boolean isCompanyOk(Long id, ArrayList<CompanyEntity> companies) {
+		for (CompanyEntity c : companies) {
+			if (c.getId() == id)
 				return true;
 		}
 		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (int) (prime * result + id);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ComputerEntity other = (ComputerEntity) obj;
+		if (company == null) {
+			if (other.company != null)
+				return false;
+		} else if (!company.equals(other.company))
+			return false;
+		if (discontinued == null) {
+			if (other.discontinued != null)
+				return false;
+		} else if (!discontinued.equals(other.discontinued))
+			return false;
+		if (id != other.id)
+			return false;
+		if (introduced == null) {
+			if (other.introduced != null)
+				return false;
+		} else if (!introduced.equals(other.introduced))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
 }
