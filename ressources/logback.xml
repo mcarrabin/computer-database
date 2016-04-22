@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+
+<configuration scan="true">
+
+	<property name="LOGS_FOLDER" value="./logs" />
+
+	<!-- choose to add the log in the file ./log/cdb.log -->
+	<appender name="LOG_FILE" class="ch.qos.logback.core.FileAppender">
+		<file>${LOGS_FOLDER}/cdb.log</file>
+		<encoder>
+			<pattern>%date [%thread] %logger{36} - [%file:%line] - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<root level="TRACE">
+		<appender-ref ref="LOG_FILE" />
+	</root>
+
+</configuration>
