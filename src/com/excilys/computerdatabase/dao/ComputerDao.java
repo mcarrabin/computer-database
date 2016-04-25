@@ -6,13 +6,18 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
 import com.excilys.computerdatabase.entities.Page.PageBuilder;
+import com.excilys.computerdatabase.exceptions.ConnexionException;
+import com.excilys.computerdatabase.exceptions.DaoException;
 import com.excilys.computerdatabase.mappers.ComputerMapper;
 
 public class ComputerDao extends AbstractDao<Computer> {
 	private static ComputerDao instance = null;
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ComputerDao.class);
 
 	public ComputerDao() {};
 
@@ -32,7 +37,7 @@ public class ComputerDao extends AbstractDao<Computer> {
 	 */
 
 	@Override
-	public List<Computer> getAll() {
+	public List<Computer> getAll() throws DaoException, ConnexionException {
 		List<Computer> computers = new ArrayList<Computer>();
 		ResultSet result = null;
 		String query = "select * from computer c left join company comp on comp.id = c.company_id order by c.name";
@@ -46,7 +51,8 @@ public class ComputerDao extends AbstractDao<Computer> {
 			statement.close();
 			result.close();
 		} catch (Exception e) {
-			System.out.println("Erreur dans l'exécution de la requête: " + e.getMessage());
+			LOGGER.error(e.getMessage());
+			throw new DaoException("Erreur lors de la récupération des objets Computer");
 		} finally {
 			this.closeConnection();
 		}
@@ -63,7 +69,7 @@ public class ComputerDao extends AbstractDao<Computer> {
 	 * @return l'ordinateur récupéré en BDD
 	 */
 	@Override
-	public Computer getById(long id) {
+	public Computer getById(long id) throws DaoException, ConnexionException {
 		String query = "select * from computer c left join company comp on comp.id = c.company_id where c.id = ? ";
 		ResultSet result = null;
 		Computer computer = null;
@@ -80,14 +86,15 @@ public class ComputerDao extends AbstractDao<Computer> {
 			}
 			statement.close();
 		} catch (Exception e) {
-			System.out.println("Erreur lors de l'exécution de la requête: \n" + e.getMessage());
+			LOGGER.error(e.getMessage());
+			throw new DaoException("Erreur lors de la récupération d'un objet Computer via id");
 		} finally {
 			this.closeConnection();
 		}
 		return computer;
 	}
 	
-	public Page getByPage(int nbreLine, int numPage){
+	public Page getByPage(int nbreLine, int numPage) throws DaoException, ConnexionException {
 		List<Computer> computers = new ArrayList<Computer>();
 		ResultSet result = null;
 		Page page = null;
@@ -105,7 +112,8 @@ public class ComputerDao extends AbstractDao<Computer> {
 			statement.close();
 			result.close();
 		} catch (Exception e) {
-			System.out.println("Erreur dans l'exécution de la requête: " + e.getMessage());
+			LOGGER.error(e.getMessage());
+			throw new DaoException("Erreur lors de la récupération des objets Computer pour la pagination");
 		} finally {
 			this.closeConnection();
 		}
@@ -120,7 +128,7 @@ public class ComputerDao extends AbstractDao<Computer> {
 	 * @param computer
 	 *            objet à supprimer dans la bdd.
 	 */
-	public boolean deleteComputer(Computer computer) {
+	public boolean deleteComputer(Computer computer) throws DaoException, ConnexionException {
 		boolean isDeleteOk = false;
 		int response = 0;
 		String query = "delete from computer where id = ? ;";
@@ -134,7 +142,8 @@ public class ComputerDao extends AbstractDao<Computer> {
 			}
 			statement.close();
 		} catch (Exception e) {
-			System.out.println("Erreur dans l'exécution de la requête: " + e.getMessage());
+			LOGGER.error(e.getMessage());
+			throw new DaoException("Erreur lors de la suppression d'un objet Computer");
 		} finally {
 			this.closeConnection();
 		}
@@ -149,7 +158,7 @@ public class ComputerDao extends AbstractDao<Computer> {
 	 * @param computer
 	 *            contient l'ordinnateur avec les nouvelles valeurs.
 	 */
-	public boolean updateComputer(Computer computer) {
+	public boolean updateComputer(Computer computer) throws DaoException, ConnexionException {
 		boolean isUpdateOk = false;
 		int response = 0;
 		String query = "update computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
@@ -174,7 +183,8 @@ public class ComputerDao extends AbstractDao<Computer> {
 			}
 			statement.close();
 		} catch (Exception e) {
-			System.out.println("Erreur dans l'exécution de la requête: " + e.getMessage());
+			LOGGER.error(e.getMessage());
+			throw new DaoException("Erreur lors de la mise à jour d'un objet Computer");
 		} finally {
 			this.closeConnection();
 		}
@@ -185,7 +195,7 @@ public class ComputerDao extends AbstractDao<Computer> {
 	/**
 	 * Méthode appelée pour créer un computer et l'insérer en bdd.
 	 */
-	public boolean createComputer(Computer computer) {
+	public boolean createComputer(Computer computer) throws DaoException, ConnexionException {
 		String query = "insert into computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?)";
 		boolean creationOk = false;
 		int result;
@@ -209,7 +219,8 @@ public class ComputerDao extends AbstractDao<Computer> {
 			}
 			statement.close();
 		} catch (Exception e) {
-			System.out.println("La création a échoué: " + e.getMessage());
+			LOGGER.error(e.getMessage());
+			throw new DaoException("Erreur lors de la création d'un objet Computer");
 		} finally {
 			this.closeConnection();
 		}

@@ -85,74 +85,110 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		boolean actionRealized = false;
 		List<Computer> computers = new ArrayList<Computer>();
+		long id;
 		switch (action) {
 		case 1:
-			List<Company> companies = new ArrayList<Company>();
-			companies = companyService.getCompanies();
-			for (Company company : companies) {
-				System.out.println(company.toString());
+			try {
+				List<Company> companies = new ArrayList<Company>();
+				companies = companyService.getCompanies();
+				for (Company company : companies) {
+					System.out.println(company.toString());
+				}
+				break;
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				break;
 			}
-			break;
 
 		case 2:
-			computers = computerService.getComputers();
-			for (Computer c : computers) {
-				System.out.println(c.toString());
+			try {
+				computers = computerService.getComputers();
+				for (Computer c : computers) {
+					System.out.println(c.toString());
+				}
+				break;
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				break;
 			}
-			break;
 
 		case 3:
-			System.out.println("Quel ordinateur voulez-vous afficher? ");
-			long id = (long) newEntry(sc, 0, -1);
-			computer = computerService.getComputerById(id);
-			System.out.println(computer.toString());
-			break;
+			try {
+				System.out.println("Quel ordinateur voulez-vous afficher? ");
+				id = (long) newEntry(sc, 0, -1);
+				computer = computerService.getComputerById(id);
+				System.out.println(computer.toString());
+				break;
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				break;
+			}
 
 		case 4:
-			computer = typeComputer();
-			actionRealized = computerService.createComputer(computer);
-			if (actionRealized)
-				actionValid("création");
-			break;
+			try {
+				computer = typeComputer();
+				actionRealized = computerService.createComputer(computer);
+				if (actionRealized)
+					actionValid("création");
+				break;
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				break;
+			}
 
 		case 5:
-			System.out.println("Quel ordinateur voulez-vous modifier? ");
-			id = (long) newEntry(sc, 0, -1);
-			computer = computerService.getComputerById(id);
-			computer = typeComputerUpdates(computer);
-			computer.setId(id);
-			actionRealized = computerService.updateComputer(computer);
-			if (actionRealized)
-				actionValid("modification");
-			break;
+			try {
+				System.out.println("Quel ordinateur voulez-vous modifier? ");
+				id = (long) newEntry(sc, 0, -1);
+				computer = computerService.getComputerById(id);
+				computer = typeComputerUpdates(computer);
+				computer.setId(id);
+				actionRealized = computerService.updateComputer(computer);
+				if (actionRealized)
+					actionValid("modification");
+				break;
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				break;
+			}
 
 		case 6:
-			System.out.println("Quel ordinateur voulez-vous supprimer? ");
-			id = (long) newEntry(sc, 0, -1);
-			actionRealized = computerService.deleteComputer(id);
-			if (actionRealized)
-				actionValid("suppression");
-			break;
+			try {
+				System.out.println("Quel ordinateur voulez-vous supprimer? ");
+				id = (long) newEntry(sc, 0, -1);
+				actionRealized = computerService.deleteComputer(id);
+				if (actionRealized)
+					actionValid("suppression");
+				break;
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				break;
+			}
 
 		case 7:
-			int nbreLine = 50, numPage = 1;
-			System.out.println("Combien d'éléments par page voulez-vous afficher? (minimum 1)");
-			nbreLine = intEntry(sc, 1, -1);
-			while (numPage > 0) {
-				System.out.println("Quelle page voulez-vous afficher? (0 pour retourner au menu principal");
-				numPage = intEntry(sc, 0, -1);
-				if (numPage > 0) {
-					page = pageService.getPage(nbreLine, numPage);
-					if (page.getComputers().size() > 0) {
-						System.out.println(page.toString());
-					} else {
-						System.out.println("Numéro de page trop grand. \n" + "Page [nbreLine=" + page.getNbreLine()
-								+ ", numPage=" + page.getNumPage() + "]");
+			try {
+				int nbreLine = 50, numPage = 1;
+				System.out.println("Combien d'éléments par page voulez-vous afficher? (minimum 1)");
+				nbreLine = intEntry(sc, 1, -1);
+				while (numPage > 0) {
+					System.out.println("Quelle page voulez-vous afficher? (0 pour retourner au menu principal");
+					numPage = intEntry(sc, 0, -1);
+					if (numPage > 0) {
+						page = pageService.getPage(nbreLine, numPage);
+						if (page.getComputers().size() > 0) {
+							System.out.println(page.toString());
+						} else {
+							System.out.println("Numéro de page trop grand. \n" + "Page [nbreLine=" + page.getNbreLine()
+									+ ", numPage=" + page.getNumPage() + "]");
+						}
 					}
 				}
+				System.out.println("affichage de la pagination terminée. ");
+				break;
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				break;
 			}
-			System.out.println("affichage de la pagination terminée. ");
-			break;
 		}
 	}
 

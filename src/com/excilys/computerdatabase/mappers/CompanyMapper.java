@@ -5,11 +5,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.entities.Company.CompanyBuilder;
+import com.excilys.computerdatabase.exceptions.MapperException;
 
 public class CompanyMapper implements Mapper<Company> {
 	private static CompanyMapper _instance = null;
+	private static Logger logger = LoggerFactory.getLogger(CompanyMapper.class);
 	
 	synchronized public static CompanyMapper getInstance(){
 		if(_instance == null) 
@@ -22,7 +27,7 @@ public class CompanyMapper implements Mapper<Company> {
 	 * @param result
 	 * @return l'objet CompanyEntity créé et complété
 	 */
-	public Company mapUnique(ResultSet result){
+	public Company mapUnique(ResultSet result) throws MapperException {
 		String name;
 		Company company = null;
 		try {
@@ -33,8 +38,8 @@ public class CompanyMapper implements Mapper<Company> {
 					.name(name)
 					.build();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
+			throw new MapperException("Erreur lors du mapping d'un objet Company");
 		}
 		return company;
 	}
@@ -44,14 +49,15 @@ public class CompanyMapper implements Mapper<Company> {
 	 * @param result
 	 * @return la liste de Company créé 
 	 */
-	public List<Company> mapAll(ResultSet result){
+	public List<Company> mapAll(ResultSet result) throws MapperException {
 		List<Company> companies = new ArrayList<Company>();
 		try {
 			while (result.next()){
 				companies.add(mapUnique(result));
 			}
 		} catch (Exception e){
-			
+			logger.error(e.getMessage());
+			throw new MapperException("Erreur lors du mapping des objets Company");
 		}
 		return companies;
 	}

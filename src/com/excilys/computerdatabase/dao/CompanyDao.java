@@ -5,23 +5,29 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+
 import com.excilys.computerdatabase.entities.Company;
+import com.excilys.computerdatabase.exceptions.ConnexionException;
+import com.excilys.computerdatabase.exceptions.DaoException;
 import com.excilys.computerdatabase.mappers.CompanyMapper;
 
 public class CompanyDao extends AbstractDao<Company> {
 	private static CompanyDao instance = null;
-	
-	public CompanyDao(){};
-	
-	synchronized public static CompanyDao getInstance(){
-		if(instance == null){
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
+
+	public CompanyDao() {
+	};
+
+	synchronized public static CompanyDao getInstance() {
+		if (instance == null) {
 			instance = new CompanyDao();
 		}
 		return instance;
 	}
-	
+
 	@Override
-	public List<Company> getAll() {
+	public List<Company> getAll() throws DaoException, ConnexionException {
 		String query = "select * from company";
 		ResultSet result;
 		List<Company> companies = new ArrayList<Company>();
@@ -34,7 +40,8 @@ public class CompanyDao extends AbstractDao<Company> {
 			statement.close();
 			result.close();
 		} catch (Exception e) {
-			System.out.println("Erreur lors de l'extraction des company: " + e.getMessage());
+			LOGGER.error(e.getMessage());
+			throw new DaoException("Erreur lors de l'extraction des objets company");
 		} finally {
 			this.closeConnection();
 		}
@@ -43,7 +50,7 @@ public class CompanyDao extends AbstractDao<Company> {
 	}
 
 	@Override
-	public Company getById(long id) {
+	public Company getById(long id) throws DaoException, ConnexionException {
 		String query = "select * from company where id = ?";
 		ResultSet result;
 		Company company = null;
@@ -57,7 +64,8 @@ public class CompanyDao extends AbstractDao<Company> {
 			statement.close();
 			result.close();
 		} catch (Exception e) {
-			System.out.println("Erreur lors de l'extraction des company: " + e.getMessage());
+			LOGGER.error(e.getMessage());
+			throw new DaoException("Erreur lors de l'extraction des objets company");
 		} finally {
 			this.closeConnection();
 		}

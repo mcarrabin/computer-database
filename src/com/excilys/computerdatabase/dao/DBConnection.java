@@ -4,12 +4,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.computerdatabase.exceptions.ConnexionException;
 
 public class DBConnection {
 
-//	private Connection conn;
 	private static DBConnection _instance = null;
+	
+	private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(DBConnection.class);
 
 	private final static String URL = "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull";
 	private final static String LOGIN = "admincdb";
@@ -35,6 +39,7 @@ public class DBConnection {
 			try {
 				c = DriverManager.getConnection(URL, LOGIN, PASSWORD);
 			} catch (SQLException e) {
+				LOGGER.error(e.getMessage());
 				throw new ConnexionException("Echec lors de l'ouverture de la connexion");
 			}
 			return c;
@@ -47,7 +52,7 @@ public class DBConnection {
 			try {
 				c.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				LOGGER.error(e.getMessage());
 				throw new ConnexionException("Echec lors de la fermeture de la connexion");
 			}
 		}

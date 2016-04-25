@@ -2,6 +2,8 @@ package com.excilys.computerdatabase.services;
 
 import com.excilys.computerdatabase.dao.ComputerDao;
 import com.excilys.computerdatabase.entities.Page;
+import com.excilys.computerdatabase.exceptions.ConnexionException;
+import com.excilys.computerdatabase.exceptions.DaoException;
 
 public class PageService {
 	private static PageService instance = null;
@@ -22,7 +24,7 @@ public class PageService {
 	 * @param numPage: numéro de la page voulue
 	 * @return la page construite
 	 */
-	public Page getPage(int nbreLine, int numPage){
+	public Page getPage(int nbreLine, int numPage) throws DaoException, ConnexionException {
 		Page page = new Page();
 		ComputerDao computerDao = ComputerDao.getInstance(); 
 		int numMaxPage = computerDao.getAll().size() / nbreLine + 1;
