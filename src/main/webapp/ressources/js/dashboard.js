@@ -21,7 +21,6 @@ $(function() {
             $("#deleteSelected").disable();
         }
     });
-
 });
 
 

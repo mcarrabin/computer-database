@@ -1,12 +1,12 @@
 package com.excilys.computerdatabase.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computerdatabase.dao.ComputerDao;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
-import com.excilys.computerdatabase.exceptions.ConnexionException;
-import com.excilys.computerdatabase.exceptions.DaoException;
+import com.excilys.computerdatabase.exceptions.ServiceException;
 
 public class ComputerService {
     private static final ComputerDao COMPUTER_DAO = ComputerDao.getInstance();
@@ -40,13 +40,15 @@ public class ComputerService {
      *
      * @return un ArrayList<ComputerEntity> contenant tous les ordinateurs de la
      *         base.
-     * @throws DaoException
-     *             from the ComputerDao method
-     * @throws ConnexionException
-     *             from the computerDao method connexion
      */
-    public List<Computer> getComputers() throws DaoException, ConnexionException {
-        return COMPUTER_DAO.getAll();
+    public List<Computer> getComputers() {
+        List<Computer> computers = new ArrayList<>();
+        try {
+            computers = COMPUTER_DAO.getAll();
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+        return computers;
     }
 
     /**
@@ -56,35 +58,39 @@ public class ComputerService {
      * @param id
      *            id de l'ordinateur voulu
      * @return l'ordinnateur dont l'id est envoyé en paramètre
-     * @throws DaoException
-     *             from the ComputerDao method
-     * @throws ConnexionException
-     *             from the computerDao method connexion
      */
-    public Computer getComputerById(Long id) throws DaoException, ConnexionException {
-        Computer computer = new Computer();
-        computer = COMPUTER_DAO.getById(id);
+    public Computer getComputerById(Long id) {
+        Computer computer = null;
+        try {
+            computer = COMPUTER_DAO.getById(id);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
 
         return computer;
     }
 
     /**
      * Method which will call the ComputerDao to get the computers from the
-     * database.
+     * database. Eventually, the name parameter can be filled. In that case, the
+     * request will take every computer which names contain the name parameter.
      *
      * @param nbreLine
-     *            is the numer of elements expected.
+     *            is the number of elements expected.
      * @param numPage
      *            is the page number.
+     * @param name
+     *            is the name search parameter.
      * @return a page object.
-     * @throws DaoException
-     *             if something went wrong during the Computer getting.
-     * @throws ConnexionException
-     *             if something went wrong with the connexion (creation and
-     *             closure).
      */
-    public Page getComputerByPage(int nbreLine, int numPage) throws DaoException, ConnexionException {
-        return COMPUTER_DAO.getByPage(nbreLine, numPage);
+    public Page<Computer> getComputerByPage(int nbreLine, int numPage, String name) {
+        Page<Computer> page = null;
+        try {
+            page = COMPUTER_DAO.getByPage(nbreLine, numPage, name);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+        return page;
     }
 
     /**
@@ -93,13 +99,15 @@ public class ComputerService {
      * @param computer
      *            is the object to update.
      * @return true if everything went well, else false.
-     * @throws DaoException
-     *             if the update failed
-     * @throws ConnexionException
-     *             if something was wrong with the connexion
      */
-    public boolean updateComputer(Computer computer) throws DaoException, ConnexionException {
-        return COMPUTER_DAO.updateComputer(computer);
+    public boolean updateComputer(Computer computer) {
+        boolean result = false;
+        try {
+            result = COMPUTER_DAO.updateComputer(computer);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+        return result;
     }
 
     /**
@@ -108,14 +116,16 @@ public class ComputerService {
      * @param id
      *            is the object to delete.
      * @return true if everything went well, else false.
-     * @throws DaoException
-     *             if the deletion failed
-     * @throws ConnexionException
-     *             if something was wrong with the connexion.
      */
-    public boolean deleteComputer(long id) throws DaoException, ConnexionException {
-        Computer computer = COMPUTER_DAO.getById(id);
-        return COMPUTER_DAO.deleteComputer(computer);
+    public boolean deleteComputer(long id) {
+        boolean result = false;
+        try {
+            Computer computer = COMPUTER_DAO.getById(id);
+            result = COMPUTER_DAO.deleteComputer(computer);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+        return result;
     }
 
     /**
@@ -124,13 +134,15 @@ public class ComputerService {
      * @param computer
      *            is the object to create.
      * @return true if everything went well, else false.
-     * @throws DaoException
-     *             if the creation failed
-     * @throws ConnexionException
-     *             if something was wrong with the connexion
      */
-    public boolean createComputer(Computer computer) throws DaoException, ConnexionException {
-        return COMPUTER_DAO.createComputer(computer);
+    public boolean createComputer(Computer computer) {
+        boolean result = false;
+        try {
+            result = COMPUTER_DAO.createComputer(computer);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+        return result;
     }
 
     /**

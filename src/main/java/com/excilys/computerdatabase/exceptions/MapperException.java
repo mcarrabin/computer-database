@@ -1,15 +1,20 @@
 package com.excilys.computerdatabase.exceptions;
 
-public class MapperException extends Exception {
-    private String message;
+import org.slf4j.LoggerFactory;
+
+import com.excilys.computerdatabase.dao.CompanyDao;
+
+public class MapperException extends RuntimeException {
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
 
     /**
      * Constructor of the MapperException class.
      *
-     * @param message
-     *            is the message linked to the exception.
+     * @param e
+     *            is the exception received
      */
-    public MapperException(String message) {
-        super(message);
+    public MapperException(Exception e) {
+        super(e);
+        LOGGER.error(e.getMessage());
     }
 }

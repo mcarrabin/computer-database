@@ -26,6 +26,14 @@ public class ComputerServiceTest extends junit.framework.TestCase {
     private static Company company1;
     private static Company company2;
 
+    /**
+     * Instantiation of test objects such as Computers, Companies and
+     * ComputerService.
+     *
+     * @throws ServiceException
+     *             if something went wrong during creation or connection
+     *             handling.
+     */
     @Override
     @BeforeClass
     public void setUp() throws DaoException, ConnexionException {
@@ -47,6 +55,13 @@ public class ComputerServiceTest extends junit.framework.TestCase {
         when(computerServ.deleteComputer(1)).thenReturn(true);
     }
 
+    /**
+     * Test method to get all computers.
+     *
+     * @throws ServiceException
+     *             if something went wrong during get action or connection
+     *             handling.
+     */
     @Test
     public void testGetComputers() throws ServiceException {
         String name = "computer 1", companyName = "company1";
@@ -70,6 +85,13 @@ public class ComputerServiceTest extends junit.framework.TestCase {
         }
     }
 
+    /**
+     * Test method to get a computer based on the id value.
+     *
+     * @throws ServiceException
+     *             if something went wrong during get request or connection
+     *             handling.
+     */
     @Test
     public void testGetComputerById() throws ServiceException {
         String name = "computer 1", companyName = "company1";
@@ -89,6 +111,12 @@ public class ComputerServiceTest extends junit.framework.TestCase {
         }
     }
 
+    /**
+     * Test method to update a computer.
+     *
+     * @throws ServiceException
+     *             if something went wrong during udpate or connection handling.
+     */
     @Test
     public void updateComputer() throws ServiceException {
 
@@ -100,6 +128,12 @@ public class ComputerServiceTest extends junit.framework.TestCase {
         }
     }
 
+    /**
+     * Test method to delete a computer.
+     *
+     * @throws ServiceException
+     *             if something went wrong during delete or connection handling.
+     */
     @Test
     public void deleteComputer() throws ServiceException {
         try {
@@ -110,6 +144,13 @@ public class ComputerServiceTest extends junit.framework.TestCase {
         }
     }
 
+    /**
+     * Test method to create a computer.
+     *
+     * @throws ServiceException
+     *             if something went wrong during creation or connection
+     *             handling.
+     */
     @Test
     public void createComputer() throws ServiceException {
         try {

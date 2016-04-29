@@ -16,10 +16,8 @@ public abstract class AbstractDao<T> {
      * @return all the objects contained in the database.
      * @throws DaoException
      *             which are exceptions thrown by Dao classes.
-     * @throws ConnexionException
-     *             which are exceptions thrown by connection issues.
      */
-    public abstract List<T> getAll() throws DaoException, ConnexionException;
+    public abstract List<T> getAll() throws DaoException;
 
     /**
      * Method that will get an Object based on id match.
@@ -29,10 +27,8 @@ public abstract class AbstractDao<T> {
      * @return the object if founded.
      * @throws DaoException
      *             which are exceptions thrown by Dao classes.
-     * @throws ConnexionException
-     *             which are exceptions thrown by connection issues.
      */
-    public abstract T getById(long id) throws DaoException, ConnexionException;
+    public abstract T getById(long id) throws DaoException;
 
     /**
      * Method that will get the current connection and return it.
@@ -41,8 +37,12 @@ public abstract class AbstractDao<T> {
      * @throws ConnexionException
      *             is an exception thrown by the DBConnection class.
      */
-    public Connection connect() throws ConnexionException {
-        return DBConnection.getInstance().getConnection();
+    public Connection connect() throws DaoException {
+        try {
+            return DBConnection.getInstance().getConnection();
+        } catch (ConnexionException e) {
+            throw new DaoException(e);
+        }
     }
 
     /**
@@ -51,13 +51,13 @@ public abstract class AbstractDao<T> {
      * @throws ConnexionException
      *             which is the exception related to the connection.
      */
-    public void closeConnection() throws ConnexionException {
+    public void closeConnection() throws DaoException {
         try {
             if (connection != null) {
                 connection.close();
             }
         } catch (SQLException e) {
-            throw new ConnexionException("Erreur lors de la fermeture de la connexion");
+            throw new DaoException(e);
         }
     }
 }

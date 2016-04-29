@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.LoggerFactory;
-
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.exceptions.ConnexionException;
 import com.excilys.computerdatabase.exceptions.DaoException;
@@ -14,13 +12,9 @@ import com.excilys.computerdatabase.mappers.CompanyMapper;
 
 public class CompanyDao extends AbstractDao<Company> {
     private static CompanyDao instance = null;
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
 
-    /**
-     * Constructor of the CompanyDao class.
-     */
-    public CompanyDao() {
-    };
+    private static final String GET_ALL_REQUEST = "select * from company";
+    private static final String GET_BY_ID_REQUEST = "select * from company where id = ?";
 
     /**
      * Method that will check if an instance of CompanyDao is currently active.
@@ -50,21 +44,19 @@ public class CompanyDao extends AbstractDao<Company> {
      *             which are the exceptions due to connexion issues.
      */
     @Override
-    public List<Company> getAll() throws DaoException, ConnexionException {
-        String query = "select * from company";
+    public List<Company> getAll() throws DaoException {
         ResultSet result;
         List<Company> companies = new ArrayList<Company>();
 
         try {
-            PreparedStatement statement = this.connect().prepareStatement(query);
+            PreparedStatement statement = this.connect().prepareStatement(GET_ALL_REQUEST);
             result = statement.executeQuery();
             CompanyMapper compMapper = CompanyMapper.getInstance();
             companies = compMapper.mapAll(result);
             statement.close();
             result.close();
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            throw new DaoException("Erreur lors de l'extraction des objets company");
+            throw new DaoException(e);
         } finally {
             this.closeConnection();
         }
@@ -84,26 +76,28 @@ public class CompanyDao extends AbstractDao<Company> {
      *             which are the exceptions due to connection issues.
      */
     @Override
-    public Company getById(long id) throws DaoException, ConnexionException {
-        String query = "select * from company where id = ?";
-        ResultSet result;
-        Company company = null;
+    public Company getById(long id) throws DaoException {
+        if (id == -1) {
+            return new Company();
+        } else {
+            ResultSet result;
+            Company company = null;
 
-        try {
-            PreparedStatement statement = this.connect().prepareStatement(query);
-            statement.setLong(1, id);
-            result = statement.executeQuery();
-            CompanyMapper compMapper = CompanyMapper.getInstance();
-            company = compMapper.mapUnique(result);
-            statement.close();
-            result.close();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            throw new DaoException("Erreur lors de l'extraction des objets company");
-        } finally {
-            this.closeConnection();
+            try {
+                PreparedStatement statement = this.connect().prepareStatement(GET_BY_ID_REQUEST);
+                statement.setLong(1, id);
+                result = statement.executeQuery();
+                CompanyMapper compMapper = CompanyMapper.getInstance();
+                company = compMapper.mapAll(result).get(0);
+                statement.close();
+                result.close();
+            } catch (Exception e) {
+                throw new DaoException(e);
+            } finally {
+                this.closeConnection();
+            }
+
+            return company;
         }
-
-        return company;
     }
 }

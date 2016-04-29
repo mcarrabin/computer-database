@@ -1,7 +1,6 @@
 package com.excilys.computerdatabase.mappers;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,9 +64,8 @@ public class ComputerMapper implements Mapper<Computer> {
             Company company = new CompanyBuilder().id(companyId).name(companyName).build();
             computer = new ComputerBuilder().id(id).name(name).introduced(introduced).discontinued(discontinued)
                     .company(company).build();
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            throw new MapperException("Erreur lors du mapping d'un objet Computer");
+        } catch (Exception e) {
+            throw new MapperException(e);
         }
 
         return computer;
@@ -81,9 +79,9 @@ public class ComputerMapper implements Mapper<Computer> {
             while (result.next()) {
                 computers.add(mapUnique(result));
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
-            throw new MapperException("Erreur lors du mapping des objets Computer");
+            throw new MapperException(e);
         }
         return computers;
     }

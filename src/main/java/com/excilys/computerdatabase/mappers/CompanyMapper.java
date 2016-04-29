@@ -49,8 +49,7 @@ public class CompanyMapper implements Mapper<Company> {
             Long id = result.getLong("id");
             company = new CompanyBuilder().id(id).name(name).build();
         } catch (SQLException e) {
-            logger.error(e.getMessage());
-            throw new MapperException("Erreur lors du mapping d'un objet Company");
+            throw new MapperException(e);
         }
         return company;
     }
@@ -70,8 +69,7 @@ public class CompanyMapper implements Mapper<Company> {
                 companies.add(mapUnique(result));
             }
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            throw new MapperException("Erreur lors du mapping des objets Company");
+            throw new MapperException(e);
         }
         return companies;
     }

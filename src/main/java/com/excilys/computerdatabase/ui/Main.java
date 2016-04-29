@@ -124,7 +124,7 @@ public class Main {
     public static void doAction(int action, ComputerService computerService, CompanyService companyService,
             PageService pageService) {
         Computer computer = new Computer();
-        Page page = null;
+        Page<Computer> page = null;
         Scanner sc = new Scanner(System.in);
         boolean actionRealized = false;
         List<Computer> computers = new ArrayList<Computer>();
@@ -220,12 +220,12 @@ public class Main {
                     System.out.println("Quelle page voulez-vous afficher? (0 pour retourner au menu principal");
                     numPage = intEntry(sc, 0, -1);
                     if (numPage > 0) {
-                        page = pageService.getPage(nbreLine, numPage);
-                        if (page.getComputers().size() > 0) {
+                        page = pageService.getPage(nbreLine, numPage, "Amiga");
+                        if (page.getElements().size() > 0) {
                             System.out.println(page.toString());
                         } else {
-                            System.out.println("Numéro de page trop grand. \n" + "Page [nbreLine=" + page.getNbreLine()
-                                    + ", numPage=" + page.getNumPage() + "]");
+                            System.out.println("Numéro de page trop grand. \n" + "Page [nbreLine="
+                                    + page.getElements().size() + ", numPage=" + page.getNumPage() + "]");
                         }
                     }
                 }

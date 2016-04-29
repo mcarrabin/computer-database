@@ -2,9 +2,6 @@ package com.excilys.computerdatabase.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
-
-import org.slf4j.LoggerFactory;
 
 import com.excilys.computerdatabase.exceptions.ConnexionException;
 
@@ -12,17 +9,10 @@ public class DBConnection {
 
     private static DBConnection instance = null;
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(DBConnection.class);
-
     private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull";
     private static final String LOGIN = "admincdb";
     private static final String PASSWORD = "qwerty1234";
-
-    /**
-     * Constructor of DbConnection class.
-     */
-    private DBConnection() {
-    }
+    private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
 
     /**
      * Method that will check if there is a current Connection. If yes, it will
@@ -52,10 +42,10 @@ public class DBConnection {
         synchronized (DBConnection.class) {
             Connection c = null;
             try {
+                Class.forName(DB_DRIVER).newInstance();
                 c = DriverManager.getConnection(URL, LOGIN, PASSWORD);
-            } catch (SQLException e) {
-                LOGGER.error(e.getMessage());
-                throw new ConnexionException("Echec lors de l'ouverture de la connexion");
+            } catch (Exception e) {
+                throw new ConnexionException(e);
             }
             return c;
         }
@@ -74,9 +64,8 @@ public class DBConnection {
         synchronized (DBConnection.class) {
             try {
                 c.close();
-            } catch (SQLException e) {
-                LOGGER.error(e.getMessage());
-                throw new ConnexionException("Echec lors de la fermeture de la connexion");
+            } catch (Exception e) {
+                throw new ConnexionException(e);
             }
         }
     }

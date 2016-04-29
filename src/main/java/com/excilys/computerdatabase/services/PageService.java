@@ -1,9 +1,8 @@
 package com.excilys.computerdatabase.services;
 
 import com.excilys.computerdatabase.dao.ComputerDao;
+import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
-import com.excilys.computerdatabase.exceptions.ConnexionException;
-import com.excilys.computerdatabase.exceptions.DaoException;
 
 public class PageService {
     private static PageService instance = null;
@@ -33,18 +32,27 @@ public class PageService {
      *            nbre de ligne par page voulu
      * @param numPage
      *            numéro de la page voulue
+     * @param name
+     *            filtre sur les noms de Computer.
      * @return la page construite
-     * @throws DaoException
-     *             sent by the ComputerDao.
-     * @throws ConnexionException
-     *             sent by the ComputerDao.
      */
-    public Page getPage(int nbreLine, int numPage) throws DaoException, ConnexionException {
-        Page page = new Page();
+    public Page<Computer> getPage(int nbreLine, int numPage, String name) {
+        Page<Computer> page = new Page<Computer>();
         ComputerDao computerDao = ComputerDao.getInstance();
-        int numMaxPage = computerDao.getAll().size() / nbreLine + 1;
+        long numTotComputer = 0;
+        try {
+            numTotComputer = computerDao.getNumTotalComputer(name);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        int numMaxPage = (int) numTotComputer / nbreLine + 1;
+
         if (numPage <= numMaxPage) {
-            page = ComputerService.getInstance().getComputerByPage(nbreLine, numPage);
+            page = ComputerService.getInstance().getComputerByPage(nbreLine, numPage, name);
+            page.setNumElementTotal(numTotComputer);
+            page.setNumPageMax(numMaxPage);
+            page.setSearchFilter(name);
         }
         return page;
     }

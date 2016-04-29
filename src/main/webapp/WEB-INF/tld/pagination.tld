@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib> 
+<tlibversion>1.0</tlibversion>
+<jspversion>1.1</jspversion>
+<shortname>pagination</shortname>
+<info>Sample taglib for pagination method</info>
+<tag>
+    <name>pagination</name>
+    <tagclass>com.excilys.computerdatabase.tags.PaginationTagHandler</tagclass>
+    <info>page min and page max function.</info>
+    <attribute>
+      <name>currentPage</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+  </attribute>
+    <attribute>
+      <name>numPageMax</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+  </attribute>
+</tag>
+</taglib> 
