@@ -4,11 +4,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.excilys.computerdatabase.exceptions.ConnexionException;
+import com.excilys.computerdatabase.exceptions.ConnectionException;
 import com.excilys.computerdatabase.exceptions.DaoException;
 
-public abstract class AbstractDao<T> {
-    private Connection connection;
+public interface AbstractDao<T> {
 
     /**
      * Method that will get every objects in the database.
@@ -37,10 +36,10 @@ public abstract class AbstractDao<T> {
      * @throws ConnexionException
      *             is an exception thrown by the DBConnection class.
      */
-    public Connection connect() throws DaoException {
+    public default Connection connect() {
         try {
-            return DBConnection.getInstance().getConnection();
-        } catch (ConnexionException e) {
+            return DBConnection.INSTANCE.getConnection();
+        } catch (ConnectionException e) {
             throw new DaoException(e);
         }
     }
@@ -51,11 +50,9 @@ public abstract class AbstractDao<T> {
      * @throws ConnexionException
      *             which is the exception related to the connection.
      */
-    public void closeConnection() throws DaoException {
+    public default void closeConnection(Connection con) {
         try {
-            if (connection != null) {
-                connection.close();
-            }
+            con.close();
         } catch (SQLException e) {
             throw new DaoException(e);
         }

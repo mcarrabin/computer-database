@@ -5,33 +5,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.entities.Company.CompanyBuilder;
 import com.excilys.computerdatabase.exceptions.MapperException;
 
-public class CompanyMapper implements Mapper<Company> {
-    private static CompanyMapper instance = null;
-    private static Logger logger = LoggerFactory.getLogger(CompanyMapper.class);
-
-    /**
-     * Méthode qui va retourner une instance de CompanyMapper si aucune n'est
-     * présente.
-     *
-     * @return l'instance de CompanyMapper() actuelle.
-     */
-    public static CompanyMapper getInstance() {
-        if (instance == null) {
-            synchronized (CompanyMapper.class) {
-                if (instance == null) {
-                    instance = new CompanyMapper();
-                }
-            }
-        }
-        return instance;
-    }
+public enum CompanyMapper implements Mapper<Company> {
+    INSTANCE;
 
     /**
      * Méthode qui va créer et retourner un objet CompanyEntity complété avec le

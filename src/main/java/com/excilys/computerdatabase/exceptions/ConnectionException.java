@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.computerdatabase.dao.CompanyDao;
 
-public class ConnexionException extends RuntimeException {
+public class ConnectionException extends RuntimeException {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
 
@@ -14,7 +14,7 @@ public class ConnexionException extends RuntimeException {
      * @param e
      *            is the exception received
      */
-    public ConnexionException(Exception e) {
+    public ConnectionException(Exception e) {
         super(e);
         LOGGER.error(e.getMessage());
     }

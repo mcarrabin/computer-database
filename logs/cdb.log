@@ -1,0 +1,3 @@
+2016-04-29 15:59:36,343 [main] c.e.computerdatabase.dao.CompanyDao - [ConnectionException.java:19] - db.properties (Aucun fichier ou dossier de ce type)
+2016-04-29 16:03:21,639 [main] c.e.computerdatabase.dao.CompanyDao - [ConnectionException.java:19] - db.properties (Aucun fichier ou dossier de ce type)
+2016-04-29 16:03:56,628 [main] c.e.computerdatabase.dao.CompanyDao - [ConnectionException.java:19] - db.properties (Aucun fichier ou dossier de ce type)

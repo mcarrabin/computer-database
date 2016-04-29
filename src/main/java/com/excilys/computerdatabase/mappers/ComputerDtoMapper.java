@@ -11,31 +11,8 @@ import com.excilys.computerdatabase.entities.Company.CompanyBuilder;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Computer.ComputerBuilder;
 
-public class ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
-    private static ComputerDtoMapper instance = null;
-
-    /**
-     * Constructor of the ComputerDtoMapper class.
-     */
-    public ComputerDtoMapper() {
-    }
-
-    /**
-     * Méthode qui va vérifier la présence d'une instance de ComputerMapper et
-     * en retourner une. Si pas d'instance, en créer une.
-     *
-     * @return l'instance ou cours ou l'instance juste créée.
-     */
-    public static ComputerDtoMapper getInstance() {
-        if (instance == null) {
-            synchronized (ComputerDtoMapper.class) {
-                if (instance == null) {
-                    instance = new ComputerDtoMapper();
-                }
-            }
-        }
-        return instance;
-    }
+public enum ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
+    INSTANCE;
 
     /**
      * Method that will map a Computer object to a ComputerDto object.

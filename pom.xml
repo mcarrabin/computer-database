@@ -2,47 +2,72 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.excilys</groupId>
   <artifactId>computerdatabase</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.3.0-SNAPSHOT</version>
   <packaging>war</packaging>
+  <properties>
+  	<jUnit>4.8.1</jUnit>
+  	<logback>1.0.13</logback>
+  	<mysql>5.1.6</mysql>
+  	<mockito>1.8.4</mockito>
+  	<servlet>3.1.0</servlet>
+  	<jsp>2.0</jsp>
+  	<jstl>1.2</jstl>
+   <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
+ </properties>
   
-  <dependencies>
+  <dependencies>	
+  
+	<!-- test unitaires -->
 	<dependency>
 		<groupId>junit</groupId>
 		<artifactId>junit</artifactId>
-		<version>4.8.1</version>
-	</dependency>
-	<dependency>
-		<groupId>ch.qos.logback</groupId>
-		<artifactId>logback-classic</artifactId>
-		<version>1.0.13</version>
-	</dependency>
-	<dependency>
-		<groupId>mysql</groupId>
-		<artifactId>mysql-connector-java</artifactId>
-		<version>5.1.6</version>
-	</dependency>
+		<version>${jUnit}</version>
+		<scope>test</scope>
+	</dependency>	
 	<dependency>
 		<groupId>org.mockito</groupId>
 		<artifactId>mockito-all</artifactId>
-		<version>1.8.4</version>
-	</dependency><dependency>
+		<version>${mockito}</version>
+		<scope>test</scope>
+	</dependency>	
+	
+	<!-- logs -->
+	<dependency>
+		<groupId>ch.qos.logback</groupId>
+		<artifactId>logback-classic</artifactId>
+		<version>${logback}</version>
+	</dependency>	
+	
+	<!-- mysql -->
+	<dependency>
+		<groupId>mysql</groupId>
+		<artifactId>mysql-connector-java</artifactId>
+		<version>${mysql}</version>
+		<scope>runtime</scope>
+	</dependency>
+	
+	<!-- servlet -->
+	<dependency>
 		<groupId>javax.servlet</groupId>
 		<artifactId>javax.servlet-api</artifactId>
-		<version>3.1.0</version>
+		<version>${servlet}</version>
 		<scope>provided</scope>
-	</dependency>
-	<dependency>
-		<groupId>jstl</groupId>
-		<artifactId>jstl</artifactId>
-		<version>1.2</version>
 	</dependency>
 	<dependency>
 		<groupId>javax.servlet</groupId>
 		<artifactId>jsp-api</artifactId>
-		<version>2.0</version>
+		<version>${jsp}</version>
+	</dependency>	
+	
+	<!-- jstl -->
+	<dependency>
+		<groupId>jstl</groupId>
+		<artifactId>jstl</artifactId>
+		<version>${jstl}</version>
+		<scope>runtime</scope>
 	</dependency>
 	
-	<!-- selenium -->
+	<!-- selenium (tests) -->
 	<dependency>
 		<groupId>org.seleniumhq.selenium</groupId>
 		<artifactId>selenium-java</artifactId>
@@ -75,8 +100,4 @@
       </plugin>
     </plugins>
   </build>
-  
-  <properties>
-   <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
- </properties>
 </project>

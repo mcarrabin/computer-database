@@ -1,5 +1,6 @@
 package com.excilys.computerdatabase.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -9,12 +10,11 @@ import java.util.List;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
 import com.excilys.computerdatabase.entities.Page.PageBuilder;
-import com.excilys.computerdatabase.exceptions.ConnexionException;
 import com.excilys.computerdatabase.exceptions.DaoException;
 import com.excilys.computerdatabase.mappers.ComputerMapper;
 
-public class ComputerDao extends AbstractDao<Computer> {
-    private static ComputerDao instance = null;
+public enum ComputerDao implements AbstractDao<Computer> {
+    INSTANCE;
 
     private static final String GET_ALL_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id order by c.name";
     private static final String GET_BY_ID_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id where c.id = ? ";
@@ -25,30 +25,6 @@ public class ComputerDao extends AbstractDao<Computer> {
     private static final String CREATE_REQUEST = "insert into computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?)";
 
     /**
-     * Constructor of ComputerDao class.
-     */
-    public ComputerDao() {
-    };
-
-    /**
-     * Method that will check if an instance of ComputerDao is currently active.
-     * if yes, the method will return it. If not, it will create one and return
-     * it.
-     *
-     * @return the ComputerDao instance created or existing.
-     */
-    public static ComputerDao getInstance() {
-        if (instance == null) {
-            synchronized (ComputerDao.class) {
-                if (instance == null) {
-                    instance = new ComputerDao();
-                }
-            }
-        }
-        return instance;
-    }
-
-    /**
      * Méthode qui va construire une liste de toutes les entrées computer
      * contenues en BDD.
      *
@@ -56,12 +32,13 @@ public class ComputerDao extends AbstractDao<Computer> {
      *         ArrayList<ComputerEntity>(); entrées
      */
     @Override
-    public List<Computer> getAll() throws DaoException {
+    public List<Computer> getAll() {
         List<Computer> computers = new ArrayList<Computer>();
         ResultSet result = null;
+        Connection con = INSTANCE.connect();
 
         try {
-            PreparedStatement statement = this.connect().prepareStatement(GET_ALL_REQUEST);
+            PreparedStatement statement = con.prepareStatement(GET_ALL_REQUEST);
             result = statement.executeQuery();
 
             ComputerMapper cm = ComputerMapper.getInstance();
@@ -71,7 +48,7 @@ public class ComputerDao extends AbstractDao<Computer> {
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            this.closeConnection();
+            INSTANCE.closeConnection(con);
         }
 
         return computers;
@@ -89,9 +66,10 @@ public class ComputerDao extends AbstractDao<Computer> {
     public Computer getById(long id) throws DaoException {
         ResultSet result = null;
         Computer computer = null;
+        Connection con = INSTANCE.connect();
 
         try {
-            PreparedStatement statement = this.connect().prepareStatement(GET_BY_ID_REQUEST);
+            PreparedStatement statement = con.prepareStatement(GET_BY_ID_REQUEST);
             statement.setLong(1, id);
             result = statement.executeQuery();
             if (result.next()) {
@@ -104,7 +82,7 @@ public class ComputerDao extends AbstractDao<Computer> {
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            this.closeConnection();
+            INSTANCE.closeConnection(con);
         }
         return computer;
     }
@@ -126,9 +104,10 @@ public class ComputerDao extends AbstractDao<Computer> {
         List<Computer> computers = new ArrayList<Computer>();
         ResultSet result = null;
         Page<Computer> page = null;
+        Connection con = INSTANCE.connect();
 
         try {
-            PreparedStatement statement = this.connect().prepareStatement(GET_BY_PAGE_REQUEST);
+            PreparedStatement statement = con.prepareStatement(GET_BY_PAGE_REQUEST);
             statement.setString(1, "%" + name + "%");
             statement.setInt(2, nbreLine * (numPage - 1));
             statement.setInt(3, nbreLine);
@@ -142,7 +121,7 @@ public class ComputerDao extends AbstractDao<Computer> {
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            this.closeConnection();
+            INSTANCE.closeConnection(con);
         }
 
         return page;
@@ -161,11 +140,12 @@ public class ComputerDao extends AbstractDao<Computer> {
      * @throws ConnexionException
      *             if something went wrong for connection opening of closing.
      */
-    public long getNumTotalComputer(String name) throws DaoException, ConnexionException {
+    public long getNumTotalComputer(String name) throws DaoException {
         long result = 0;
         ResultSet res = null;
+        Connection con = INSTANCE.connect();
         try {
-            PreparedStatement statement = this.connect().prepareStatement(GET_TOTAL_COUNT_REQUEST);
+            PreparedStatement statement = con.prepareStatement(GET_TOTAL_COUNT_REQUEST);
             statement.setString(1, "%" + name + "%");
             res = statement.executeQuery();
             if (res.next()) {
@@ -176,7 +156,7 @@ public class ComputerDao extends AbstractDao<Computer> {
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            this.closeConnection();
+            INSTANCE.closeConnection(con);
         }
 
         return result;
@@ -194,12 +174,13 @@ public class ComputerDao extends AbstractDao<Computer> {
      * @throws ConnexionException
      *             which are the exceptions due to connexion issues.
      */
-    public boolean deleteComputer(Computer computer) throws DaoException, ConnexionException {
+    public boolean deleteComputer(Computer computer) throws DaoException {
         boolean isDeleteOk = false;
         int response = 0;
+        Connection con = INSTANCE.connect();
 
         try {
-            PreparedStatement statement = this.connect().prepareStatement(DELETE_REQUEST);
+            PreparedStatement statement = con.prepareStatement(DELETE_REQUEST);
             statement.setLong(1, computer.getId());
             response = statement.executeUpdate();
             if (response == 1) {
@@ -209,7 +190,7 @@ public class ComputerDao extends AbstractDao<Computer> {
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            this.closeConnection();
+            INSTANCE.closeConnection(con);
         }
 
         return isDeleteOk;
@@ -228,12 +209,13 @@ public class ComputerDao extends AbstractDao<Computer> {
      * @throws ConnexionException
      *             which are the exceptions due to connexion issues.
      */
-    public boolean updateComputer(Computer computer) throws DaoException, ConnexionException {
+    public boolean updateComputer(Computer computer) throws DaoException {
         boolean isUpdateOk = false;
         int response = 0;
+        Connection con = INSTANCE.connect();
 
         try {
-            PreparedStatement statement = this.connect().prepareStatement(UPDATE_REQUEST);
+            PreparedStatement statement = con.prepareStatement(UPDATE_REQUEST);
             statement.setString(1, computer.getName());
             if (computer.getIntroduced() != null) {
                 statement.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced()));
@@ -255,7 +237,7 @@ public class ComputerDao extends AbstractDao<Computer> {
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            this.closeConnection();
+            INSTANCE.closeConnection(con);
         }
 
         return isUpdateOk;
@@ -272,11 +254,12 @@ public class ComputerDao extends AbstractDao<Computer> {
      * @throws ConnexionException
      *             which are the exceptions due to connexion issues.
      */
-    public boolean createComputer(Computer computer) throws DaoException, ConnexionException {
+    public boolean createComputer(Computer computer) throws DaoException {
         boolean creationOk = false;
         int result;
+        Connection con = INSTANCE.connect();
         try {
-            PreparedStatement statement = this.connect().prepareStatement(CREATE_REQUEST);
+            PreparedStatement statement = con.prepareStatement(CREATE_REQUEST);
             statement.setString(1, computer.getName());
             if (computer.getIntroduced() != null) {
                 statement.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced()));
@@ -302,7 +285,7 @@ public class ComputerDao extends AbstractDao<Computer> {
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            this.closeConnection();
+            INSTANCE.closeConnection(con);
         }
         return creationOk;
     }

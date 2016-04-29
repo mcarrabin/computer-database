@@ -1,38 +1,20 @@
 package com.excilys.computerdatabase.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computerdatabase.entities.Company;
-import com.excilys.computerdatabase.exceptions.ConnexionException;
 import com.excilys.computerdatabase.exceptions.DaoException;
 import com.excilys.computerdatabase.mappers.CompanyMapper;
 
-public class CompanyDao extends AbstractDao<Company> {
-    private static CompanyDao instance = null;
+public enum CompanyDao implements AbstractDao<Company> {
+    INSTANCE;
 
     private static final String GET_ALL_REQUEST = "select * from company";
     private static final String GET_BY_ID_REQUEST = "select * from company where id = ?";
-
-    /**
-     * Method that will check if an instance of CompanyDao is currently active.
-     * If yes, this method will return it. If not, the method will create one
-     * and return it.
-     *
-     * @return the CompanyDao instance created or existing.
-     */
-    public static CompanyDao getInstance() {
-        if (instance == null) {
-            synchronized (CompanyDao.class) {
-                if (instance == null) {
-                    instance = new CompanyDao();
-                }
-            }
-        }
-        return instance;
-    }
 
     /**
      * Method that will get every companies stored in the database.
@@ -47,9 +29,10 @@ public class CompanyDao extends AbstractDao<Company> {
     public List<Company> getAll() throws DaoException {
         ResultSet result;
         List<Company> companies = new ArrayList<Company>();
+        Connection con = INSTANCE.connect();
 
         try {
-            PreparedStatement statement = this.connect().prepareStatement(GET_ALL_REQUEST);
+            PreparedStatement statement = con.prepareStatement(GET_ALL_REQUEST);
             result = statement.executeQuery();
             CompanyMapper compMapper = CompanyMapper.getInstance();
             companies = compMapper.mapAll(result);
@@ -58,7 +41,7 @@ public class CompanyDao extends AbstractDao<Company> {
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            this.closeConnection();
+            INSTANCE.closeConnection(con);
         }
 
         return companies;
@@ -82,9 +65,10 @@ public class CompanyDao extends AbstractDao<Company> {
         } else {
             ResultSet result;
             Company company = null;
+            Connection con = INSTANCE.connect();
 
             try {
-                PreparedStatement statement = this.connect().prepareStatement(GET_BY_ID_REQUEST);
+                PreparedStatement statement = con.prepareStatement(GET_BY_ID_REQUEST);
                 statement.setLong(1, id);
                 result = statement.executeQuery();
                 CompanyMapper compMapper = CompanyMapper.getInstance();
@@ -94,7 +78,7 @@ public class CompanyDao extends AbstractDao<Company> {
             } catch (Exception e) {
                 throw new DaoException(e);
             } finally {
-                this.closeConnection();
+                INSTANCE.closeConnection(con);
             }
 
             return company;

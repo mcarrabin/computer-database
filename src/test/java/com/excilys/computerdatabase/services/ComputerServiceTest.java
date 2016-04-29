@@ -15,7 +15,7 @@ import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.entities.Company.CompanyBuilder;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Computer.ComputerBuilder;
-import com.excilys.computerdatabase.exceptions.ConnexionException;
+import com.excilys.computerdatabase.exceptions.ConnectionException;
 import com.excilys.computerdatabase.exceptions.DaoException;
 import com.excilys.computerdatabase.exceptions.ServiceException;
 
@@ -36,7 +36,7 @@ public class ComputerServiceTest extends junit.framework.TestCase {
      */
     @Override
     @BeforeClass
-    public void setUp() throws DaoException, ConnexionException {
+    public void setUp() throws DaoException, ConnectionException {
         LocalDateTime dateTime = LocalDateTime.of(1980, Month.JANUARY, 01, 0, 0, 0);
         LocalDateTime dateTime2 = LocalDateTime.of(2010, Month.JANUARY, 01, 0, 0, 0);
 

@@ -18,33 +18,19 @@ import com.excilys.computerdatabase.exceptions.MapperException;
  * @author excilys
  *
  */
-public class ComputerMapper implements Mapper<Computer> {
-    private static ComputerMapper instance = null;
+public enum ComputerMapper implements Mapper<Computer> {
+    INSTANCE;
     private static Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
-
-    /**
-     * Méthode qui va vérifier la présence d'une instance de ComputerMapper et
-     * en retourner une. Si pas d'instance, en créer une.
-     *
-     * @return l'instance ou cours ou l'instance juste créée.
-     */
-    public static ComputerMapper getInstance() {
-        if (instance == null) {
-            synchronized (ComputerMapper.class) {
-                if (instance == null) {
-                    instance = new ComputerMapper();
-                }
-            }
-        }
-        return instance;
-    }
 
     /**
      * Méthode qui va créer et retourner un objet complété avec le contenu du
      * resultSet.
      *
      * @param result
-     * @return l'objet créé et complété
+     *            is the resultSet Line to parse into a Computer object.
+     *
+     * @return The Computer object built base on the ResultSet received as a
+     *         parameter.
      */
     @Override
     public Computer mapUnique(ResultSet result) throws MapperException {
@@ -71,6 +57,14 @@ public class ComputerMapper implements Mapper<Computer> {
         return computer;
     }
 
+    /**
+     * Method that will parse a result set into a Computer List.
+     *
+     * @param result
+     *            is the ResultSet to parse.
+     *
+     * @return a list of Computer objects.
+     */
     @Override
     public List<Computer> mapAll(ResultSet result) throws MapperException {
         List<Computer> computers = new ArrayList<Computer>();

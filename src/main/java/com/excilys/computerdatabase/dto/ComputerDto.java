@@ -9,7 +9,7 @@ public class ComputerDto {
     /**
      * Constructor of the ComputerDto class.
      */
-    public ComputerDto() {
+    private ComputerDto() {
         this.name = "";
         this.introduced = "";
         this.discontinued = "";

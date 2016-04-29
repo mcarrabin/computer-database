@@ -4,8 +4,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class DateMapper {
+public enum DateMapper {
+    INSTANCE;
+    // Pattern of the date
     private final static String FORMAT_TYPE = "dd/MM/yyyy";
+
+    /**
+     * Method that will translate a String to a LocalDateTime.
+     *
+     * @param date
+     *            is the String to transform.
+     * @return the LocalDateTime.
+     */
 
     public static LocalDateTime toLocalDateTime(String date) {
         LocalDateTime result = null;
@@ -16,6 +26,13 @@ public class DateMapper {
         return result;
     }
 
+    /**
+     * Method that will translate a LocalDateTime date to a String.
+     *
+     * @param date
+     *            is the LocalDateTime date to transform.
+     * @return the String format date.
+     */
     public static String toString(LocalDateTime date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_TYPE);
         String result = date.format(formatter);
