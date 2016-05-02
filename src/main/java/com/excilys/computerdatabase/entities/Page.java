@@ -1,6 +1,5 @@
 package com.excilys.computerdatabase.entities;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Page<T> {
@@ -11,19 +10,9 @@ public class Page<T> {
     private long numElementTotal;
     // pageCount
     private int numPageMax;
+    private long itemsPerPage;
 
     private String searchFilter;
-
-    /**
-     * Constructor of the Page class.
-     */
-    public Page() {
-        this.numPage = 0;
-        this.elements = new ArrayList<T>();
-        this.numElementTotal = 0;
-        this.numPageMax = 0;
-        this.searchFilter = "";
-    }
 
     public static class PageBuilder<T> {
         private Page<T> page;
@@ -31,7 +20,7 @@ public class Page<T> {
         /**
          * Constructor of the PageBuilder.
          */
-        public PageBuilder() {
+        private PageBuilder() {
             this.page = new Page<T>();
         }
 
@@ -90,7 +79,7 @@ public class Page<T> {
         }
 
         /**
-         * Method that calls the searchFilter field constructor.
+         * Method that calls the searchFilter field setter.
          *
          * @param searchFilter
          *            is the new value of the searchFilter field.
@@ -98,6 +87,18 @@ public class Page<T> {
          */
         public PageBuilder<T> searchFilter(String searchFilter) {
             this.page.setSearchFilter(searchFilter);
+            return this;
+        }
+
+        /**
+         * Setter of the elementsCount field of the Page.
+         *
+         * @param elementsCount
+         *            is the new value to update.
+         * @return the updated PageBuilder object.
+         */
+        public PageBuilder<T> itemsPerPage(long itemsPerPage) {
+            this.page.setItemsPerPage(itemsPerPage);
             return this;
         }
 
@@ -149,6 +150,18 @@ public class Page<T> {
 
     public void setSearchFilter(String searchFilter) {
         this.searchFilter = searchFilter;
+    }
+
+    public long getItemsPerPage() {
+        return itemsPerPage;
+    }
+
+    public void setItemsPerPage(long itemsPerPage) {
+        this.itemsPerPage = itemsPerPage;
+    }
+
+    public PageBuilder<T> getBuilder() {
+        return new PageBuilder<T>();
     }
 
     @Override

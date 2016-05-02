@@ -4,25 +4,9 @@ import com.excilys.computerdatabase.dao.ComputerDao;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
 
-public class PageService {
+public enum PageService {
+    INSTANCE;
     private static PageService instance = null;
-
-    /**
-     * Method which create an instance of PageService if there is none current
-     * and return it.
-     *
-     * @return the current or created instance of PageService.
-     */
-    public static PageService getInstance() {
-        if (instance == null) {
-            synchronized (PageService.class) {
-                if (instance == null) {
-                    instance = new PageService();
-                }
-            }
-        }
-        return instance;
-    }
 
     /**
      * Méthode qui va calculer le nombre total de page affichable en se basant
@@ -38,7 +22,7 @@ public class PageService {
      */
     public Page<Computer> getPage(int nbreLine, int numPage, String name) {
         Page<Computer> page = new Page<Computer>();
-        ComputerDao computerDao = ComputerDao.getInstance();
+        ComputerDao computerDao = ComputerDao.INSTANCE;
         long numTotComputer = 0;
         try {
             numTotComputer = computerDao.getNumTotalComputer(name);
@@ -49,7 +33,7 @@ public class PageService {
         int numMaxPage = (int) numTotComputer / nbreLine + 1;
 
         if (numPage <= numMaxPage) {
-            page = ComputerService.getInstance().getComputerByPage(nbreLine, numPage, name);
+            page = ComputerService.INSTANCE.getComputerByPage(nbreLine, numPage, name);
             page.setNumElementTotal(numTotComputer);
             page.setNumPageMax(numMaxPage);
             page.setSearchFilter(name);

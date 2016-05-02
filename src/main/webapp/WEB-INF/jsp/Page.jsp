@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib tagdir="/WEB-INF/tags" prefix="myTag" %>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="customTag" %>
 <%@ taglib uri="/WEB-INF/tld/pagination.tld" prefix="tld"%>
 <!DOCTYPE html>
 <html>
@@ -9,33 +9,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
-<link href="${pageContext.request.contextPath}/ressources/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="${pageContext.request.contextPath}/ressources/css/font-awesome.css" rel="stylesheet" media="screen">
-<link href="${pageContext.request.contextPath}/ressources/css/main.css" rel="stylesheet" media="screen">
+<link href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="${pageContext.request.contextPath}/resources/css/font-awesome.css" rel="stylesheet" media="screen">
+<link href="${pageContext.request.contextPath}/resources/css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.html"> Application - Computer Database </a>
+            <a class="navbar-brand" href="home"> Application - Computer Database </a>
         </div>
     </header>
+
 
     <section id="main">
         <div class="container">
             <h1 id="homeTitle">
                 <c:out value="${page.numElementTotal}" /> Computers found
+                <c:if test="${ not empty page.searchFilter}" >
+                	<c:out value=" with filter on name applied: ${ page.searchFilter }" />	
+                </c:if>
+                
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
-                    <form id="searchForm" action="home?numPage=1&elements=10" method="GET" class="form-inline">
+                    <form id="searchForm" action="<customTag:linkBuilder root="home" numPage="1" nbElements="10" />" method="GET" class="form-inline">
 
                         <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" />
                         <input type="submit" id="searchsubmit" value="Filter by name"
                         class="btn btn-primary" />
+                        <a type="button" href="<customTag:linkBuilder root="home" numPage="1" nbElements="${ page.itemsPerPage }" />"<c:if test="${ page.searchFilter.length() == 0 }" ><c:out value="disabled" /> </c:if> 
+                        class="btn btn-primary">clear Filter</a>
                     </form>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" id="addComputer" href="addComputer">Add Computer</a> 
+                    <a class="btn btn-success" id="addComputer" href="computer/add">Add Computer</a> 
                     <a class="btn btn-default" id="editComputer" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
                 </div>
             </div>
@@ -100,13 +107,13 @@
 
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
-  			<myTag:pagination availablePages="${ availablePages }"
+  			<customTag:pagination availablePages="${ availablePages }"
  				page="${ page }" />
 		</div>
 	</footer>
-	<script src="${pageContext.request.contextPath}/ressources/js/jquery.min.js"></script>
-	<script src="${pageContext.request.contextPath}/ressources/js/bootstrap.min.js"></script>
-	<script src="${pageContext.request.contextPath}/ressources/js/dashboard.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/jquery.min.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/bootstrap.min.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/dashboard.js"></script>
 
 </body>
 </html>

@@ -17,7 +17,7 @@
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>AddComputerServlet</servlet-name>
-  	<url-pattern>/addComputer</url-pattern>
+  	<url-pattern>/computer/add</url-pattern>
   </servlet-mapping>
   
 </web-app>

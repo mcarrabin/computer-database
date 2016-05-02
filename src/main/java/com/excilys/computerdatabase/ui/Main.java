@@ -21,9 +21,9 @@ public class Main {
      */
     public static void main(String... args) {
         int actionAFaire = 0;
-        ComputerService computerService = ComputerService.getInstance();
-        CompanyService companyService = CompanyService.getInstance();
-        PageService pageService = PageService.getInstance();
+        ComputerService computerService = ComputerService.INSTANCE;
+        CompanyService companyService = CompanyService.INSTANCE;
+        PageService pageService = PageService.INSTANCE;
         do {
             actionAFaire = displayMenu();
             doAction(actionAFaire, computerService, companyService, pageService);
@@ -259,7 +259,7 @@ public class Main {
         discontinued = typeDate();
         System.out.println("Saisie de l'id d'une company: ");
         companyId = intEntry(sc, 0, -1);
-        company.setId(companyId);
+        company.getBuilder().id(companyId);
 
         computer.setName(name);
         computer.setIntroduced(introduced);
@@ -357,7 +357,7 @@ public class Main {
                 long companyId;
                 System.out.println("Saisissez un nouveau company_id:");
                 companyId = intEntry(sc, 0, -1);
-                company.setId(companyId);
+                company.getBuilder().id(companyId);
                 computer.setCompany(company);
                 break;
             }
@@ -410,7 +410,6 @@ public class Main {
         continu = sc.nextLine();
         // sc.close();
         return continu.equalsIgnoreCase("o");
-
     }
 
     /**

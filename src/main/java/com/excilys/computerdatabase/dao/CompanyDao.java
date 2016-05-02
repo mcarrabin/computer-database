@@ -34,7 +34,7 @@ public enum CompanyDao implements AbstractDao<Company> {
         try {
             PreparedStatement statement = con.prepareStatement(GET_ALL_REQUEST);
             result = statement.executeQuery();
-            CompanyMapper compMapper = CompanyMapper.getInstance();
+            CompanyMapper compMapper = CompanyMapper.INSTANCE;
             companies = compMapper.mapAll(result);
             statement.close();
             result.close();
@@ -71,7 +71,7 @@ public enum CompanyDao implements AbstractDao<Company> {
                 PreparedStatement statement = con.prepareStatement(GET_BY_ID_REQUEST);
                 statement.setLong(1, id);
                 result = statement.executeQuery();
-                CompanyMapper compMapper = CompanyMapper.getInstance();
+                CompanyMapper compMapper = CompanyMapper.INSTANCE;
                 company = compMapper.mapAll(result).get(0);
                 statement.close();
                 result.close();

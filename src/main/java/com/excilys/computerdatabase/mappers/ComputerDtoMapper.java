@@ -5,11 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computerdatabase.dto.ComputerDto;
-import com.excilys.computerdatabase.dto.ComputerDto.ComputerDtoBuilder;
 import com.excilys.computerdatabase.entities.Company;
-import com.excilys.computerdatabase.entities.Company.CompanyBuilder;
 import com.excilys.computerdatabase.entities.Computer;
-import com.excilys.computerdatabase.entities.Computer.ComputerBuilder;
 
 public enum ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
     INSTANCE;
@@ -24,12 +21,14 @@ public enum ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
     @Override
     public ComputerDto toDto(Computer computer) {
         ComputerDto dto = null;
-        String dateIntroduced = computer.getIntroduced() == null ? "" : DateMapper.toString(computer.getIntroduced());
-        String dateDiscontinued = computer.getDiscontinued() == null ? ""
-                : DateMapper.toString(computer.getDiscontinued());
+        String dateIntroduced = DateMapper.toString(computer.getIntroduced());
+        String dateDiscontinued = DateMapper.toString(computer.getDiscontinued());
+        String computerId = String.valueOf(computer.getId());
+        String companyId = String.valueOf(computer.getCompany().getId());
 
-        dto = new ComputerDtoBuilder().companyName(computer.getCompany().getName()).name(computer.getName())
-                .introduced(dateIntroduced).discontinued(dateDiscontinued).build();
+        dto = new ComputerDto().getBuilder().id(computerId).companyName(computer.getCompany().getName())
+                .companyId(companyId).name(computer.getName()).introduced(dateIntroduced).discontinued(dateDiscontinued)
+                .build();
 
         return dto;
     }
@@ -47,10 +46,12 @@ public enum ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
         Company company = null;
         LocalDateTime introducedDate = DateMapper.toLocalDateTime(dto.getIntroduced());
         LocalDateTime discontinuedDate = DateMapper.toLocalDateTime(dto.getDiscontinued());
+        long computerId = Long.parseLong(dto.getId());
+        long companyId = Long.parseLong(dto.getCompanyId());
 
-        company = new CompanyBuilder().name(dto.getCompanyName()).id(-1).build();
-        computer = new ComputerBuilder().company(company).name(dto.getName()).introduced(introducedDate)
-                .discontinued(discontinuedDate).build();
+        company = new Company().getBuilder().name(dto.getCompanyName()).id(companyId).build();
+        computer = new Computer().getBuilder().id(computerId).name(dto.getName()).introduced(introducedDate)
+                .discontinued(discontinuedDate).company(company).build();
 
         return computer;
     }

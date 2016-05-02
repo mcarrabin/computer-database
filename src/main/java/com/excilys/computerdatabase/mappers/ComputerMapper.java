@@ -9,9 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.computerdatabase.entities.Company;
-import com.excilys.computerdatabase.entities.Company.CompanyBuilder;
 import com.excilys.computerdatabase.entities.Computer;
-import com.excilys.computerdatabase.entities.Computer.ComputerBuilder;
 import com.excilys.computerdatabase.exceptions.MapperException;
 
 /**
@@ -47,8 +45,8 @@ public enum ComputerMapper implements Mapper<Computer> {
             String companyName = result.getString("comp.name");
             id = result.getLong("id");
 
-            Company company = new CompanyBuilder().id(companyId).name(companyName).build();
-            computer = new ComputerBuilder().id(id).name(name).introduced(introduced).discontinued(discontinued)
+            Company company = new Company().getBuilder().id(companyId).name(companyName).build();
+            computer = new Computer().getBuilder().id(id).name(name).introduced(introduced).discontinued(discontinued)
                     .company(company).build();
         } catch (Exception e) {
             throw new MapperException(e);

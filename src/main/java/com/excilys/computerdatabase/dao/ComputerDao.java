@@ -9,7 +9,6 @@ import java.util.List;
 
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
-import com.excilys.computerdatabase.entities.Page.PageBuilder;
 import com.excilys.computerdatabase.exceptions.DaoException;
 import com.excilys.computerdatabase.mappers.ComputerMapper;
 
@@ -41,7 +40,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
             PreparedStatement statement = con.prepareStatement(GET_ALL_REQUEST);
             result = statement.executeQuery();
 
-            ComputerMapper cm = ComputerMapper.getInstance();
+            ComputerMapper cm = ComputerMapper.INSTANCE;
             computers = cm.mapAll(result);
             statement.close();
             result.close();
@@ -73,7 +72,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
             statement.setLong(1, id);
             result = statement.executeQuery();
             if (result.next()) {
-                ComputerMapper cm = ComputerMapper.getInstance();
+                ComputerMapper cm = ComputerMapper.INSTANCE;
                 computer = cm.mapAll(result).get(0);
                 statement.close();
                 result.close();
@@ -113,9 +112,9 @@ public enum ComputerDao implements AbstractDao<Computer> {
             statement.setInt(3, nbreLine);
             result = statement.executeQuery();
 
-            ComputerMapper cm = ComputerMapper.getInstance();
+            ComputerMapper cm = ComputerMapper.INSTANCE;
             computers = cm.mapAll(result);
-            page = new PageBuilder<Computer>().elements(computers).numPage(numPage).build();
+            page = new Page<Computer>().getBuilder().elements(computers).numPage(numPage).build();
             statement.close();
             result.close();
         } catch (Exception e) {
@@ -272,7 +271,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
                 statement.setNull(3, java.sql.Types.TIMESTAMP);
             }
 
-            if (computer.getCompany().getId() == -1) {
+            if (computer.getCompany() == null) {
                 statement.setNull(4, java.sql.Types.BIGINT);
             } else {
                 statement.setLong(4, computer.getCompany().getId());

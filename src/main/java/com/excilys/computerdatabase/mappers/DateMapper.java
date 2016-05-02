@@ -34,8 +34,12 @@ public enum DateMapper {
      * @return the String format date.
      */
     public static String toString(LocalDateTime date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_TYPE);
-        String result = date.format(formatter);
-        return result;
+        if (date == null) {
+            return "";
+        } else {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_TYPE);
+            String result = date.format(formatter);
+            return result;
+        }
     }
 }

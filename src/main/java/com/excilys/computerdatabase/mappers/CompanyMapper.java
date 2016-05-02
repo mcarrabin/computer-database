@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computerdatabase.entities.Company;
-import com.excilys.computerdatabase.entities.Company.CompanyBuilder;
 import com.excilys.computerdatabase.exceptions.MapperException;
 
 public enum CompanyMapper implements Mapper<Company> {
@@ -26,7 +25,7 @@ public enum CompanyMapper implements Mapper<Company> {
         try {
             name = result.getString("Name");
             Long id = result.getLong("id");
-            company = new CompanyBuilder().id(id).name(name).build();
+            company = new Company().getBuilder().id(id).name(name).build();
         } catch (SQLException e) {
             throw new MapperException(e);
         }

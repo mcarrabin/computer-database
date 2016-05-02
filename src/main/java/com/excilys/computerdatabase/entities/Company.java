@@ -4,14 +4,6 @@ public class Company {
     private long id;
     private String name;
 
-    /**
-     * Constructor of the class.
-     */
-    public Company() {
-        id = -1;
-        name = "";
-    }
-
     public static class CompanyBuilder {
         private Company company;
 
@@ -19,7 +11,7 @@ public class Company {
          * CompanyBuilder constructor which instantiates the Company object of
          * the companyBuilder.
          */
-        public CompanyBuilder() {
+        private CompanyBuilder() {
             this.company = new Company();
         }
 
@@ -66,12 +58,21 @@ public class Company {
         return this.name;
     }
 
-    public void setId(long id) {
+    private void setId(long id) {
         this.id = id;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Method that returns a new CompanyBuilder object.
+     *
+     * @return a new CompanyBuilder.
+     */
+    public CompanyBuilder getBuilder() {
+        return new CompanyBuilder();
     }
 
     @Override

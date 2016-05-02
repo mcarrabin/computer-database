@@ -18,7 +18,7 @@ public class Computer {
         /**
          * Constructor of the ComputerBuilder class.
          */
-        public ComputerBuilder() {
+        private ComputerBuilder() {
             this.computer = new Computer();
         }
 
@@ -93,17 +93,6 @@ public class Computer {
         }
     }
 
-    /**
-     * Constructor of the Computer class.
-     */
-    public Computer() {
-        this.id = -1;
-        this.name = "";
-        this.introduced = null;
-        this.discontinued = null;
-        this.company = new Company();
-    }
-
     public long getId() {
         return this.id;
     }
@@ -142,6 +131,15 @@ public class Computer {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Method that will instantiate a new ComputerBuilder and return it.
+     *
+     * @return the ComputerBuilder.
+     */
+    public ComputerBuilder getBuilder() {
+        return new ComputerBuilder();
     }
 
     @Override

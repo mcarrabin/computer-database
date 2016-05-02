@@ -7,32 +7,9 @@ import com.excilys.computerdatabase.dao.CompanyDao;
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.exceptions.ServiceException;
 
-public class CompanyService {
-    private static final CompanyDao COMPANY_DAO = CompanyDao.getInstance();
-    private static CompanyService instance = null;
-
-    /**
-     * Constructor of the CompanyService class.
-     */
-    public CompanyService() {
-    }
-
-    /**
-     * Method which create an instance of CompanyService if there is no current
-     * one and return it.
-     *
-     * @return the current or created instance of CompanyService.
-     */
-    public static CompanyService getInstance() {
-        if (instance == null) {
-            synchronized (CompanyService.class) {
-                if (instance == null) {
-                    instance = new CompanyService();
-                }
-            }
-        }
-        return instance;
-    }
+public enum CompanyService {
+    INSTANCE;
+    private static final CompanyDao COMPANY_DAO = CompanyDao.INSTANCE;
 
     /**
      * Method which calls the CompanyDao to get all the companies from the

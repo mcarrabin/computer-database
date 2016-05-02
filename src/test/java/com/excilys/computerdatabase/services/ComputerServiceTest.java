@@ -12,9 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.excilys.computerdatabase.entities.Company;
-import com.excilys.computerdatabase.entities.Company.CompanyBuilder;
 import com.excilys.computerdatabase.entities.Computer;
-import com.excilys.computerdatabase.entities.Computer.ComputerBuilder;
 import com.excilys.computerdatabase.exceptions.ConnectionException;
 import com.excilys.computerdatabase.exceptions.DaoException;
 import com.excilys.computerdatabase.exceptions.ServiceException;
@@ -41,12 +39,12 @@ public class ComputerServiceTest extends junit.framework.TestCase {
         LocalDateTime dateTime2 = LocalDateTime.of(2010, Month.JANUARY, 01, 0, 0, 0);
 
         computerServ = mock(ComputerService.class);
-        company1 = new CompanyBuilder().name("company1").id(1).build();
-        company2 = new CompanyBuilder().name("company2").id(2).build();
+        company1 = new Company().getBuilder().name("company1").id(1).build();
+        company2 = new Company().getBuilder().name("company2").id(2).build();
 
-        computer1 = new ComputerBuilder().name("computer 1").company(company1).id(1).introduced(dateTime)
+        computer1 = new Computer().getBuilder().name("computer 1").company(company1).id(1).introduced(dateTime)
                 .discontinued(dateTime2).build();
-        computer2 = new ComputerBuilder().name("computer 2").company(company2).id(2).build();
+        computer2 = new Computer().getBuilder().name("computer 2").company(company2).id(2).build();
 
         when(computerServ.getComputers()).thenReturn(Arrays.asList(computer1, computer2));
         when(computerServ.getComputerById((long) 1)).thenReturn(computer1);

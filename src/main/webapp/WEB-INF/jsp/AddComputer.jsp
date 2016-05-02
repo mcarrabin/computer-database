@@ -6,12 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 <link
-	href="${pageContext.request.contextPath}/ressources/css/bootstrap.min.css"
+	href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css"
 	rel="stylesheet" media="screen">
 <link
-	href="${pageContext.request.contextPath}/ressources/css/font-awesome.css"
+	href="${pageContext.request.contextPath}/resources/css/font-awesome.css"
 	rel="stylesheet" media="screen">
-<link href="${pageContext.request.contextPath}/ressources/css/main.css"
+<link href="${pageContext.request.contextPath}/resources/css/main.css"
 	rel="stylesheet" media="screen">
 </head>
 <body>
@@ -66,8 +66,8 @@
 			</div>
 		</div>
 	</section>
-	<script src="${pageContext.request.contextPath}/ressources/js/jquery.min.js"></script>
-	<script src="${pageContext.request.contextPath}/ressources/js/dashboard.min.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/jquery.min.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/dashboard.min.js"></script>
 	<script type="text/javascript">
 	$(function() {
 		$('#computerName').focusout(function() {

@@ -1,20 +1,12 @@
 package com.excilys.computerdatabase.dto;
 
 public class ComputerDto {
+    private String id;
     private String name;
     private String introduced;
     private String discontinued;
+    private String companyId;
     private String companyName;
-
-    /**
-     * Constructor of the ComputerDto class.
-     */
-    private ComputerDto() {
-        this.name = "";
-        this.introduced = "";
-        this.discontinued = "";
-        this.companyName = "";
-    }
 
     /**
      * Builder of the ComputerDto object.
@@ -28,8 +20,21 @@ public class ComputerDto {
         /**
          * Public constructor of the ComputerDtoBuilder.
          */
-        public ComputerDtoBuilder() {
+        private ComputerDtoBuilder() {
             computerDto = new ComputerDto();
+        }
+
+        /**
+         * Method wich calls the computerId constructor of the ComputerDto
+         * object.
+         *
+         * @param computerId
+         *            is the value of computerId to set.
+         * @return the ComputerDtoBuilder updated.
+         */
+        public ComputerDtoBuilder id(String id) {
+            this.computerDto.setId(id);
+            return this;
         }
 
         /**
@@ -70,6 +75,11 @@ public class ComputerDto {
             return this;
         }
 
+        public ComputerDtoBuilder companyId(String companyId) {
+            this.computerDto.setCompanyId(companyId);
+            return this;
+        }
+
         /**
          * Method which calls the companyName constructor of the ComputerDto
          * object.
@@ -95,11 +105,19 @@ public class ComputerDto {
 
     }
 
+    public String getId() {
+        return id;
+    }
+
+    private void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 
@@ -107,7 +125,7 @@ public class ComputerDto {
         return introduced;
     }
 
-    public void setIntroduced(String introduced) {
+    private void setIntroduced(String introduced) {
         this.introduced = introduced;
     }
 
@@ -115,15 +133,32 @@ public class ComputerDto {
         return discontinued;
     }
 
-    public void setDiscontinued(String discontinued) {
+    private void setDiscontinued(String discontinued) {
         this.discontinued = discontinued;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    private void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 
     public String getCompanyName() {
         return companyName;
     }
 
-    public void setCompanyName(String companyName) {
+    private void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    /**
+     * Method that returns a ComputerDtoBuilder.
+     *
+     * @return a new ComputerDtoBuilder.
+     */
+    public ComputerDtoBuilder getBuilder() {
+        return new ComputerDtoBuilder();
     }
 }

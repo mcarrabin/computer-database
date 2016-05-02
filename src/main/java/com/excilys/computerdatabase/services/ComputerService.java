@@ -8,32 +8,9 @@ import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
 import com.excilys.computerdatabase.exceptions.ServiceException;
 
-public class ComputerService {
-    private static final ComputerDao COMPUTER_DAO = ComputerDao.getInstance();
-    private static ComputerService instance = null;
-
-    /**
-     * Constructor of the ComupterService class.
-     */
-    public ComputerService() {
-    }
-
-    /**
-     * Method which create an instance of ComputerService if it does not exist
-     * and return it.
-     *
-     * @return the instance of ComputerService created.
-     */
-    public static ComputerService getInstance() {
-        if (instance == null) {
-            synchronized (ComputerService.class) {
-                if (instance == null) {
-                    instance = new ComputerService();
-                }
-            }
-        }
-        return instance;
-    }
+public enum ComputerService {
+    INSTANCE;
+    private static final ComputerDao COMPUTER_DAO = ComputerDao.INSTANCE;
 
     /**
      * Méthode qui va demander la liste complète des ordinnateurs au DAO.

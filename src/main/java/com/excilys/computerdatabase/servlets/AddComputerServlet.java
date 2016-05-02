@@ -10,12 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.computerdatabase.entities.Company;
-import com.excilys.computerdatabase.entities.Company.CompanyBuilder;
 import com.excilys.computerdatabase.entities.Computer;
-import com.excilys.computerdatabase.entities.Computer.ComputerBuilder;
 import com.excilys.computerdatabase.mappers.DateMapper;
 import com.excilys.computerdatabase.services.CompanyService;
 import com.excilys.computerdatabase.services.ComputerService;
+import com.excilys.computerdatabase.utils.RequestAnalyzer;
+import com.excilys.computerdatabase.validator.CompanyValidator;
+import com.excilys.computerdatabase.validator.ComputerValidator;
 
 public class AddComputerServlet extends HttpServlet {
     private static final String PARAM_COMPUTER_NAME = "computerName";
@@ -23,31 +24,45 @@ public class AddComputerServlet extends HttpServlet {
     private static final String PARAM_DISCONTINUED_DATE = "discontinued";
     private static final String PARAM_COMPANY_ID = "companyId";
 
+    private static final String ADD_COMPUTER_PAGE = "/WEB-INF/jsp/AddComputer.jsp";
+    private static final String HOME_PAGE = "/home";
+
+    private static final String ATT_COMPANIES = "companies";
+
+    private static final RequestAnalyzer REQUEST_ANALYZER = RequestAnalyzer.INSTANCE;
+    private static final CompanyValidator COMPANY_VAL = CompanyValidator.INSTANCE;
+    private static final ComputerValidator COMPUTER_VAL = ComputerValidator.INSTANCE;
+
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        List<Company> companies = CompanyService.getInstance().getCompanies();
-        Company emptyCompany = new CompanyBuilder().id(-1).name("").build();
+        List<Company> companies = CompanyService.INSTANCE.getCompanies();
+        Company emptyCompany = new Company().getBuilder().id(-1).name("").build();
         companies.add(0, emptyCompany);
-        req.setAttribute("companies", companies);
-        req.getRequestDispatcher("/WEB-INF/jsp/AddComputer.jsp").forward(req, res);
+        req.setAttribute(ATT_COMPANIES, companies);
+        req.getRequestDispatcher(ADD_COMPUTER_PAGE).forward(req, res);
     }
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String computerNameParam = req.getParameter(PARAM_COMPUTER_NAME);
-        String companyIdParam = req.getParameter(PARAM_COMPANY_ID);
-        String introducedParam = req.getParameter(PARAM_INTRODUCED_DATE);
-        String discontinuedParam = req.getParameter(PARAM_DISCONTINUED_DATE);
+        String computerNameParam = REQUEST_ANALYZER.getStringParameter(PARAM_COMPUTER_NAME, req, "");
+        String companyIdParam = REQUEST_ANALYZER.getStringParameter(PARAM_COMPANY_ID, req, "");
+        String introducedParam = REQUEST_ANALYZER.getStringParameter(PARAM_INTRODUCED_DATE, req, "");
+        String discontinuedParam = REQUEST_ANALYZER.getStringParameter(PARAM_DISCONTINUED_DATE, req, "");
 
-        long companyId = (companyIdParam == null ? -1 : Long.parseLong(companyIdParam));
+        Company company = null;
+        if (companyIdParam.trim().length() > 0) {
+            long companyId = Long.parseLong(companyIdParam);
+            company = CompanyService.INSTANCE.getCompanyById(companyId);
+        }
+
         LocalDateTime introduced = DateMapper.toLocalDateTime(introducedParam);
         LocalDateTime discontinued = DateMapper.toLocalDateTime(discontinuedParam);
 
-        Company company = CompanyService.getInstance().getCompanyById(companyId);
-        Computer computer = new ComputerBuilder().company(company).name(computerNameParam).introduced(introduced)
+        Computer computer = new Computer().getBuilder().company(company).name(computerNameParam).introduced(introduced)
                 .discontinued(discontinued).build();
+        COMPUTER_VAL.validateComputer(computer);
 
-        ComputerService.getInstance().createComputer(computer);
-        resp.sendRedirect("home");
+        ComputerService.INSTANCE.createComputer(computer);
+        resp.sendRedirect(HOME_PAGE);
     }
 }
