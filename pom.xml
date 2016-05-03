@@ -12,6 +12,7 @@
   	<servlet>3.1.0</servlet>
   	<jsp>2.0</jsp>
   	<jstl>1.2</jstl>
+	<hikari>2.4.5</hikari>
    <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
  </properties>
   
@@ -85,6 +86,14 @@
 		<artifactId>selenium-firefox-driver</artifactId>
 		<version>2.53.0</version>
 		<scope>test</scope>
+	</dependency>
+	
+	<!-- Hikari connection pool -->
+	<dependency>
+	    <groupId>com.zaxxer</groupId>
+	    <artifactId>HikariCP</artifactId>
+	    <version>${hikari}</version>
+	    <scope>compile</scope>
 	</dependency>
   </dependencies>
   

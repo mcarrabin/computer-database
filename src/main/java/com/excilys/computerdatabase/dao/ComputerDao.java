@@ -109,7 +109,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
         String query = GET_BY_PAGE_REQUEST + orderBy + GET_BY_PAGE_LIMIT_REQUEST;
 
         if (orderBy.trim().length() == 0) {
-            orderBy = "c.name";
+            orderBy = "c.name asc";
         }
 
         try {

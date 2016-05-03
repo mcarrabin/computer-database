@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.util.Properties;
 
 import com.excilys.computerdatabase.exceptions.ConnectionException;
+import com.zaxxer.hikari.HikariDataSource;
 
 public enum DBConnection {
 
@@ -24,11 +25,7 @@ public enum DBConnection {
     private static final String PASSWORD;
     private static final String DB_DRIVER;
 
-    // private static final String URL =
-    // "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull";
-    // private static final String LOGIN = "admincdb";
-    // private static final String PASSWORD = "qwerty1234";
-    // private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
+    private static HikariDataSource ds;
 
     static {
 
@@ -49,6 +46,11 @@ public enum DBConnection {
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             throw new ConnectionException(e);
         }
+
+        ds = new HikariDataSource();
+        ds.setJdbcUrl(URL);
+        ds.setUsername(LOGIN);
+        ds.setPassword(PASSWORD);
     }
 
     /**
