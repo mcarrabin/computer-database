@@ -14,6 +14,10 @@
   	<servlet-name>EditComputerServlet</servlet-name>
   	<servlet-class>com.excilys.computerdatabase.servlets.EditComputerServlet</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>DeleteComputerServlet</servlet-name>
+  	<servlet-class>com.excilys.computerdatabase.servlets.DeleteComputerServlet</servlet-class>
+  </servlet>
   
   <servlet-mapping>
   	<servlet-name>PageServlet</servlet-name>
@@ -26,6 +30,10 @@
   <servlet-mapping>
   	<servlet-name>EditComputerServlet</servlet-name>
   	<url-pattern>/computer/edit</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>DeleteComputerServlet</servlet-name>
+  	<url-pattern>/computer/delete</url-pattern>
   </servlet-mapping>
   
 </web-app>

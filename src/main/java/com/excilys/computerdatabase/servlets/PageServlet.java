@@ -33,7 +33,7 @@ public class PageServlet extends HttpServlet {
     private static final int MIN_ELEMENTS_PER_PAGE = 10;
     private static final int MIN_PAGE_NUMBER = 1;
 
-    private static final String PAGE_URL = "/WEB-INF/jsp/Page.jsp";
+    private static final String PAGE_URL = "/WEB-INF/jsp/page.jsp";
 
     private static final RequestAnalyzer REQUEST_ANALYZER = RequestAnalyzer.INSTANCE;
 
