@@ -74,7 +74,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
             result = statement.executeQuery();
             if (result.next()) {
                 ComputerMapper cm = ComputerMapper.INSTANCE;
-                computer = cm.mapAll(result).get(0);
+                computer = cm.mapUnique(result);
                 statement.close();
                 result.close();
             }

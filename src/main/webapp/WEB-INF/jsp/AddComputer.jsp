@@ -17,7 +17,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="home"> Application -
+			<a class="navbar-brand" href="${ pageContext.request.contextPath }/home"> Application -
 				Computer Database </a>
 		</div>
 	</header>
@@ -27,7 +27,7 @@
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1>Add Computer</h1>
-					<form action="addComputer" method="POST">
+					<form action="computer/add" method="POST">
 						<fieldset>
 							<div class="alert" id="error-box">
 								<a href="#" class="close" data-dismiss="alert">&times;</a>

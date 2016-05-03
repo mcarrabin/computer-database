@@ -2,6 +2,8 @@ package com.excilys.computerdatabase.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.excilys.computerdatabase.dto.ComputerDto;
+
 public enum RequestAnalyzer {
     INSTANCE;
 
@@ -21,5 +23,29 @@ public enum RequestAnalyzer {
         String result;
         result = request.getParameter(parameterName) == null ? defaultValue : request.getParameter(parameterName);
         return result;
+    }
+
+    /**
+     * Method that will build a ComputerDto using the received parameters.
+     *
+     * @param id
+     *            is the ComputerDto id.
+     * @param name
+     *            is the ComputerDto name.
+     * @param introduced
+     *            is the ComputerDto introduced date.
+     * @param discontinued
+     *            is the ComputerDto discontinued date.
+     * @param companyName
+     *            is the ComputerDto company name.
+     * @param companyId
+     *            is the ComputerDto company id.
+     * @return the computer Object.
+     */
+    public ComputerDto getComputerDtoFromParam(String id, String name, String introduced, String discontinued,
+            String companyName, String companyId) {
+        ComputerDto dto = new ComputerDto().getBuilder().id(id).name(name).introduced(introduced)
+                .discontinued(discontinued).companyId(companyId).companyName(companyName).build();
+        return dto;
     }
 }

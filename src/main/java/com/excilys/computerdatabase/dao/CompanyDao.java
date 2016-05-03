@@ -13,7 +13,7 @@ import com.excilys.computerdatabase.mappers.CompanyMapper;
 public enum CompanyDao implements AbstractDao<Company> {
     INSTANCE;
 
-    private static final String GET_ALL_REQUEST = "select * from company";
+    private static final String GET_ALL_REQUEST = "select * from company order by name";
     private static final String GET_BY_ID_REQUEST = "select * from company where id = ?";
 
     /**
