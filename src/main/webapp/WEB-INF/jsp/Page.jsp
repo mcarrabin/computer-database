@@ -28,7 +28,6 @@
                 <c:if test="${ not empty page.searchFilter}" >
                 	<c:out value=" with filter on name applied: ${ page.searchFilter }" />	
                 </c:if>
-                
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
@@ -58,7 +57,6 @@
                     <tr>
                         <!-- Variable declarations for passing labels as parameters -->
                         <!-- Table header for Computer Name -->
-
                         <th class="editMode" style="width: 60px; height: 22px;">
                             <input type="checkbox" id="selectall" /> 
                             <span style="vertical-align: top;">
@@ -67,19 +65,20 @@
                                     </a>
                             </span>
                         </th>
+
                         <th>
-                            Computer name
+                            <a href="<customTag:linkBuilder root="home" currentOrderBy="${ page.orderByFilter }" currentSorting="${ page.sorting }" orderBy="c.name" numPage="${ page.numPage }" search="${ page.searchFilter }" nbElements="${ page.itemsPerPage }"/>" >Computer name</a>
                         </th>
                         <th>
-                            Introduced date
+                            <a href="<customTag:linkBuilder root="home" currentOrderBy="${ page.orderByFilter }" currentSorting="${ page.sorting }" orderBy="c.introduced" numPage="${ page.numPage }" search="${ page.searchFilter }" nbElements="${ page.itemsPerPage }"/>" >Introduced date </a>
                         </th>
                         <!-- Table header for Discontinued Date -->
                         <th>
-                            Discontinued date
+                            <a href="<customTag:linkBuilder root="home" currentOrderBy="${ page.orderByFilter }" currentSorting="${ page.sorting }" orderBy="c.discontinued" numPage="${ page.numPage }" search="${ page.searchFilter }" nbElements="${ page.itemsPerPage }"/>" >Discontinued date</a>
                         </th>
                         <!-- Table header for Company -->
                         <th>
-                            Company
+                            <a href="<customTag:linkBuilder root="home" currentOrderBy="${ page.orderByFilter }" currentSorting="${ page.sorting }"  orderBy="comp.name" numPage="${ page.numPage }" search="${ page.searchFilter }" nbElements="${ page.itemsPerPage }"/>" >Company</a>
                         </th>
 
                     </tr>

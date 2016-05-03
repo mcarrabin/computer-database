@@ -60,10 +60,10 @@ public enum ComputerService {
      *            is the name search parameter.
      * @return a page object.
      */
-    public Page<Computer> getComputerByPage(int nbreLine, int numPage, String name) {
+    public Page<Computer> getComputerByPage(int nbreLine, int numPage, String name, String orderBy) {
         Page<Computer> page = null;
         try {
-            page = COMPUTER_DAO.getByPage(nbreLine, numPage, name);
+            page = COMPUTER_DAO.getByPage(nbreLine, numPage, name, orderBy);
         } catch (Exception e) {
             throw new ServiceException(e);
         }

@@ -220,7 +220,7 @@ public class Main {
                     System.out.println("Quelle page voulez-vous afficher? (0 pour retourner au menu principal");
                     numPage = intEntry(sc, 0, -1);
                     if (numPage > 0) {
-                        page = pageService.getPage(nbreLine, numPage, "Amiga");
+                        page = pageService.getPage(nbreLine, numPage, "Amiga", "");
                         if (page.getElements().size() > 0) {
                             System.out.println(page.toString());
                         } else {

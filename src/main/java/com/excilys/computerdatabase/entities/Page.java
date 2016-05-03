@@ -13,6 +13,9 @@ public class Page<T> {
     private long itemsPerPage;
 
     private String searchFilter;
+    private String orderByFilter;
+
+    private String sorting;
 
     public static class PageBuilder<T> {
         private Page<T> page;
@@ -103,6 +106,31 @@ public class Page<T> {
         }
 
         /**
+         * Setter of the orderByFilter Page atttribute.
+         *
+         * @param orderByFilter
+         *            is the new value to set
+         * @return the updated PageBuilder object.
+         */
+        public PageBuilder<T> orderByFilter(String orderByFilter) {
+            this.page.setOrderByFilter(orderByFilter);
+            return this;
+        }
+
+        /**
+         * Setter of the sorting attribute. The sorting attribute indicates if
+         * the sorting applied is asc or desc.
+         *
+         * @param sorting
+         *            is the new value to set.
+         * @return the updated PageBuilder object.
+         */
+        public PageBuilder<T> sorting(String sorting) {
+            this.page.setSorting(sorting);
+            return this;
+        }
+
+        /**
          * Method which will return the Page object of the PageBuilder.
          *
          * @return the Page object linked to the PageBuilder.
@@ -158,6 +186,22 @@ public class Page<T> {
 
     public void setItemsPerPage(long itemsPerPage) {
         this.itemsPerPage = itemsPerPage;
+    }
+
+    public String getOrderByFilter() {
+        return orderByFilter;
+    }
+
+    public void setOrderByFilter(String orderByFilter) {
+        this.orderByFilter = orderByFilter;
+    }
+
+    public String getSorting() {
+        return sorting;
+    }
+
+    public void setSorting(String sorting) {
+        this.sorting = sorting;
     }
 
     public PageBuilder<T> getBuilder() {

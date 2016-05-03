@@ -17,11 +17,12 @@ public enum ComputerDao implements AbstractDao<Computer> {
 
     private static final String GET_ALL_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id order by c.name";
     private static final String GET_BY_ID_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id where c.id = ? ";
-    private static final String GET_BY_PAGE_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id where c.name like ? order by c.name limit ?, ?";
     private static final String GET_TOTAL_COUNT_REQUEST = "select count(*) as number from computer where name like ?";
     private static final String UPDATE_REQUEST = "update computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
     private static final String DELETE_REQUEST = "delete from computer where id = ? ";
     private static final String CREATE_REQUEST = "insert into computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?)";
+    private static final String GET_BY_PAGE_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id where c.name like ? order by ";
+    private static final String GET_BY_PAGE_LIMIT_REQUEST = " limit ?, ?";
 
     /**
      * Méthode qui va construire une liste de toutes les entrées computer
@@ -87,7 +88,8 @@ public enum ComputerDao implements AbstractDao<Computer> {
     }
 
     /**
-     * Method that will call the PageService and return the built page.
+     * Method that will call the PageSGET_BY_PAGE_REQUESTervice and return the
+     * built page.
      *
      * @param nbreLine
      *            (int) wanted in the page.
@@ -99,15 +101,20 @@ public enum ComputerDao implements AbstractDao<Computer> {
      * @throws DaoException
      *             which are the exceptions handled by the Dao classes.
      */
-    public Page<Computer> getByPage(int nbreLine, int numPage, String name) throws DaoException {
+    public Page<Computer> getByPage(int nbreLine, int numPage, String search, String orderBy) throws DaoException {
         List<Computer> computers = new ArrayList<Computer>();
         ResultSet result = null;
         Page<Computer> page = null;
         Connection con = INSTANCE.connect();
+        String query = GET_BY_PAGE_REQUEST + orderBy + GET_BY_PAGE_LIMIT_REQUEST;
+
+        if (orderBy.trim().length() == 0) {
+            orderBy = "c.name";
+        }
 
         try {
-            PreparedStatement statement = con.prepareStatement(GET_BY_PAGE_REQUEST);
-            statement.setString(1, "%" + name + "%");
+            PreparedStatement statement = con.prepareStatement(query);
+            statement.setString(1, "%" + search + "%");
             statement.setInt(2, nbreLine * (numPage - 1));
             statement.setInt(3, nbreLine);
             result = statement.executeQuery();

@@ -20,7 +20,7 @@ public enum PageService {
      *            filtre sur les noms de Computer.
      * @return la page construite
      */
-    public Page<Computer> getPage(int nbreLine, int numPage, String name) {
+    public Page<Computer> getPage(int nbreLine, int numPage, String name, String orderBy, String sorting) {
         Page<Computer> page = new Page<Computer>();
         ComputerDao computerDao = ComputerDao.INSTANCE;
         long numTotComputer = 0;
@@ -33,10 +33,12 @@ public enum PageService {
         int numMaxPage = (int) numTotComputer / nbreLine + 1;
 
         if (numPage <= numMaxPage) {
-            page = ComputerService.INSTANCE.getComputerByPage(nbreLine, numPage, name);
+            page = ComputerService.INSTANCE.getComputerByPage(nbreLine, numPage, name, orderBy + " " + sorting);
             page.setNumElementTotal(numTotComputer);
             page.setNumPageMax(numMaxPage);
             page.setSearchFilter(name);
+            page.setOrderByFilter(orderBy);
+            page.setSorting(sorting);
         }
         return page;
     }

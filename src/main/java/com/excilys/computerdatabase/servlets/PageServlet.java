@@ -21,6 +21,13 @@ public class PageServlet extends HttpServlet {
     private static final String PARAM_CURRENT_PAGE = "page";
     private static final String PARAM_ITEMS_PER_PAGE = "elements";
 
+    // parameter which defines which column will be sorted.
+    private static final String PARAM_ORDER_BY = "orderby";
+
+    // parameter which defines which way the column needs to be sorted "asc" or
+    // "desc"
+    private static final String PARAM_CURRENT_SORTING = "sort";
+
     private static final String ATTR_PAGE = "page";
 
     private static final int MIN_ELEMENTS_PER_PAGE = 10;
@@ -50,13 +57,21 @@ public class PageServlet extends HttpServlet {
         int i = Integer.parseInt(itemsPerPageParam);
         itemsPerPage = i >= MIN_ELEMENTS_PER_PAGE ? i : MIN_ELEMENTS_PER_PAGE;
 
+        // Parse orderBy param
+        String orderByParam = REQUEST_ANALYZER.getStringParameter(PARAM_ORDER_BY, req, "c.name");
+
+        // Parse currentsorting param
+        String sortParam = REQUEST_ANALYZER.getStringParameter(PARAM_CURRENT_SORTING, req, "asc");
+
         // Get page from service
-        Page<Computer> page = PageService.INSTANCE.getPage(itemsPerPage, currentPage, searchString);
+        Page<Computer> page = PageService.INSTANCE.getPage(itemsPerPage, currentPage, searchString, orderByParam,
+                sortParam);
 
         List<ComputerDto> computerDtos = ComputerDtoMapper.INSTANCE.toDtoList(page.getElements());
         Page<ComputerDto> pageDto = new Page<ComputerDto>().getBuilder().elements(computerDtos)
                 .numElementTotal(page.getNumElementTotal()).numPage(page.getNumPage()).numPageMax(page.getNumPageMax())
-                .searchFilter(page.getSearchFilter()).itemsPerPage(itemsPerPage).build();
+                .searchFilter(page.getSearchFilter()).itemsPerPage(itemsPerPage).orderByFilter(page.getOrderByFilter())
+                .sorting(page.getSorting()).build();
         // Set attribute
         req.setAttribute(ATTR_PAGE, pageDto);
 
