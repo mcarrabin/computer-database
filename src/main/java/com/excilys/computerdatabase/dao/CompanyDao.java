@@ -3,6 +3,7 @@ package com.excilys.computerdatabase.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,8 @@ public enum CompanyDao implements AbstractDao<Company> {
 
     private static final String GET_ALL_REQUEST = "select * from company order by name";
     private static final String GET_BY_ID_REQUEST = "select * from company where id = ?";
+    private static final String DELETE_COMPANY_REQUEST = "delete from company where id = ?";
+    private static final String DELETE_COMPUTER_REQUEST = "delete from computer where company_id = ?";
 
     /**
      * Method that will get every companies stored in the database.
@@ -82,6 +85,52 @@ public enum CompanyDao implements AbstractDao<Company> {
             }
 
             return company;
+        }
+    }
+
+    /**
+     * Method that will delete a company and every computers linked to this
+     * company. Use of a transaction to make the deletion safe.
+     *
+     * @param company
+     *            is the object to delete.
+     * @return true if deletion succeed, else false.
+     * @throws DaoException
+     *             if something went wrong.
+     */
+    @Override
+    public boolean delete(Company company) throws DaoException {
+        Connection con = INSTANCE.connect();
+        long id = company.getId();
+        try {
+            con.setAutoCommit(false);
+            PreparedStatement stmtComputer = con.prepareStatement(DELETE_COMPUTER_REQUEST);
+            stmtComputer.setLong(1, id);
+            stmtComputer.executeQuery();
+
+            PreparedStatement stmtCompany = con.prepareStatement(DELETE_COMPANY_REQUEST);
+            stmtCompany.setLong(1, id);
+            stmtCompany.executeQuery();
+
+            con.commit();
+            stmtComputer.close();
+            stmtCompany.close();
+            return true;
+        } catch (Exception e) {
+            try {
+                con.rollback();
+            } catch (Exception e1) {
+                throw new DaoException(e1);
+            }
+            throw new DaoException(e);
+        } finally {
+            try {
+                con.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new DaoException(e);
+            }
+            INSTANCE.closeConnection(con);
+
         }
     }
 }

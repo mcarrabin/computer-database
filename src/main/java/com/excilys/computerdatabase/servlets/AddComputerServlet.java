@@ -25,7 +25,7 @@ public class AddComputerServlet extends HttpServlet {
     private static final String PARAM_COMPANY_ID = "companyId";
 
     private static final String ADD_COMPUTER_PAGE = "/WEB-INF/jsp/addComputer.jsp";
-    private static final String HOME_PAGE = "/home";
+    private static final String HOME_PAGE = "home";
 
     private static final String ATT_COMPANIES = "companies";
 

@@ -98,7 +98,7 @@ public enum ComputerService {
         boolean result = false;
         try {
             Computer computer = COMPUTER_DAO.getById(id);
-            result = COMPUTER_DAO.deleteComputer(computer);
+            result = COMPUTER_DAO.delete(computer);
         } catch (Exception e) {
             throw new ServiceException(e);
         }

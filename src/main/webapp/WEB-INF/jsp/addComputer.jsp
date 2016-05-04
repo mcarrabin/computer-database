@@ -27,16 +27,13 @@
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1>Add Computer</h1>
-					<form action="computer/add" method="POST">
+					<form action="computer/add" method="POST" id="add-form">
 						<fieldset>
-							<div class="alert" id="error-box">
-								<a href="#" class="close" data-dismiss="alert">&times;</a>
-								
-							</div>
+
 							<div class="form-group" id="computerNameDiv">
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" id="computerName"
-									placeholder="Computer name" name="computerName">
+									placeholder="Computer name" name="computerName" required>
 							</div>
 							<div class="form-group" id="introducedDiv">
 								<label for="introduced">Introduced date (dd/MM/yyyy)</label> <input
@@ -58,8 +55,8 @@
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="Add" class="btn btn-primary">
-							or <a href="dashboard.html" class="btn btn-default">Cancel</a>
+							<input type="submit" value="Add" class="btn btn-primary" id="add-button">
+							or <a href="home" class="btn btn-default">Cancel</a>
 						</div>
 					</form>
 				</div>
@@ -70,13 +67,37 @@
 	<script src="${pageContext.request.contextPath}/resources/js/dashboard.min.js"></script>
 	<script type="text/javascript">
 	$(function() {
+		$("#add-form").on("submit", function (e) {
+			if($('#computerName').parent().hasClass("has-error") 
+					|| $('#introduced').parent().hasClass("has-error") 
+					|| $('#discontinued').parent().hasClass("has-error")) 
+			{
+				e.preventDefault();
+			}
+		});
+		
+// 		function toggleSubmitButton() {
+// 			if($('#computerName').parent().hasClass("has-error") 
+// 					|| $('#introduced').parent().hasClass("has-error") 
+// 					|| $('#discontinued').parent().hasClass("has-error")) 
+// 			{
+// 				if(!$("#add-button").hasAttr("disabled")){
+// 					$("#add-button").attr("disabled", "disabled");
+// 				}
+// 			} else {
+// 				if($("#add-button").hasAttr("disabled")){
+// 					$("#add-button").removeAttr("disabled");
+// 				}
+// 			}
+// 		}
+		
 		$('#computerName').focusout(function() {
 			if( !$(this).val()) {
 				$(this).parent().addClass('has-error');
-				$('#error-box').val();
 			} else {
 				$(this).parent().removeClass('has-error');
 			}
+// 			toggleSubmitButton();
 		});
 		
 		var regExp = '(0[1-9]|[12][0-9]|3[01])[\/](0[1-9]|1[012])[\/](19[7-9][0-9]|20[0-3][0-9])';
@@ -86,6 +107,7 @@
 			} else {
 				$(this).parent().removeClass('has-error');
 			}
+// 			toggleSubmitButton();
 		});
 
 		$('#discontinued').focusout(function() {
@@ -94,7 +116,10 @@
 			} else {
 				$(this).parent().removeClass('has-error');
 			}
+// 			toggleSubmitButton();
 		});
+		
+		
 	});
 	</script>
 </body>

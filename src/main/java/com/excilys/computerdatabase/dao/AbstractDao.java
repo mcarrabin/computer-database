@@ -30,6 +30,17 @@ public interface AbstractDao<T> {
     public abstract T getById(long id) throws DaoException;
 
     /**
+     * Method that will delete an object based on the id.
+     *
+     * @param id
+     *            is the id of the object to delete.
+     * @return true if deletion succeed else false.
+     * @throws DaoException
+     *             if something went wrong.
+     */
+    public abstract boolean delete(T t) throws DaoException;
+
+    /**
      * Method that will get the current connection and return it.
      *
      * @return the current selection.

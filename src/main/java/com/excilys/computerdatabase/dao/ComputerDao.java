@@ -181,7 +181,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
      * @throws ConnexionException
      *             which are the exceptions due to connexion issues.
      */
-    public boolean deleteComputer(Computer computer) throws DaoException {
+    public boolean delete(Computer computer) throws DaoException {
         boolean isDeleteOk = false;
         int response = 0;
         Connection con = INSTANCE.connect();
