@@ -102,25 +102,26 @@ public enum CompanyDao implements AbstractDao<Company> {
         // Connection con = INSTANCE.connect();
         long id = company.getId();
         try {
-            con.setAutoCommit(false);
-            PreparedStatement stmtComputer = con.prepareStatement(DELETE_COMPUTER_REQUEST);
-            stmtComputer.setLong(1, id);
-            stmtComputer.executeUpdate();
+            // con.setAutoCommit(false);
+            // PreparedStatement stmtComputer =
+            // con.prepareStatement(DELETE_COMPUTER_REQUEST);
+            // stmtComputer.setLong(1, id);
+            // stmtComputer.executeUpdate();
 
             PreparedStatement stmtCompany = con.prepareStatement(DELETE_COMPANY_REQUEST);
             stmtCompany.setLong(1, id);
             stmtCompany.executeUpdate();
 
             con.commit();
-            stmtComputer.close();
+            // stmtComputer.close();
             stmtCompany.close();
             return true;
         } catch (Exception e) {
-            try {
-                con.rollback();
-            } catch (Exception e1) {
-                throw new DaoException(e1);
-            }
+            // try {
+            // con.rollback();
+            // } catch (Exception e1) {
+            // throw new DaoException(e1);
+            // }
             throw new DaoException(e);
         } // finally {
           // INSTANCE.closeConnection(con);
