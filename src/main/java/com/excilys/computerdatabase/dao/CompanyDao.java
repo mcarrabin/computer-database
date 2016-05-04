@@ -3,7 +3,6 @@ package com.excilys.computerdatabase.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,18 +98,18 @@ public enum CompanyDao implements AbstractDao<Company> {
      *             if something went wrong.
      */
     @Override
-    public boolean delete(Company company) throws DaoException {
-        Connection con = INSTANCE.connect();
+    public boolean delete(Company company, Connection con) throws DaoException {
+        // Connection con = INSTANCE.connect();
         long id = company.getId();
         try {
             con.setAutoCommit(false);
             PreparedStatement stmtComputer = con.prepareStatement(DELETE_COMPUTER_REQUEST);
             stmtComputer.setLong(1, id);
-            stmtComputer.executeQuery();
+            stmtComputer.executeUpdate();
 
             PreparedStatement stmtCompany = con.prepareStatement(DELETE_COMPANY_REQUEST);
             stmtCompany.setLong(1, id);
-            stmtCompany.executeQuery();
+            stmtCompany.executeUpdate();
 
             con.commit();
             stmtComputer.close();
@@ -123,14 +122,8 @@ public enum CompanyDao implements AbstractDao<Company> {
                 throw new DaoException(e1);
             }
             throw new DaoException(e);
-        } finally {
-            try {
-                con.setAutoCommit(true);
-            } catch (SQLException e) {
-                throw new DaoException(e);
-            }
-            INSTANCE.closeConnection(con);
-
-        }
+        } // finally {
+          // INSTANCE.closeConnection(con);
+          // }
     }
 }

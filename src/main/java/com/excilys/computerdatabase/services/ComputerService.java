@@ -1,9 +1,12 @@
 package com.excilys.computerdatabase.services;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computerdatabase.dao.ComputerDao;
+import com.excilys.computerdatabase.dao.DBConnection;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
 import com.excilys.computerdatabase.exceptions.ServiceException;
@@ -95,12 +98,19 @@ public enum ComputerService {
      * @return true if everything went well, else false.
      */
     public boolean deleteComputer(long id) {
+        Connection con = DBConnection.INSTANCE.getConnection();
         boolean result = false;
         try {
             Computer computer = COMPUTER_DAO.getById(id);
-            result = COMPUTER_DAO.delete(computer);
+            result = COMPUTER_DAO.delete(computer, con);
         } catch (Exception e) {
             throw new ServiceException(e);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                throw new ServiceException(e);
+            }
         }
         return result;
     }

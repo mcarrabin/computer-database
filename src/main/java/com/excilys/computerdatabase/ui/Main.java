@@ -48,6 +48,7 @@ public class Main {
             System.out.println(" 5. Modifier un ordinateur");
             System.out.println(" 6. Supprimer un ordinateur");
             System.out.println(" 7. Afficher tous les ordinateurs avec pagination");
+            System.out.println(" 8. Supprimer une compagnie.");
             result = newEntry(sc, 1, 7);
 
             if (result != -1) {
@@ -84,7 +85,7 @@ public class Main {
     }
 
     /**
-     * Method that will ask the user if other actions have to be done.
+     * Method that wimaxll ask the user if other actions have to be done.
      *
      * @return true if the user type "o", false if he types "n". If any other
      *         response, the user will have to type another response.
@@ -235,6 +236,13 @@ public class Main {
                 System.out.println(e.getMessage());
                 break;
             }
+
+        case 8:
+            System.out.println("Saisissez l'id d'une compagnie à supprimer: ");
+            long companyId = intEntry(sc, 1, -1);
+            Company company = companyService.getCompanyById(companyId);
+            companyService.deleteCompany(company);
+            break;
         }
     }
 

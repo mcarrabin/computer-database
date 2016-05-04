@@ -17,4 +17,15 @@ public class DaoException extends RuntimeException {
         super(e);
         LOGGER.error(e.getMessage());
     }
+
+    /**
+     * Constructor of the DaoException class.
+     *
+     * @param e
+     *            is the exception received
+     */
+    public DaoException(String message) {
+        super(message);
+        LOGGER.error(message);
+    }
 }

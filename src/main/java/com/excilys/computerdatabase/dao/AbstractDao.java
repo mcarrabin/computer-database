@@ -38,7 +38,7 @@ public interface AbstractDao<T> {
      * @throws DaoException
      *             if something went wrong.
      */
-    public abstract boolean delete(T t) throws DaoException;
+    public abstract boolean delete(T t, Connection con) throws DaoException;
 
     /**
      * Method that will get the current connection and return it.

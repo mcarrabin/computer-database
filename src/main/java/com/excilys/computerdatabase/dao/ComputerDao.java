@@ -15,14 +15,15 @@ import com.excilys.computerdatabase.mappers.ComputerMapper;
 public enum ComputerDao implements AbstractDao<Computer> {
     INSTANCE;
 
+    private static final String GET_BY_PAGE_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id where c.name like ? or comp.name like ? order by ";
+    private static final String GET_BY_PAGE_LIMIT_REQUEST = " limit ?, ?";
     private static final String GET_ALL_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id order by c.name";
     private static final String GET_BY_ID_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id where c.id = ? ";
     private static final String GET_TOTAL_COUNT_REQUEST = "select count(*) as number from computer c left join company comp on comp.id = c.company_id where comp.name like ? or c.name like ?";
     private static final String UPDATE_REQUEST = "update computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
     private static final String DELETE_REQUEST = "delete from computer where id = ? ";
+    private static final String DELETE_BY_COMP_REQUEST = "delete from computer where company_id = ?";
     private static final String CREATE_REQUEST = "insert into computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?)";
-    private static final String GET_BY_PAGE_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id where c.name like ? or comp.name like ? order by ";
-    private static final String GET_BY_PAGE_LIMIT_REQUEST = " limit ?, ?";
 
     /**
      * Méthode qui va construire une liste de toutes les entrées computer
@@ -183,10 +184,10 @@ public enum ComputerDao implements AbstractDao<Computer> {
      *             which are the exceptions due to connexion issues.
      */
     @Override
-    public boolean delete(Computer computer) throws DaoException {
+    public boolean delete(Computer computer, Connection con) throws DaoException {
         boolean isDeleteOk = false;
         int response = 0;
-        Connection con = INSTANCE.connect();
+        // Connection con = INSTANCE.connect();
 
         try {
             PreparedStatement statement = con.prepareStatement(DELETE_REQUEST);
@@ -198,9 +199,9 @@ public enum ComputerDao implements AbstractDao<Computer> {
             statement.close();
         } catch (Exception e) {
             throw new DaoException(e);
-        } finally {
-            INSTANCE.closeConnection(con);
-        }
+        } // finally {
+        // INSTANCE.closeConnection(con);
+        // }
 
         return isDeleteOk;
     }
@@ -297,5 +298,31 @@ public enum ComputerDao implements AbstractDao<Computer> {
             INSTANCE.closeConnection(con);
         }
         return creationOk;
+    }
+
+    /**
+     * Method that will delete every computers linked to the company identified
+     * by the parameter.
+     *
+     * @param companyId
+     *            is the id of the company which every computer to delete are
+     *            linked on.
+     * @throws DaoExecption
+     *             delete went wrong or prepared statement failed.
+     */
+    public void deleteByCompany(long companyId, Connection con) throws DaoException {
+        int response = 0;
+
+        try {
+            PreparedStatement statement = con.prepareStatement(DELETE_BY_COMP_REQUEST);
+            statement.setLong(1, companyId);
+            response = statement.executeUpdate();
+            if (response != 1) {
+                throw new DaoException("Error during Computer deletion on query: " + DELETE_BY_COMP_REQUEST);
+            }
+            statement.close();
+        } catch (Exception e) {
+            throw new DaoException(e);
+        }
     }
 }

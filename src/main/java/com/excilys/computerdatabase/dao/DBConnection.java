@@ -3,7 +3,6 @@ package com.excilys.computerdatabase.dao;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.Properties;
 
 import com.excilys.computerdatabase.exceptions.ConnectionException;
@@ -62,7 +61,7 @@ public enum DBConnection {
      */
     public Connection getConnection() throws ConnectionException {
         try {
-            return DriverManager.getConnection(URL, LOGIN, PASSWORD);
+            return ds.getConnection();
         } catch (Exception e) {
             throw new ConnectionException(e);
         }
