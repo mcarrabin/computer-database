@@ -56,7 +56,7 @@
 						</fieldset>
 						<div class="actions pull-right">
 							<input type="submit" value="Add" class="btn btn-primary" id="add-button">
-							or <a href="home" class="btn btn-default">Cancel</a>
+							or <a href="${pageContext.request.contextPath}/home" class="btn btn-default">Cancel</a>
 						</div>
 					</form>
 				</div>
@@ -76,28 +76,12 @@
 			}
 		});
 		
-// 		function toggleSubmitButton() {
-// 			if($('#computerName').parent().hasClass("has-error") 
-// 					|| $('#introduced').parent().hasClass("has-error") 
-// 					|| $('#discontinued').parent().hasClass("has-error")) 
-// 			{
-// 				if(!$("#add-button").hasAttr("disabled")){
-// 					$("#add-button").attr("disabled", "disabled");
-// 				}
-// 			} else {
-// 				if($("#add-button").hasAttr("disabled")){
-// 					$("#add-button").removeAttr("disabled");
-// 				}
-// 			}
-// 		}
-		
 		$('#computerName').focusout(function() {
 			if( !$(this).val()) {
 				$(this).parent().addClass('has-error');
 			} else {
 				$(this).parent().removeClass('has-error');
 			}
-// 			toggleSubmitButton();
 		});
 		
 		var regExp = '(0[1-9]|[12][0-9]|3[01])[\/](0[1-9]|1[012])[\/](19[7-9][0-9]|20[0-3][0-9])';
@@ -107,7 +91,6 @@
 			} else {
 				$(this).parent().removeClass('has-error');
 			}
-// 			toggleSubmitButton();
 		});
 
 		$('#discontinued').focusout(function() {
@@ -116,7 +99,6 @@
 			} else {
 				$(this).parent().removeClass('has-error');
 			}
-// 			toggleSubmitButton();
 		});
 		
 		

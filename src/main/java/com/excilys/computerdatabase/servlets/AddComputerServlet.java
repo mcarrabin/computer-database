@@ -15,7 +15,6 @@ import com.excilys.computerdatabase.mappers.DateMapper;
 import com.excilys.computerdatabase.services.CompanyService;
 import com.excilys.computerdatabase.services.ComputerService;
 import com.excilys.computerdatabase.utils.RequestAnalyzer;
-import com.excilys.computerdatabase.validator.CompanyValidator;
 import com.excilys.computerdatabase.validator.ComputerValidator;
 
 public class AddComputerServlet extends HttpServlet {
@@ -30,7 +29,6 @@ public class AddComputerServlet extends HttpServlet {
     private static final String ATT_COMPANIES = "companies";
 
     private static final RequestAnalyzer REQUEST_ANALYZER = RequestAnalyzer.INSTANCE;
-    private static final CompanyValidator COMPANY_VAL = CompanyValidator.INSTANCE;
     private static final ComputerValidator COMPUTER_VAL = ComputerValidator.INSTANCE;
 
     @Override

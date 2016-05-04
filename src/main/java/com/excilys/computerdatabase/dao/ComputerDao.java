@@ -17,7 +17,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
 
     private static final String GET_ALL_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id order by c.name";
     private static final String GET_BY_ID_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id where c.id = ? ";
-    private static final String GET_TOTAL_COUNT_REQUEST = "select count(*) as number from computer where name like ?";
+    private static final String GET_TOTAL_COUNT_REQUEST = "select count(*) as number from computer c left join company comp on comp.id = c.company_id where comp.name like ? or c.name like ?";
     private static final String UPDATE_REQUEST = "update computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
     private static final String DELETE_REQUEST = "delete from computer where id = ? ";
     private static final String CREATE_REQUEST = "insert into computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?)";
@@ -154,6 +154,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
         try {
             PreparedStatement statement = con.prepareStatement(GET_TOTAL_COUNT_REQUEST);
             statement.setString(1, "%" + name + "%");
+            statement.setString(2, "%" + name + "%");
             res = statement.executeQuery();
             if (res.next()) {
                 result = res.getLong("number");
@@ -181,6 +182,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
      * @throws ConnexionException
      *             which are the exceptions due to connexion issues.
      */
+    @Override
     public boolean delete(Computer computer) throws DaoException {
         boolean isDeleteOk = false;
         int response = 0;
