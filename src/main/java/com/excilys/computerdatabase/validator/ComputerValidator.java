@@ -15,7 +15,7 @@ public enum ComputerValidator {
      * @param name
      */
     public void isNameValid(String name) {
-        if (name.length() == 0 || !name.matches("^[a-zA-Z]")) {
+        if (name.length() == 0 || !name.matches("^[a-zA-Z0-9\\ \\-&]+")) {
             throw new ValidatorException(
                     "the Computer name is empty or not valid (expected: starts with a letter and not empty).");
         }
@@ -66,7 +66,7 @@ public enum ComputerValidator {
     public void areDatesOk(LocalDateTime introduced, LocalDateTime discontinued) {
         if (introduced == null && discontinued != null) {
             throw new ValidatorException("the Computer discontinued date must be null if introduced date is.");
-        } else if (discontinued.isBefore(introduced)) {
+        } else if (introduced != null && discontinued != null && discontinued.isBefore(introduced)) {
             throw new ValidatorException("the Computer discontinued date must be after the introduced date.");
         }
 
@@ -85,7 +85,7 @@ public enum ComputerValidator {
             CompanyValidator.INSTANCE.validateCompany(computer.getCompany());
         }
         isNameValid(computer.getName());
-        isIdValid(computer.getId());
+        // isIdValid(computer.getId());
         areDatesOk(computer.getIntroduced(), computer.getDiscontinued());
     }
 

@@ -11,7 +11,7 @@ public enum CompanyValidator {
      * @param name
      */
     public void isNameValid(String name) {
-        if (name.length() == 0 || !name.matches("^[a-zA-Z]")) {
+        if (name.length() == 0 || !name.matches("^[a-zA-Z0-9\\ &.\\-]+$")) {
             throw new ValidatorException(
                     "the Company name is empty or not valid (expected: starts with a letter and not empty).");
         }
