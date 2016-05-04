@@ -3,10 +3,10 @@ package com.excilys.computerdatabase.services;
 import com.excilys.computerdatabase.dao.ComputerDao;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
+import com.excilys.computerdatabase.mappers.SqlSort;
 
 public enum PageService {
     INSTANCE;
-    private static PageService instance = null;
 
     /**
      * Méthode qui va calculer le nombre total de page affichable en se basant
@@ -24,6 +24,7 @@ public enum PageService {
         Page<Computer> page = new Page<Computer>();
         ComputerDao computerDao = ComputerDao.INSTANCE;
         long numTotComputer = 0;
+        String sqlSort = SqlSort.getSortColumn(orderBy);
         try {
             numTotComputer = computerDao.getNumTotalComputer(name);
         } catch (Exception e) {
@@ -33,7 +34,7 @@ public enum PageService {
         int numMaxPage = (int) numTotComputer / nbreLine + 1;
 
         if (numPage <= numMaxPage) {
-            page = ComputerService.INSTANCE.getComputerByPage(nbreLine, numPage, name, orderBy + " " + sorting);
+            page = ComputerService.INSTANCE.getComputerByPage(nbreLine, numPage, name, sqlSort + " " + sorting);
             page.setNumElementTotal(numTotComputer);
             page.setNumPageMax(numMaxPage);
             page.setSearchFilter(name);

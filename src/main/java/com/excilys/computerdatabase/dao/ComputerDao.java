@@ -21,7 +21,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
     private static final String UPDATE_REQUEST = "update computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
     private static final String DELETE_REQUEST = "delete from computer where id = ? ";
     private static final String CREATE_REQUEST = "insert into computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?)";
-    private static final String GET_BY_PAGE_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id where c.name like ? order by ";
+    private static final String GET_BY_PAGE_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id where c.name like ? or comp.name like ? order by ";
     private static final String GET_BY_PAGE_LIMIT_REQUEST = " limit ?, ?";
 
     /**
@@ -115,8 +115,9 @@ public enum ComputerDao implements AbstractDao<Computer> {
         try {
             PreparedStatement statement = con.prepareStatement(query);
             statement.setString(1, "%" + search + "%");
-            statement.setInt(2, nbreLine * (numPage - 1));
-            statement.setInt(3, nbreLine);
+            statement.setString(2, "%" + search + "%");
+            statement.setInt(3, nbreLine * (numPage - 1));
+            statement.setInt(4, nbreLine);
             result = statement.executeQuery();
 
             ComputerMapper cm = ComputerMapper.INSTANCE;

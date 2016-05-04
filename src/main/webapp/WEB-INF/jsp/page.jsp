@@ -31,13 +31,22 @@
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
-                    <form id="searchForm" action="<customTag:linkBuilder root="home" numPage="1" nbElements="10" />" method="GET" class="form-inline">
+                    <form id="searchForm" action="<customTag:linkBuilder 
+                    										root="home" 
+                    										numPage="1"
+                    										nbElements="${  page.itemsPerPage  }" 
+                    								/>" 
+                    	method="GET" class="form-inline">
 
                         <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" />
                         <input type="submit" id="searchsubmit" value="Filter by name"
                         class="btn btn-primary" />
-                        <a type="button" href="<customTag:linkBuilder root="home" numPage="1" nbElements="${ page.itemsPerPage }" />"<c:if test="${ page.searchFilter.length() == 0 }" ><c:out value="disabled" /> </c:if> 
-                        class="btn btn-primary">clear Filter</a>
+                        <a type="button" href="<customTag:linkBuilder 
+                        						root="home" 
+                        						numPage="1"
+                        						nbElements="${ page.itemsPerPage }" />" 
+                        	class="btn btn-primary<c:out value="${ empty page.searchFilter ? ' disabled' : '' }" /> "
+                        >clear Filter</a>
                     </form>
                 </div>
                 <div class="pull-right">
@@ -67,18 +76,92 @@
                         </th>
 
                         <th>
-                            <a href="<customTag:linkBuilder root="home" currentOrderBy="${ page.orderByFilter }" currentSorting="${ page.sorting }" orderBy="c.name" numPage="${ page.numPage }" search="${ page.searchFilter }" nbElements="${ page.itemsPerPage }"/>" >Computer name</a>
+                        	<i class="
+	                        	<c:choose>
+	                        		<c:when test="${ page.sorting == 'asc' && page.orderByFilter == 'name' }" >
+	                        			<c:out value="glyphicon glyphicon-arrow-up" />
+	                        		</c:when>
+	                        		<c:when test="${ page.sorting == 'desc' && page.orderByFilter == 'name' }">
+	                        			<c:out value="glyphicon glyphicon-arrow-down" />
+	                        		</c:when>
+	                        	</c:choose>
+                        	"></i>Computer name
+                            <a href="<customTag:linkBuilder 
+                            			root="home" 
+                            			currentOrderBy="${ page.orderByFilter }" 
+                            			currentSorting="${ page.sorting }" 
+                            			orderBy="name" 
+                            			numPage="${ page.numPage }" 
+                            			search="${ page.searchFilter }" 
+                            			nbElements="${ page.itemsPerPage }"/>
+                            	" type="button" class="glyphicon glyphicon-sort" >
+                            </a>
                         </th>
                         <th>
-                            <a href="<customTag:linkBuilder root="home" currentOrderBy="${ page.orderByFilter }" currentSorting="${ page.sorting }" orderBy="c.introduced" numPage="${ page.numPage }" search="${ page.searchFilter }" nbElements="${ page.itemsPerPage }"/>" >Introduced date </a>
+                        	<i class="
+	                        	<c:choose>
+	                        		<c:when test="${ page.sorting == 'asc' && page.orderByFilter == 'introduced' }" >
+	                        			<c:out value="glyphicon glyphicon-arrow-up" />
+	                        		</c:when>
+	                        		<c:when test="${ page.sorting == 'desc' && page.orderByFilter == 'introduced' }" >
+	                        			<c:out value="glyphicon glyphicon-arrow-down" />
+	                        		</c:when>
+	                        	</c:choose>
+                        	"></i>Introduced date 
+                        	<a href="<customTag:linkBuilder 
+                            			root="home" 
+                            			currentOrderBy="${ page.orderByFilter }" 
+                            			currentSorting="${ page.sorting }" 
+                            			orderBy="introduced" 
+                            			numPage="${ page.numPage }" 
+                            			search="${ page.searchFilter }" 
+                            			nbElements="${ page.itemsPerPage }"/>
+                            	" type="button" class="glyphicon glyphicon-sort" >
+                        	</a>
                         </th>
                         <!-- Table header for Discontinued Date -->
                         <th>
-                            <a href="<customTag:linkBuilder root="home" currentOrderBy="${ page.orderByFilter }" currentSorting="${ page.sorting }" orderBy="c.discontinued" numPage="${ page.numPage }" search="${ page.searchFilter }" nbElements="${ page.itemsPerPage }"/>" >Discontinued date</a>
+                        	<i class="
+	                        	<c:choose>
+	                        		<c:when test="${ page.sorting == 'asc' && page.orderByFilter == 'discontinued' }" >
+	                        			<c:out value="glyphicon glyphicon-arrow-up" />
+	                        		</c:when>
+	                        		<c:when test="${ page.sorting == 'desc' && page.orderByFilter == 'discontinued' }">
+	                        			<c:out value="glyphicon glyphicon-arrow-down" />
+	                        		</c:when>
+	                        	</c:choose>
+                        	"></i>Discontinued date
+                            <a href="<customTag:linkBuilder 
+                            			root="home" 
+                            			currentOrderBy="${ page.orderByFilter }" 
+                            			currentSorting="${ page.sorting }" 
+                            			orderBy="discontinued" 
+                            			numPage="${ page.numPage }" 
+                            			search="${ page.searchFilter }" 
+                            			nbElements="${ page.itemsPerPage }"/>
+                            	" type="button" class="glyphicon glyphicon-sort" ></a>
                         </th>
                         <!-- Table header for Company -->
                         <th>
-                            <a href="<customTag:linkBuilder root="home" currentOrderBy="${ page.orderByFilter }" currentSorting="${ page.sorting }"  orderBy="comp.name" numPage="${ page.numPage }" search="${ page.searchFilter }" nbElements="${ page.itemsPerPage }"/>" >Company</a>
+                        	<i class="
+	                        	<c:choose>
+	                        		<c:when test="${ page.sorting == 'asc' && page.orderByFilter == 'company' }" >
+	                        			<c:out value="glyphicon glyphicon-arrow-up" />
+	                        		</c:when>
+	                        		<c:when test="${ page.sorting == 'desc' && page.orderByFilter == 'company' }">
+	                        			<c:out value="glyphicon glyphicon-arrow-down" />
+	                        		</c:when>
+	                        	</c:choose>
+                        	"></i>Company
+                            <a href="<customTag:linkBuilder 
+                            			root="home" 
+                            			currentOrderBy="${ page.orderByFilter }" 
+                            			currentSorting="${ page.sorting }"  
+                            			orderBy="company" 
+                            			numPage="${ page.numPage }" 
+                            			search="${ page.searchFilter }" 
+                            			nbElements="${ page.itemsPerPage }"/>
+                            	" type="button" class="glyphicon glyphicon-sort" ></a>
                         </th>
 
                     </tr>
