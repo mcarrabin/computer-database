@@ -22,8 +22,14 @@ public enum ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
     @Override
     public ComputerDto toDto(Computer computer) {
         ComputerDto dto = null;
-        String dateIntroduced = DateMapper.toString(computer.getIntroduced().atStartOfDay());
-        String dateDiscontinued = DateMapper.toString(computer.getDiscontinued().atStartOfDay());
+        String dateIntroduced = "";
+        String dateDiscontinued = "";
+        if (computer.getIntroduced() != null) {
+            dateIntroduced = DateMapper.toString(computer.getIntroduced().atStartOfDay());
+        }
+        if (computer.getDiscontinued() != null) {
+            dateDiscontinued = DateMapper.toString(computer.getDiscontinued().atStartOfDay());
+        }
         String computerId = String.valueOf(computer.getId());
         String companyId = String.valueOf(computer.getCompany().getId());
 
@@ -44,8 +50,14 @@ public enum ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
     public Computer fromDto(ComputerDto dto) {
         Computer computer = null;
         Company company = null;
-        LocalDate introducedDate = DateMapper.toLocalDateTime(dto.getIntroduced()).toLocalDate();
-        LocalDate discontinuedDate = DateMapper.toLocalDateTime(dto.getDiscontinued()).toLocalDate();
+        LocalDate introducedDate = null;
+        LocalDate discontinuedDate = null;
+        if (dto.getIntroduced() != null) {
+            introducedDate = DateMapper.toLocalDateTime(dto.getIntroduced()).toLocalDate();
+        }
+        if (dto.getDiscontinued() != null) {
+            discontinuedDate = DateMapper.toLocalDateTime(dto.getDiscontinued()).toLocalDate();
+        }
         long computerId = Long.parseLong(dto.getId());
         long companyId = Long.parseLong(dto.getCompanyId());
 
