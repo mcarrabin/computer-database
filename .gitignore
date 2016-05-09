@@ -15,7 +15,7 @@ local.properties
 .loadpath
 
 # logs
-*.logs
+*.log
 
 # Eclipse Core
 .project
