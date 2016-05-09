@@ -1,6 +1,6 @@
 package com.excilys.computerdatabase.validator;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,7 +76,7 @@ public enum ComputerValidator {
      * @param discontinued
      *            is the discontinued date.
      */
-    public void areDatesOk(LocalDateTime introduced, LocalDateTime discontinued) {
+    public void areDatesOk(LocalDate introduced, LocalDate discontinued) {
         if (introduced == null && discontinued != null) {
             errorMessages.put("discontinued", "the Computer discontinued date must be null if introduced date is.");
         } else if (introduced != null && discontinued != null && discontinued.isBefore(introduced)) {
@@ -122,8 +122,8 @@ public enum ComputerValidator {
 
         isDateValid(computer.getIntroduced(), "introduced");
         isDateValid(computer.getDiscontinued(), "discontinued");
-        LocalDateTime introduced = DateMapper.toLocalDateTime(computer.getIntroduced());
-        LocalDateTime discontinued = DateMapper.toLocalDateTime(computer.getDiscontinued());
+        LocalDate introduced = DateMapper.toLocalDateTime(computer.getIntroduced()).toLocalDate();
+        LocalDate discontinued = DateMapper.toLocalDateTime(computer.getDiscontinued()).toLocalDate();
 
         areDatesOk(introduced, discontinued);
 
@@ -143,8 +143,8 @@ public enum ComputerValidator {
 
         isDateValid(pIntroduced, "introduced");
         isDateValid(pDiscontinued, "discontinued");
-        LocalDateTime introduced = DateMapper.toLocalDateTime(pIntroduced);
-        LocalDateTime discontinued = DateMapper.toLocalDateTime(pDiscontinued);
+        LocalDate introduced = DateMapper.toLocalDateTime(pIntroduced).toLocalDate();
+        LocalDate discontinued = DateMapper.toLocalDateTime(pDiscontinued).toLocalDate();
 
         areDatesOk(introduced, discontinued);
 

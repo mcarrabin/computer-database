@@ -1,7 +1,7 @@
 package com.excilys.computerdatabase.servlets;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,8 +69,8 @@ public class AddComputerServlet extends HttpServlet {
             doGet(req, resp);
         } else {
 
-            LocalDateTime introduced = DateMapper.toLocalDateTime(introducedParam);
-            LocalDateTime discontinued = DateMapper.toLocalDateTime(discontinuedParam);
+            LocalDate introduced = DateMapper.toLocalDateTime(introducedParam).toLocalDate();
+            LocalDate discontinued = DateMapper.toLocalDateTime(discontinuedParam).toLocalDate();
 
             Computer computer = new Computer().getBuilder().company(company).name(computerNameParam)
                     .introduced(introduced).discontinued(discontinued).build();

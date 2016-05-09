@@ -1,7 +1,7 @@
 package com.excilys.computerdatabase.mappers;
 
 import java.sql.ResultSet;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,15 +34,15 @@ public enum ComputerMapper implements Mapper<Computer> {
      */
     @Override
     public Computer mapUnique(ResultSet result) throws MapperException {
-        LocalDateTime introduced, discontinued;
+        LocalDate introduced, discontinued;
         Long companyId, id;
         Computer computer = null;
         try {
             String name = result.getString("c.name");
             introduced = result.getTimestamp("c.introduced") == null ? null
-                    : result.getTimestamp("introduced").toLocalDateTime();
+                    : result.getTimestamp("introduced").toLocalDateTime().toLocalDate();
             discontinued = result.getTimestamp("c.discontinued") == null ? null
-                    : result.getTimestamp("discontinued").toLocalDateTime();
+                    : result.getTimestamp("discontinued").toLocalDateTime().toLocalDate();
             companyId = result.getLong("comp.id");
             String companyName = result.getString("comp.name");
             id = result.getLong("id");

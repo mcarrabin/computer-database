@@ -1,11 +1,11 @@
 package com.excilys.computerdatabase.entities;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Computer {
     private long id;
-    private LocalDateTime introduced;
-    private LocalDateTime discontinued;
+    private LocalDate introduced;
+    private LocalDate discontinued;
     private Company company;
     private String name;
 
@@ -38,7 +38,7 @@ public class Computer {
          *            is the new value of the introduced attribute to udpate.
          * @return the current PageBuilder with an updated introduced attribute.
          */
-        public ComputerBuilder introduced(LocalDateTime introduced) {
+        public ComputerBuilder introduced(LocalDate introduced) {
             this.computer.setIntroduced(introduced);
             return this;
         }
@@ -51,7 +51,7 @@ public class Computer {
          * @return the current PageBuilder with an updated discontinued
          *         attribute.
          */
-        public ComputerBuilder discontinued(LocalDateTime discontinued) {
+        public ComputerBuilder discontinued(LocalDate discontinued) {
             this.computer.setDiscontinued(discontinued);
             return this;
         }
@@ -97,11 +97,11 @@ public class Computer {
         return this.id;
     }
 
-    public LocalDateTime getIntroduced() {
+    public LocalDate getIntroduced() {
         return this.introduced;
     }
 
-    public LocalDateTime getDiscontinued() {
+    public LocalDate getDiscontinued() {
         return this.discontinued;
     }
 
@@ -117,11 +117,11 @@ public class Computer {
         this.id = id;
     }
 
-    public void setIntroduced(LocalDateTime introduced) {
+    public void setIntroduced(LocalDate introduced) {
         this.introduced = introduced;
     }
 
-    public void setDiscontinued(LocalDateTime discontinued) {
+    public void setDiscontinued(LocalDate discontinued) {
         this.discontinued = discontinued;
     }
 

@@ -1,6 +1,6 @@
 package com.excilys.computerdatabase.mappers;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +22,8 @@ public enum ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
     @Override
     public ComputerDto toDto(Computer computer) {
         ComputerDto dto = null;
-        String dateIntroduced = DateMapper.toString(computer.getIntroduced());
-        String dateDiscontinued = DateMapper.toString(computer.getDiscontinued());
+        String dateIntroduced = DateMapper.toString(computer.getIntroduced().atStartOfDay());
+        String dateDiscontinued = DateMapper.toString(computer.getDiscontinued().atStartOfDay());
         String computerId = String.valueOf(computer.getId());
         String companyId = String.valueOf(computer.getCompany().getId());
 
@@ -44,8 +44,8 @@ public enum ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
     public Computer fromDto(ComputerDto dto) {
         Computer computer = null;
         Company company = null;
-        LocalDateTime introducedDate = DateMapper.toLocalDateTime(dto.getIntroduced());
-        LocalDateTime discontinuedDate = DateMapper.toLocalDateTime(dto.getDiscontinued());
+        LocalDate introducedDate = DateMapper.toLocalDateTime(dto.getIntroduced()).toLocalDate();
+        LocalDate discontinuedDate = DateMapper.toLocalDateTime(dto.getDiscontinued()).toLocalDate();
         long computerId = Long.parseLong(dto.getId());
         long companyId = Long.parseLong(dto.getCompanyId());
 

@@ -1,6 +1,6 @@
 package com.excilys.computerdatabase.ui;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -239,7 +239,7 @@ public class Main {
 
         case 8:
             System.out.println("Saisissez l'id d'une compagnie à supprimer: ");
-            long companyId = (long) intEntry(sc, 1, -1);
+            long companyId = intEntry(sc, 1, -1);
             companyService.delete(companyId);
             break;
         }
@@ -253,7 +253,7 @@ public class Main {
     public static Computer typeComputer() {
         Computer computer = new Computer();
         String name;
-        LocalDateTime introduced, discontinued;
+        LocalDate introduced, discontinued;
         Scanner sc = new Scanner(System.in);
         long companyId;
         Company company = new Company();
@@ -281,8 +281,8 @@ public class Main {
      *
      * @return la date saisie après vérification.
      */
-    public static LocalDateTime typeDate() {
-        LocalDateTime res = null;
+    public static LocalDate typeDate() {
+        LocalDate res = null;
         Scanner sc = new Scanner(System.in);
         int jour, mois, annee;
         boolean isDateOK = false;
@@ -297,7 +297,7 @@ public class Main {
                 if (jour == 0 && mois == 0 && annee == 0) {
                     res = null;
                 } else {
-                    res = LocalDateTime.of(annee, mois, jour, 0, 0, 0);
+                    res = LocalDate.of(annee, mois, jour);
                 }
                 isDateOK = true;
             } catch (Exception e) {

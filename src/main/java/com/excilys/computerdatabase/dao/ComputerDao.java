@@ -232,12 +232,12 @@ public enum ComputerDao implements AbstractDao<Computer> {
             PreparedStatement statement = con.prepareStatement(UPDATE_REQUEST);
             statement.setString(1, computer.getName());
             if (computer.getIntroduced() != null) {
-                statement.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced()));
+                statement.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced().atStartOfDay()));
             } else {
                 statement.setNull(2, java.sql.Types.TIMESTAMP);
             }
             if (computer.getDiscontinued() != null) {
-                statement.setTimestamp(3, Timestamp.valueOf(computer.getDiscontinued()));
+                statement.setTimestamp(3, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
             } else {
                 statement.setNull(3, java.sql.Types.TIMESTAMP);
             }
@@ -276,12 +276,12 @@ public enum ComputerDao implements AbstractDao<Computer> {
             PreparedStatement statement = con.prepareStatement(CREATE_REQUEST);
             statement.setString(1, computer.getName());
             if (computer.getIntroduced() != null) {
-                statement.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced()));
+                statement.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced().atStartOfDay()));
             } else {
                 statement.setNull(2, java.sql.Types.TIMESTAMP);
             }
             if (computer.getDiscontinued() != null) {
-                statement.setTimestamp(3, Timestamp.valueOf(computer.getDiscontinued()));
+                statement.setTimestamp(3, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
             } else {
                 statement.setNull(3, java.sql.Types.TIMESTAMP);
             }
