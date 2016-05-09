@@ -18,7 +18,7 @@ public class Computer {
         /**
          * Constructor of the ComputerBuilder class.
          */
-        private ComputerBuilder() {
+        public ComputerBuilder() {
             this.computer = new Computer();
         }
 

@@ -9,7 +9,7 @@ public class ConnectionException extends RuntimeException {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
 
     /**
-     * Constructor of the ConnexionException class.
+     * Constructor of the ConnectionException class.
      *
      * @param e
      *            is the exception received
@@ -17,5 +17,16 @@ public class ConnectionException extends RuntimeException {
     public ConnectionException(Exception e) {
         super(e);
         LOGGER.error(e.getMessage());
+    }
+
+    /**
+     * Constructor of the ConnectionException class.
+     *
+     * @param e
+     *            is the message to set.
+     */
+    public ConnectionException(String e) {
+        super(e);
+        LOGGER.error(e);
     }
 }

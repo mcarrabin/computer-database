@@ -1,7 +1,7 @@
 package com.excilys.computerdatabase.entities;
 
 public enum SQLColumnNames {
-    COMPUTER_NAME("name", " c.name"), INTRODUCED("introduced", " c.introduced"), DISCONTINUED("discontinued",
+    COMPUTER_NAME("computerName", " c.name"), INTRODUCED("introduced", " c.introduced"), DISCONTINUED("discontinued",
             " c.discontinued"), COMPANY_NAME("company", " comp.name");
 
     private String name = "";

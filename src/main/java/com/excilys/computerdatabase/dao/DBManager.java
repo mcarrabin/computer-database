@@ -3,14 +3,17 @@ package com.excilys.computerdatabase.dao;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import com.excilys.computerdatabase.exceptions.ConnectionException;
 import com.zaxxer.hikari.HikariDataSource;
 
-public enum DBConnection {
+public enum DBManager {
 
     INSTANCE;
+    private static ThreadLocal<Connection> thread = new ThreadLocal<>();
+
     private static final String PROPERTIES_FILE = "db.properties";
     private static Properties properties = new Properties();
 
@@ -28,7 +31,7 @@ public enum DBConnection {
 
     static {
 
-        InputStream propertiesFile = DBConnection.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE);
+        InputStream propertiesFile = DBManager.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE);
         try {
             properties.load(propertiesFile);
         } catch (IOException e) {
@@ -50,6 +53,53 @@ public enum DBConnection {
         ds.setJdbcUrl(URL);
         ds.setUsername(LOGIN);
         ds.setPassword(PASSWORD);
+        ds.setMaximumPoolSize(50);
+    }
+
+    /**
+     * Method that will set a connection to the thread local.
+     */
+    private void createConnection() {
+        try {
+            thread.set(ds.getConnection());
+        } catch (Exception e) {
+            throw new ConnectionException(e);
+        }
+    }
+
+    /**
+     * Method that will set the autoCommit of the local thread connection.
+     *
+     * @param autoCommit
+     */
+    public void autoCommit(boolean autoCommit) {
+        try {
+            thread.get().setAutoCommit(autoCommit);
+        } catch (SQLException e) {
+            throw new ConnectionException("Erreur while setting autoCommit");
+        }
+    }
+
+    /**
+     * Method that will call the current connection commit() method.
+     */
+    public void callCommit() {
+        try {
+            thread.get().commit();
+        } catch (SQLException e) {
+            throw new ConnectionException("Erreur while Commit");
+        }
+    }
+
+    /**
+     * Method that will call the current connection rollback() method.
+     */
+    public void callRollback() {
+        try {
+            thread.get().rollback();
+        } catch (SQLException e) {
+            throw new ConnectionException("Erreur while rollback");
+        }
     }
 
     /**
@@ -60,11 +110,11 @@ public enum DBConnection {
      *             if there is any issue trying to open the connection.
      */
     public Connection getConnection() throws ConnectionException {
-        try {
-            return ds.getConnection();
-        } catch (Exception e) {
-            throw new ConnectionException(e);
+        if (thread.get() == null) {
+            createConnection();
         }
+        return thread.get();
+
     }
 
     /**
@@ -75,9 +125,12 @@ public enum DBConnection {
      * @throws ConnexionException
      *             which are the exceptions due to connexion issues.
      */
-    public void closeConnection(Connection c) throws ConnectionException {
+    public void closeConnection() throws ConnectionException {
         try {
-            c.close();
+            if (thread.get() != null) {
+                thread.get().close();
+            }
+            thread.remove();
         } catch (Exception e) {
             throw new ConnectionException(e);
         }

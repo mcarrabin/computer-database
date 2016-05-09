@@ -20,7 +20,7 @@ public class ComputerDto {
         /**
          * Public constructor of the ComputerDtoBuilder.
          */
-        private ComputerDtoBuilder() {
+        public ComputerDtoBuilder() {
             computerDto = new ComputerDto();
         }
 
@@ -151,14 +151,5 @@ public class ComputerDto {
 
     private void setCompanyName(String companyName) {
         this.companyName = companyName;
-    }
-
-    /**
-     * Method that returns a ComputerDtoBuilder.
-     *
-     * @return a new ComputerDtoBuilder.
-     */
-    public ComputerDtoBuilder getBuilder() {
-        return new ComputerDtoBuilder();
     }
 }

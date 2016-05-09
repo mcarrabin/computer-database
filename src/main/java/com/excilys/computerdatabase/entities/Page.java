@@ -3,17 +3,14 @@ package com.excilys.computerdatabase.entities;
 import java.util.List;
 
 public class Page<T> {
-    // currentItem
-    private int numPage;
+    private int currentPage;
     private List<T> elements;
-    // totalCount itemsCount
-    private long numElementTotal;
-    // pageCount
-    private int numPageMax;
+    private long itemsTotalCount;
+    private int maxPage;
     private long itemsPerPage;
 
-    private String searchFilter;
-    private String orderByFilter;
+    private String search;
+    private String orderBy;
 
     private String sorting;
 
@@ -35,8 +32,8 @@ public class Page<T> {
          *            is the new value to update.
          * @return the PageBuilder object with the numPage attribute updated.
          */
-        public PageBuilder<T> numPage(int numPage) {
-            this.page.setNumPage(numPage);
+        public PageBuilder<T> currentPage(int currentPage) {
+            this.page.setCurrentPage(currentPage);
             return this;
         }
 
@@ -62,8 +59,8 @@ public class Page<T> {
          * @return the current PageBuilder object with the total number of
          *         elements available updated.
          */
-        public PageBuilder<T> numElementTotal(long numElementTotal) {
-            this.page.setNumElementTotal(numElementTotal);
+        public PageBuilder<T> itemsTotalCount(long itemsTotalCount) {
+            this.page.setItemsTotalCount(itemsTotalCount);
             return this;
         }
 
@@ -76,8 +73,8 @@ public class Page<T> {
          * @return the current PageBuilder object with the numPageMax attribute
          *         updated.
          */
-        public PageBuilder<T> numPageMax(int numPageMax) {
-            this.page.setNumPageMax(numPageMax);
+        public PageBuilder<T> maxPage(int maxPage) {
+            this.page.setMaxPage(maxPage);
             return this;
         }
 
@@ -88,8 +85,8 @@ public class Page<T> {
          *            is the new value of the searchFilter field.
          * @return the updated PageBuilder object.
          */
-        public PageBuilder<T> searchFilter(String searchFilter) {
-            this.page.setSearchFilter(searchFilter);
+        public PageBuilder<T> search(String search) {
+            this.page.setSearch(search);
             return this;
         }
 
@@ -112,8 +109,8 @@ public class Page<T> {
          *            is the new value to set
          * @return the updated PageBuilder object.
          */
-        public PageBuilder<T> orderByFilter(String orderByFilter) {
-            this.page.setOrderByFilter(orderByFilter);
+        public PageBuilder<T> orderBy(String orderBy) {
+            this.page.setOrderBy(orderBy);
             return this;
         }
 
@@ -140,12 +137,12 @@ public class Page<T> {
         }
     }
 
-    public int getNumPage() {
-        return this.numPage;
+    public int getCurrentPage() {
+        return this.currentPage;
     }
 
-    public void setNumPage(int numPage) {
-        this.numPage = numPage;
+    public void setCurrentPage(int numPage) {
+        this.currentPage = numPage;
     }
 
     public List<T> getElements() {
@@ -156,28 +153,28 @@ public class Page<T> {
         this.elements = elements;
     }
 
-    public long getNumElementTotal() {
-        return this.numElementTotal;
+    public long getItemsTotalCount() {
+        return this.itemsTotalCount;
     }
 
-    public void setNumElementTotal(long numElementTotal) {
-        this.numElementTotal = numElementTotal;
+    public void setItemsTotalCount(long itemsTotalCount) {
+        this.itemsTotalCount = itemsTotalCount;
     }
 
-    public int getNumPageMax() {
-        return this.numPageMax;
+    public int getMaxPage() {
+        return this.maxPage;
     }
 
-    public void setNumPageMax(int numPageMax) {
-        this.numPageMax = numPageMax;
+    public void setMaxPage(int maxPage) {
+        this.maxPage = maxPage;
     }
 
-    public String getSearchFilter() {
-        return this.searchFilter;
+    public String getSearch() {
+        return this.search;
     }
 
-    public void setSearchFilter(String searchFilter) {
-        this.searchFilter = searchFilter;
+    public void setSearch(String search) {
+        this.search = search;
     }
 
     public long getItemsPerPage() {
@@ -188,12 +185,12 @@ public class Page<T> {
         this.itemsPerPage = itemsPerPage;
     }
 
-    public String getOrderByFilter() {
-        return orderByFilter;
+    public String getOrderBy() {
+        return orderBy;
     }
 
-    public void setOrderByFilter(String orderByFilter) {
-        this.orderByFilter = orderByFilter;
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
     }
 
     public String getSorting() {
@@ -210,8 +207,8 @@ public class Page<T> {
 
     @Override
     public String toString() {
-        return "Page [numPage=" + numPage + ", elements=" + elements + ", numElementTotal=" + numElementTotal
-                + ", numPageMax=" + numPageMax + ", searchFilter=" + searchFilter + "]";
+        return "Page [numPage=" + currentPage + ", elements=" + elements + ", numElementTotal=" + itemsTotalCount
+                + ", numPageMax=" + maxPage + ", searchFilter=" + search + "]";
     }
 
     @Override
@@ -219,10 +216,10 @@ public class Page<T> {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((elements == null) ? 0 : elements.hashCode());
-        result = prime * result + (int) (numElementTotal ^ (numElementTotal >>> 32));
-        result = prime * result + numPage;
-        result = prime * result + numPageMax;
-        result = prime * result + ((searchFilter == null) ? 0 : searchFilter.hashCode());
+        result = prime * result + (int) (itemsTotalCount ^ (itemsTotalCount >>> 32));
+        result = prime * result + currentPage;
+        result = prime * result + maxPage;
+        result = prime * result + ((search == null) ? 0 : search.hashCode());
         return result;
     }
 
@@ -245,20 +242,20 @@ public class Page<T> {
         } else if (!elements.equals(other.elements)) {
             return false;
         }
-        if (numElementTotal != other.numElementTotal) {
+        if (itemsTotalCount != other.itemsTotalCount) {
             return false;
         }
-        if (numPage != other.numPage) {
+        if (currentPage != other.currentPage) {
             return false;
         }
-        if (numPageMax != other.numPageMax) {
+        if (maxPage != other.maxPage) {
             return false;
         }
-        if (searchFilter == null) {
-            if (other.searchFilter != null) {
+        if (search == null) {
+            if (other.search != null) {
                 return false;
             }
-        } else if (!searchFilter.equals(other.searchFilter)) {
+        } else if (!search.equals(other.search)) {
             return false;
         }
         return true;

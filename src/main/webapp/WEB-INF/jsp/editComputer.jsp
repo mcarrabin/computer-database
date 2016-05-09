@@ -22,28 +22,39 @@
                     <div class="label label-default pull-right">
                         id: ${ computer.id }
                     </div>
+                    <span class="container" id="error-message" ${ empty errors ? 'style = "display: none"':'' } >
+			            <div class="alert alert-danger">
+			                <c:forEach items="${ errors }" var="error" >
+			                	<c:out value="${ error.value }" />
+			                	<br/>
+			                </c:forEach>
+			                <!-- stacktrace -->
+			            </div>
+			        </span>
+					
                     <h1>Edit Computer</h1>
 
-                    <form action="computer/edit" method="POST">
-                        <input type="hidden" value="${ computer.id }"/>
+                    <form action="edit" method="POST">
+                        <input type="hidden" value="${ computer.id }" id="id" name="computerId"/>
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="computerName" placeholder="Computer name" name="name" value="${ computer.name }" />
+                                <input type="text" class="form-control" id="computerName" placeholder="Computer name" name="computerName" value="${ computer.name }" />
                             </div>
                             <div class="form-group">
-                                <label for="introduced">Introduced date (dd/MM/yyyy)</label>
-                                <input type="date" class="form-control" id="introduced" placeholder="Introduced date" name="introduced" value="${ empty computer.introduced ? '' : computer.introduced }" />
+                                <label for="introduced">Introduced date (dd-MM-yyyy)</label>
+                                <input type="date" class="form-control" id="introduced" placeholder="Introduced date" name="introduced" value="${ computer.introduced }" />
                             </div>
                             <div class="form-group">
-                                <label for="discontinued">Discontinued date (dd/MM/yyyy)</label>
-                                <input type="date" class="form-control" id="discontinued" placeholder="Discontinued date" name="discontinued" value="${ empty computer.discontinued ? '' : computer.discontinued }" />
+                                <label for="discontinued">Discontinued date (dd-MM-yyyy)</label>
+                                <input type="date" class="form-control" id="discontinued" placeholder="Discontinued date" name="discontinued" value="${ computer.discontinued }" />
                             </div>
 							<div class="form-group">
 								<label for="companyId">Company</label> <select
 									class="form-control" id="companyId" name="companyId">
 									<c:forEach items="${companies}" var="company">
 										<c:choose >
+											<option value="-1"></option>
 											<c:when test="${ company.id != computer.companyId }" >
 												<option value="${ company.id }">${ company.name }</option>
 											</c:when>
@@ -78,7 +89,7 @@
 			}
 		});
 		
-		var regExp = '(0[1-9]|[12][0-9]|3[01])[\/](0[1-9]|1[012])[\/](19[7-9][0-9]|20[0-3][0-9])';
+		var regExp = '(0[1-9]|[12][0-9]|3[01])[\-](0[1-9]|1[012])[\-](19[7-9][0-9]|20[0-3][0-9])';
 		$('#introduced').focusout(function() {
 			if((!$(this).val().match(regExp)) && ($(this).val().length > 0)) {
 				$(this).parent().addClass('has-error');

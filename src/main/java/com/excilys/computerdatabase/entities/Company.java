@@ -11,7 +11,7 @@ public class Company {
          * CompanyBuilder constructor which instantiates the Company object of
          * the companyBuilder.
          */
-        private CompanyBuilder() {
+        public CompanyBuilder() {
             this.company = new Company();
         }
 

@@ -1,23 +1,35 @@
 package com.excilys.computerdatabase.validator;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.excilys.computerdatabase.dto.ComputerDto;
 import com.excilys.computerdatabase.entities.Computer;
-import com.excilys.computerdatabase.exceptions.ValidatorException;
 import com.excilys.computerdatabase.mappers.DateMapper;
 
 public enum ComputerValidator {
     INSTANCE;
+    private Map<String, String> errorMessages = new HashMap<String, String>();
+
+    public Map<String, String> getErrorMessages() {
+        return this.errorMessages;
+    }
+
+    public void setErrorMessage(Map<String, String> message) {
+        this.errorMessages = message;
+    }
+
     /**
      * Method which checks the name value. It must starts with a letter.
      *
      * @param name
      */
     public void isNameValid(String name) {
-        if (name.length() == 0 || !name.matches("^[a-zA-Z0-9\\ \\-&]+")) {
-            throw new ValidatorException(
-                    "the Computer name is empty or not valid (expected: starts with a letter and not empty).");
+        if (name.length() == 0 || !name.matches("^[a-zA-Z0-9\\ \\-&]+$")) {
+            errorMessages.put("name",
+                    "the Computer name is empty or not valid (expected: not empty, starts with a letter and contains only letters, spaces, '-' or '&').");
+
         }
     }
 
@@ -27,8 +39,8 @@ public enum ComputerValidator {
      * @param id
      */
     public void isIdValid(String id) {
-        if (id.matches("^[1-9][0-9]*$")) {
-            throw new ValidatorException("the Computer id is not valid (expected: positive number).");
+        if (!id.matches("^[1-9][0-9]*$")) {
+            errorMessages.put("id", "the Computer id is not valid (expected: positive number).");
         }
     }
 
@@ -39,7 +51,7 @@ public enum ComputerValidator {
      */
     public void isIdValid(long id) {
         if (id <= 0) {
-            throw new ValidatorException("the Computer id is not valid (expected: positive number).");
+            errorMessages.put("id", "the Computer id is not valid (expected: positive number).");
         }
     }
 
@@ -49,9 +61,10 @@ public enum ComputerValidator {
      * @param date
      *            is the date to verify.
      */
-    public void isDateValid(String date) {
-        if (!date.matches("^(0[1-9]|[12][0-9]|3[01])[/](0[1-9]|1[012])[/](19[7-9][0-9]|20[0-3][0-9])$")) {
-            throw new ValidatorException("the Computer introduced date is not valid (expected: dd/MM/yyyy).");
+    public void isDateValid(String date, String champ) {
+        if (date.trim().length() > 0
+                && !date.matches("^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19[7-9][0-9]|20[0-3][0-9])$")) {
+            errorMessages.put(champ, "the Computer " + champ + " date is not valid (expected: dd-MM-yyyy).");
         }
     }
 
@@ -65,9 +78,9 @@ public enum ComputerValidator {
      */
     public void areDatesOk(LocalDateTime introduced, LocalDateTime discontinued) {
         if (introduced == null && discontinued != null) {
-            throw new ValidatorException("the Computer discontinued date must be null if introduced date is.");
+            errorMessages.put("discontinued", "the Computer discontinued date must be null if introduced date is.");
         } else if (introduced != null && discontinued != null && discontinued.isBefore(introduced)) {
-            throw new ValidatorException("the Computer discontinued date must be after the introduced date.");
+            errorMessages.put("discontinued", "the Computer discontinued date must be after the introduced date.");
         }
 
     }
@@ -85,7 +98,6 @@ public enum ComputerValidator {
             CompanyValidator.INSTANCE.validateCompany(computer.getCompany());
         }
         isNameValid(computer.getName());
-        // isIdValid(computer.getId());
         areDatesOk(computer.getIntroduced(), computer.getDiscontinued());
     }
 
@@ -97,18 +109,45 @@ public enum ComputerValidator {
      * @throws a
      *             ValidatorException is something went wrong.
      */
-    public void validateComputerDto(ComputerDto computer) {
+    public Map<String, String> validate(ComputerDto computer) {
+        Map<String, String> companyErrors = new HashMap<>();
         if (computer.getCompanyId() != null) {
-            CompanyValidator.INSTANCE.validateCompany(computer.getCompanyId(), computer.getCompanyName());
+            companyErrors = CompanyValidator.INSTANCE.validateCompany(computer.getCompanyId(),
+                    computer.getCompanyName());
         }
+        errorMessages.putAll(companyErrors);
+
         isNameValid(computer.getName());
         isIdValid(computer.getId());
 
-        isDateValid(computer.getIntroduced());
-        isDateValid(computer.getDiscontinued());
+        isDateValid(computer.getIntroduced(), "introduced");
+        isDateValid(computer.getDiscontinued(), "discontinued");
         LocalDateTime introduced = DateMapper.toLocalDateTime(computer.getIntroduced());
         LocalDateTime discontinued = DateMapper.toLocalDateTime(computer.getDiscontinued());
 
         areDatesOk(introduced, discontinued);
+
+        return errorMessages;
+    }
+
+    /**
+     * Method that will check every attributes of the ComputerDto object.
+     *
+     * @param computer
+     *            is the object to verify.
+     * @throws a
+     *             ValidatorException is something went wrong.
+     */
+    public Map<String, String> validate(String name, String pIntroduced, String pDiscontinued) {
+        isNameValid(name);
+
+        isDateValid(pIntroduced, "introduced");
+        isDateValid(pDiscontinued, "discontinued");
+        LocalDateTime introduced = DateMapper.toLocalDateTime(pIntroduced);
+        LocalDateTime discontinued = DateMapper.toLocalDateTime(pDiscontinued);
+
+        areDatesOk(introduced, discontinued);
+
+        return errorMessages;
     }
 }

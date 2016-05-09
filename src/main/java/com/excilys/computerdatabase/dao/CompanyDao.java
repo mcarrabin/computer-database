@@ -13,6 +13,8 @@ import com.excilys.computerdatabase.mappers.CompanyMapper;
 public enum CompanyDao implements AbstractDao<Company> {
     INSTANCE;
 
+    private static final DBManager DB_MANAGER = DBManager.INSTANCE;
+
     private static final String GET_ALL_REQUEST = "select * from company order by name";
     private static final String GET_BY_ID_REQUEST = "select * from company where id = ?";
     private static final String DELETE_COMPANY_REQUEST = "delete from company where id = ?";
@@ -31,7 +33,7 @@ public enum CompanyDao implements AbstractDao<Company> {
     public List<Company> getAll() throws DaoException {
         ResultSet result;
         List<Company> companies = new ArrayList<Company>();
-        Connection con = INSTANCE.connect();
+        Connection con = DB_MANAGER.getConnection();
 
         try {
             PreparedStatement statement = con.prepareStatement(GET_ALL_REQUEST);
@@ -43,7 +45,7 @@ public enum CompanyDao implements AbstractDao<Company> {
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            INSTANCE.closeConnection(con);
+            DB_MANAGER.closeConnection();
         }
 
         return companies;
@@ -67,7 +69,7 @@ public enum CompanyDao implements AbstractDao<Company> {
         } else {
             ResultSet result;
             Company company = null;
-            Connection con = INSTANCE.connect();
+            Connection con = DB_MANAGER.getConnection();
 
             try {
                 PreparedStatement statement = con.prepareStatement(GET_BY_ID_REQUEST);
@@ -80,7 +82,7 @@ public enum CompanyDao implements AbstractDao<Company> {
             } catch (Exception e) {
                 throw new DaoException(e);
             } finally {
-                INSTANCE.closeConnection(con);
+                DB_MANAGER.closeConnection();
             }
 
             return company;
@@ -98,33 +100,19 @@ public enum CompanyDao implements AbstractDao<Company> {
      *             if something went wrong.
      */
     @Override
-    public boolean delete(Company company, Connection con) throws DaoException {
-        // Connection con = INSTANCE.connect();
-        long id = company.getId();
+    public boolean delete(long id) throws DaoException {
+        Connection con = DB_MANAGER.getConnection();
         try {
-            // con.setAutoCommit(false);
-            // PreparedStatement stmtComputer =
-            // con.prepareStatement(DELETE_COMPUTER_REQUEST);
-            // stmtComputer.setLong(1, id);
-            // stmtComputer.executeUpdate();
 
-            PreparedStatement stmtCompany = con.prepareStatement(DELETE_COMPANY_REQUEST);
-            stmtCompany.setLong(1, id);
-            stmtCompany.executeUpdate();
+            PreparedStatement stmt = con.prepareStatement(DELETE_COMPANY_REQUEST);
+            stmt.setLong(1, id);
+            stmt.executeUpdate();
 
             con.commit();
-            // stmtComputer.close();
-            stmtCompany.close();
+            stmt.close();
             return true;
         } catch (Exception e) {
-            // try {
-            // con.rollback();
-            // } catch (Exception e1) {
-            // throw new DaoException(e1);
-            // }
             throw new DaoException(e);
-        } // finally {
-          // INSTANCE.closeConnection(con);
-          // }
+        }
     }
 }

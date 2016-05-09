@@ -134,7 +134,7 @@ public class Main {
         case 1:
             try {
                 List<Company> companies = new ArrayList<Company>();
-                companies = companyService.getCompanies();
+                companies = companyService.getAll();
                 for (Company company : companies) {
                     System.out.println(company.toString());
                 }
@@ -146,7 +146,7 @@ public class Main {
 
         case 2:
             try {
-                computers = computerService.getComputers();
+                computers = computerService.getAll();
                 for (Computer c : computers) {
                     System.out.println(c.toString());
                 }
@@ -160,7 +160,7 @@ public class Main {
             try {
                 System.out.println("Quel ordinateur voulez-vous afficher? ");
                 id = newEntry(sc, 0, -1);
-                computer = computerService.getComputerById(id);
+                computer = computerService.getById(id);
                 System.out.println(computer.toString());
                 break;
             } catch (Exception e) {
@@ -171,7 +171,7 @@ public class Main {
         case 4:
             try {
                 computer = typeComputer();
-                actionRealized = computerService.createComputer(computer);
+                actionRealized = computerService.create(computer);
                 if (actionRealized) {
                     actionValid("création");
                 }
@@ -185,10 +185,10 @@ public class Main {
             try {
                 System.out.println("Quel ordinateur voulez-vous modifier? ");
                 id = newEntry(sc, 0, -1);
-                computer = computerService.getComputerById(id);
+                computer = computerService.getById(id);
                 computer = typeComputerUpdates(computer);
                 computer.setId(id);
-                actionRealized = computerService.updateComputer(computer);
+                actionRealized = computerService.update(computer);
                 if (actionRealized) {
                     actionValid("modification");
                 }
@@ -202,7 +202,7 @@ public class Main {
             try {
                 System.out.println("Quel ordinateur voulez-vous supprimer? ");
                 id = newEntry(sc, 0, -1);
-                actionRealized = computerService.deleteComputer(id);
+                actionRealized = computerService.delete(id);
                 if (actionRealized) {
                     actionValid("suppression");
                 }
@@ -226,7 +226,7 @@ public class Main {
                             System.out.println(page.toString());
                         } else {
                             System.out.println("Numéro de page trop grand. \n" + "Page [nbreLine="
-                                    + page.getElements().size() + ", numPage=" + page.getNumPage() + "]");
+                                    + page.getElements().size() + ", numPage=" + page.getCurrentPage() + "]");
                         }
                     }
                 }
@@ -239,9 +239,8 @@ public class Main {
 
         case 8:
             System.out.println("Saisissez l'id d'une compagnie à supprimer: ");
-            long companyId = intEntry(sc, 1, -1);
-            Company company = companyService.getCompanyById(companyId);
-            companyService.deleteCompany(company);
+            long companyId = (long) intEntry(sc, 1, -1);
+            companyService.delete(companyId);
             break;
         }
     }

@@ -2,13 +2,17 @@ package com.excilys.computerdatabase.servlets;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.excilys.computerdatabase.dto.ComputerDto;
+import com.excilys.computerdatabase.dto.ComputerDto.ComputerDtoBuilder;
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.mappers.DateMapper;
@@ -27,21 +31,24 @@ public class AddComputerServlet extends HttpServlet {
     private static final String HOME_PAGE = "/computerdatabase/home";
 
     private static final String ATT_COMPANIES = "companies";
+    private static final String ATT_ERRORS = "errors";
+    private static final String ATT_COMPUTER = "computer";
 
     private static final RequestAnalyzer REQUEST_ANALYZER = RequestAnalyzer.INSTANCE;
     private static final ComputerValidator COMPUTER_VAL = ComputerValidator.INSTANCE;
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        List<Company> companies = CompanyService.INSTANCE.getCompanies();
-        Company emptyCompany = new Company().getBuilder().id(-1).name("").build();
-        companies.add(0, emptyCompany);
+        List<Company> companies = CompanyService.INSTANCE.getAll();
+
         req.setAttribute(ATT_COMPANIES, companies);
         req.getRequestDispatcher(ADD_COMPUTER_PAGE).forward(req, res);
     }
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Map<String, String> validatorErrors = new HashMap<>();
+
         String computerNameParam = REQUEST_ANALYZER.getStringParameter(PARAM_COMPUTER_NAME, req, "");
         String companyIdParam = REQUEST_ANALYZER.getStringParameter(PARAM_COMPANY_ID, req, "");
         String introducedParam = REQUEST_ANALYZER.getStringParameter(PARAM_INTRODUCED_DATE, req, "");
@@ -50,17 +57,27 @@ public class AddComputerServlet extends HttpServlet {
         Company company = null;
         if (companyIdParam.trim().length() > 0 && !companyIdParam.trim().equalsIgnoreCase("-1")) {
             long companyId = Long.parseLong(companyIdParam);
-            company = CompanyService.INSTANCE.getCompanyById(companyId);
+            company = CompanyService.INSTANCE.getById(companyId);
         }
 
-        LocalDateTime introduced = DateMapper.toLocalDateTime(introducedParam);
-        LocalDateTime discontinued = DateMapper.toLocalDateTime(discontinuedParam);
+        validatorErrors = COMPUTER_VAL.validate(computerNameParam, introducedParam, discontinuedParam);
+        ComputerDto computerDto = new ComputerDtoBuilder().name(computerNameParam).introduced(introducedParam)
+                .discontinued(discontinuedParam).companyId(companyIdParam).build();
+        if (validatorErrors.size() > 0) {
+            req.setAttribute(ATT_COMPUTER, computerDto);
+            req.setAttribute(ATT_ERRORS, validatorErrors);
+            doGet(req, resp);
+        } else {
 
-        Computer computer = new Computer().getBuilder().company(company).name(computerNameParam).introduced(introduced)
-                .discontinued(discontinued).build();
-        COMPUTER_VAL.validateComputer(computer);
+            LocalDateTime introduced = DateMapper.toLocalDateTime(introducedParam);
+            LocalDateTime discontinued = DateMapper.toLocalDateTime(discontinuedParam);
 
-        ComputerService.INSTANCE.createComputer(computer);
-        resp.sendRedirect(HOME_PAGE);
+            Computer computer = new Computer().getBuilder().company(company).name(computerNameParam)
+                    .introduced(introduced).discontinued(discontinued).build();
+            // COMPUTER_VAL.validateComputer(computer);
+
+            ComputerService.INSTANCE.create(computer);
+            resp.sendRedirect(HOME_PAGE);
+        }
     }
 }

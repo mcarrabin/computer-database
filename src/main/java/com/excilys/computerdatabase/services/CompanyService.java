@@ -1,29 +1,24 @@
 package com.excilys.computerdatabase.services;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computerdatabase.dao.CompanyDao;
 import com.excilys.computerdatabase.dao.ComputerDao;
-import com.excilys.computerdatabase.dao.DBConnection;
+import com.excilys.computerdatabase.dao.DBManager;
 import com.excilys.computerdatabase.entities.Company;
+import com.excilys.computerdatabase.exceptions.DaoException;
 import com.excilys.computerdatabase.exceptions.ServiceException;
 
-public enum CompanyService {
+public enum CompanyService implements Service<Company> {
     INSTANCE;
     private static final CompanyDao COMPANY_DAO = CompanyDao.INSTANCE;
     private static final ComputerDao COMPUTER_DAO = ComputerDao.INSTANCE;
+    private static final DBManager DB_MANAGER = DBManager.INSTANCE;
 
-    /**
-     * Method which calls the CompanyDao to get all the companies from the
-     * database.
-     *
-     * @return a list of all the companies.
-     */
-    public List<Company> getCompanies() {
-        List<Company> companies = new ArrayList<Company>();
+    @Override
+    public List<Company> getAll() {
+        List<Company> companies = null;
         try {
             companies = COMPANY_DAO.getAll();
         } catch (Exception e) {
@@ -32,15 +27,8 @@ public enum CompanyService {
         return companies;
     }
 
-    /**
-     * Method which calls the CompanyDao to get the company having the id
-     * received as a parameter.
-     *
-     * @param id
-     *            is the id of the company to look for.
-     * @return the company found.
-     */
-    public Company getCompanyById(long id) {
+    @Override
+    public Company getById(long id) {
         Company company = null;
         try {
             company = COMPANY_DAO.getById(id);
@@ -58,26 +46,22 @@ public enum CompanyService {
      * @param company
      *            is the object to delete.
      */
-    public void deleteCompany(Company company) {
-        Connection con = DBConnection.INSTANCE.getConnection();
+    @Override
+    public boolean delete(long id) {
+        Company company = COMPANY_DAO.getById(id);
+
+        Connection con = DB_MANAGER.getConnection();
         try {
-            con.setAutoCommit(false);
-            COMPUTER_DAO.deleteByCompany(company.getId(), con);
-            COMPANY_DAO.delete(company, con);
-            con.commit();
-        } catch (SQLException e) {
-            try {
-                con.rollback();
-            } catch (SQLException e1) {
-                throw new ServiceException(e1);
-            }
+            DB_MANAGER.autoCommit(false);
+            COMPUTER_DAO.deleteByCompany(company.getId());
+            COMPANY_DAO.delete(company.getId());
+            DB_MANAGER.callCommit();
+        } catch (DaoException e) {
+            DB_MANAGER.callRollback();
             throw new ServiceException(e);
         } finally {
-            try {
-                con.close();
-            } catch (SQLException e) {
-                throw new ServiceException(e);
-            }
+            DB_MANAGER.closeConnection();
         }
+        return true;
     }
 }

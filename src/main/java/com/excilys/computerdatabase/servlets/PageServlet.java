@@ -1,6 +1,7 @@
 package com.excilys.computerdatabase.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -67,11 +68,17 @@ public class PageServlet extends HttpServlet {
         Page<Computer> page = PageService.INSTANCE.getPage(itemsPerPage, currentPage, searchString, orderByParam,
                 sortParam);
 
-        List<ComputerDto> computerDtos = ComputerDtoMapper.INSTANCE.toDtoList(page.getElements());
+        List<Computer> computers = page.getElements();
+        List<ComputerDto> computerDtos = new ArrayList<>();
+        if (computers != null) {
+            computerDtos = ComputerDtoMapper.INSTANCE.toDtoList(computers);
+        }
+
         Page<ComputerDto> pageDto = new Page<ComputerDto>().getBuilder().elements(computerDtos)
-                .numElementTotal(page.getNumElementTotal()).numPage(page.getNumPage()).numPageMax(page.getNumPageMax())
-                .searchFilter(page.getSearchFilter()).itemsPerPage(itemsPerPage).orderByFilter(page.getOrderByFilter())
-                .sorting(page.getSorting()).build();
+                .itemsTotalCount(page.getItemsTotalCount()).currentPage(page.getCurrentPage())
+                .maxPage(page.getMaxPage()).search(page.getSearch()).itemsPerPage(itemsPerPage)
+                .orderBy(page.getOrderBy()).sorting(page.getSorting()).build();
+
         // Set attribute
         req.setAttribute(ATTR_PAGE, pageDto);
 

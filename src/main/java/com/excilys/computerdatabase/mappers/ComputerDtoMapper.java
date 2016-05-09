@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computerdatabase.dto.ComputerDto;
+import com.excilys.computerdatabase.dto.ComputerDto.ComputerDtoBuilder;
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.entities.Computer;
 
@@ -26,9 +27,8 @@ public enum ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
         String computerId = String.valueOf(computer.getId());
         String companyId = String.valueOf(computer.getCompany().getId());
 
-        dto = new ComputerDto().getBuilder().id(computerId).companyName(computer.getCompany().getName())
-                .companyId(companyId).name(computer.getName()).introduced(dateIntroduced).discontinued(dateDiscontinued)
-                .build();
+        dto = new ComputerDtoBuilder().id(computerId).companyName(computer.getCompany().getName()).companyId(companyId)
+                .name(computer.getName()).introduced(dateIntroduced).discontinued(dateDiscontinued).build();
 
         return dto;
     }

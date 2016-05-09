@@ -24,9 +24,9 @@
     <section id="main">
         <div class="container">
             <h1 id="homeTitle">
-                <c:out value="${page.numElementTotal}" /> Computers found
-                <c:if test="${ not empty page.searchFilter}" >
-                	<c:out value=" with filter on name applied: ${ page.searchFilter }" />	
+                <c:out value="${page.itemsTotalCount}" /> Computers found
+                <c:if test="${ not empty page.search}" >
+                	<c:out value=" with filter on name applied: ${ page.search }" />	
                 </c:if>
             </h1>
             <div id="actions" class="form-horizontal">
@@ -45,7 +45,7 @@
                         						root="home" 
                         						numPage="1"
                         						nbElements="${ page.itemsPerPage }" />" 
-                        	class="btn btn-primary<c:out value="${ empty page.searchFilter ? ' disabled' : '' }" /> "
+                        	class="btn btn-primary<c:out value="${ empty page.search ? ' disabled' : '' }" /> "
                         >clear Filter</a>
                     </form>
                 </div>
@@ -78,21 +78,21 @@
                         <th>
                         	<i class="
 	                        	<c:choose>
-	                        		<c:when test="${ page.sorting == 'asc' && page.orderByFilter == 'name' }" >
+	                        		<c:when test="${ page.sorting == 'asc' && page.orderBy == 'computerName' }" >
 	                        			<c:out value="glyphicon glyphicon-arrow-up" />
 	                        		</c:when>
-	                        		<c:when test="${ page.sorting == 'desc' && page.orderByFilter == 'name' }">
+	                        		<c:when test="${ page.sorting == 'desc' && page.orderBy == 'computerName' }">
 	                        			<c:out value="glyphicon glyphicon-arrow-down" />
 	                        		</c:when>
 	                        	</c:choose>
                         	"></i>Computer name
                             <a href="<customTag:linkBuilder 
                             			root="home" 
-                            			currentOrderBy="${ page.orderByFilter }" 
+                            			currentOrderBy="${ page.orderBy }" 
                             			currentSorting="${ page.sorting }" 
-                            			orderBy="name" 
-                            			numPage="${ page.numPage }" 
-                            			search="${ page.searchFilter }" 
+                            			orderBy="computerName" 
+                            			numPage="${ page.currentPage }" 
+                            			search="${ page.search }" 
                             			nbElements="${ page.itemsPerPage }"/>
                             	" type="button" class="glyphicon glyphicon-sort" >
                             </a>
@@ -100,21 +100,21 @@
                         <th>
                         	<i class="
 	                        	<c:choose>
-	                        		<c:when test="${ page.sorting == 'asc' && page.orderByFilter == 'introduced' }" >
+	                        		<c:when test="${ page.sorting == 'asc' && page.orderBy == 'introduced' }" >
 	                        			<c:out value="glyphicon glyphicon-arrow-up" />
 	                        		</c:when>
-	                        		<c:when test="${ page.sorting == 'desc' && page.orderByFilter == 'introduced' }" >
+	                        		<c:when test="${ page.sorting == 'desc' && page.orderBy == 'introduced' }" >
 	                        			<c:out value="glyphicon glyphicon-arrow-down" />
 	                        		</c:when>
 	                        	</c:choose>
-                        	"></i>Introduced date 
+                        	"></i>Introduced date
                         	<a href="<customTag:linkBuilder 
-                            			root="home" 
-                            			currentOrderBy="${ page.orderByFilter }" 
+                            			root="home"
+                            			currentOrderBy="${ page.orderBy }" 
                             			currentSorting="${ page.sorting }" 
                             			orderBy="introduced" 
-                            			numPage="${ page.numPage }" 
-                            			search="${ page.searchFilter }" 
+                            			numPage="${ page.currentPage }" 
+                            			search="${ page.search }" 
                             			nbElements="${ page.itemsPerPage }"/>
                             	" type="button" class="glyphicon glyphicon-sort" >
                         	</a>
@@ -123,21 +123,21 @@
                         <th>
                         	<i class="
 	                        	<c:choose>
-	                        		<c:when test="${ page.sorting == 'asc' && page.orderByFilter == 'discontinued' }" >
+	                        		<c:when test="${ page.sorting == 'asc' && page.orderBy == 'discontinued' }" >
 	                        			<c:out value="glyphicon glyphicon-arrow-up" />
 	                        		</c:when>
-	                        		<c:when test="${ page.sorting == 'desc' && page.orderByFilter == 'discontinued' }">
+	                        		<c:when test="${ page.sorting == 'desc' && page.orderBy == 'discontinued' }">
 	                        			<c:out value="glyphicon glyphicon-arrow-down" />
 	                        		</c:when>
 	                        	</c:choose>
                         	"></i>Discontinued date
                             <a href="<customTag:linkBuilder 
                             			root="home" 
-                            			currentOrderBy="${ page.orderByFilter }" 
+                            			currentOrderBy="${ page.orderBy }" 
                             			currentSorting="${ page.sorting }" 
                             			orderBy="discontinued" 
-                            			numPage="${ page.numPage }" 
-                            			search="${ page.searchFilter }" 
+                            			numPage="${ page.currentPage }" 
+                            			search="${ page.search }" 
                             			nbElements="${ page.itemsPerPage }"/>
                             	" type="button" class="glyphicon glyphicon-sort" ></a>
                         </th>
@@ -145,21 +145,21 @@
                         <th>
                         	<i class="
 	                        	<c:choose>
-	                        		<c:when test="${ page.sorting == 'asc' && page.orderByFilter == 'company' }" >
+	                        		<c:when test="${ page.sorting == 'asc' && page.orderBy == 'company' }" >
 	                        			<c:out value="glyphicon glyphicon-arrow-up" />
 	                        		</c:when>
-	                        		<c:when test="${ page.sorting == 'desc' && page.orderByFilter == 'company' }">
+	                        		<c:when test="${ page.sorting == 'desc' && page.orderBy == 'company' }">
 	                        			<c:out value="glyphicon glyphicon-arrow-down" />
 	                        		</c:when>
 	                        	</c:choose>
                         	"></i>Company
                             <a href="<customTag:linkBuilder 
                             			root="home" 
-                            			currentOrderBy="${ page.orderByFilter }" 
+                            			currentOrderBy="${ page.orderBy }" 
                             			currentSorting="${ page.sorting }"  
                             			orderBy="company" 
-                            			numPage="${ page.numPage }" 
-                            			search="${ page.searchFilter }" 
+                            			numPage="${ page.currentPage }" 
+                            			search="${ page.search }" 
                             			nbElements="${ page.itemsPerPage }"/>
                             	" type="button" class="glyphicon glyphicon-sort" ></a>
                         </th>
@@ -171,10 +171,10 @@
 	                <c:forEach items="${page.elements}" var="computer" >
 	                    <tr>
 	                        <td class="editMode">
-	                            <input type="checkbox" name="cb" class="cb" value="${ computer.id }">
+	                            <input type="checkbox" name="cb" class="cb" value="${ computer.id }" id="${computer.name}_id">
 	                        </td>
 	                        <td>
-	                            <a href="computer/edit?id=${ computer.id }" ><c:out value="${computer.name}" /></a>
+	                            <a id="${computer.name}_name" href="computer/edit?computerId=${ computer.id }" ><c:out value="${computer.name}" /></a>
 	                        </td>
 	                        <td><c:out value="${computer.introduced}" /></td>
 	                        <td><c:out value="${computer.discontinued}" /></td>

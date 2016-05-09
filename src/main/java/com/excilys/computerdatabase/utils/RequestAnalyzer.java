@@ -3,6 +3,7 @@ package com.excilys.computerdatabase.utils;
 import javax.servlet.http.HttpServletRequest;
 
 import com.excilys.computerdatabase.dto.ComputerDto;
+import com.excilys.computerdatabase.dto.ComputerDto.ComputerDtoBuilder;
 
 public enum RequestAnalyzer {
     INSTANCE;
@@ -43,9 +44,9 @@ public enum RequestAnalyzer {
      * @return the computer Object.
      */
     public ComputerDto getComputerDtoFromParam(String id, String name, String introduced, String discontinued,
-            String companyName, String companyId) {
-        ComputerDto dto = new ComputerDto().getBuilder().id(id).name(name).introduced(introduced)
-                .discontinued(discontinued).companyId(companyId).companyName(companyName).build();
+            String companyId, String companyName) {
+        ComputerDto dto = new ComputerDtoBuilder().id(id).name(name).introduced(introduced).discontinued(discontinued)
+                .companyId(companyId).companyName(companyName).build();
         return dto;
     }
 }

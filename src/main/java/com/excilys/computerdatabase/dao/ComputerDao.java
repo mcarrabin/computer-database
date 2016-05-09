@@ -15,6 +15,8 @@ import com.excilys.computerdatabase.mappers.ComputerMapper;
 public enum ComputerDao implements AbstractDao<Computer> {
     INSTANCE;
 
+    private static final DBManager DB_MANAGER = DBManager.INSTANCE;
+
     private static final String GET_BY_PAGE_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id where c.name like ? or comp.name like ? order by ";
     private static final String GET_BY_PAGE_LIMIT_REQUEST = " limit ?, ?";
     private static final String GET_ALL_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id order by c.name";
@@ -36,7 +38,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
     public List<Computer> getAll() {
         List<Computer> computers = new ArrayList<Computer>();
         ResultSet result = null;
-        Connection con = INSTANCE.connect();
+        Connection con = DB_MANAGER.getConnection();
 
         try {
             PreparedStatement statement = con.prepareStatement(GET_ALL_REQUEST);
@@ -49,7 +51,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            INSTANCE.closeConnection(con);
+            DB_MANAGER.closeConnection();
         }
 
         return computers;
@@ -67,7 +69,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
     public Computer getById(long id) throws DaoException {
         ResultSet result = null;
         Computer computer = null;
-        Connection con = INSTANCE.connect();
+        Connection con = DB_MANAGER.getConnection();
 
         try {
             PreparedStatement statement = con.prepareStatement(GET_BY_ID_REQUEST);
@@ -83,7 +85,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            INSTANCE.closeConnection(con);
+            DB_MANAGER.closeConnection();
         }
         return computer;
     }
@@ -106,7 +108,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
         List<Computer> computers = new ArrayList<Computer>();
         ResultSet result = null;
         Page<Computer> page = null;
-        Connection con = INSTANCE.connect();
+        Connection con = DB_MANAGER.getConnection();
         String query = GET_BY_PAGE_REQUEST + orderBy + GET_BY_PAGE_LIMIT_REQUEST;
 
         if (orderBy.trim().length() == 0) {
@@ -123,13 +125,13 @@ public enum ComputerDao implements AbstractDao<Computer> {
 
             ComputerMapper cm = ComputerMapper.INSTANCE;
             computers = cm.mapAll(result);
-            page = new Page<Computer>().getBuilder().elements(computers).numPage(numPage).build();
+            page = new Page<Computer>().getBuilder().elements(computers).currentPage(numPage).build();
             statement.close();
             result.close();
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            INSTANCE.closeConnection(con);
+            DB_MANAGER.closeConnection();
         }
 
         return page;
@@ -151,7 +153,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
     public long getNumTotalComputer(String name) throws DaoException {
         long result = 0;
         ResultSet res = null;
-        Connection con = INSTANCE.connect();
+        Connection con = DB_MANAGER.getConnection();
         try {
             PreparedStatement statement = con.prepareStatement(GET_TOTAL_COUNT_REQUEST);
             statement.setString(1, "%" + name + "%");
@@ -165,7 +167,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            INSTANCE.closeConnection(con);
+            DB_MANAGER.closeConnection();
         }
 
         return result;
@@ -183,15 +185,17 @@ public enum ComputerDao implements AbstractDao<Computer> {
      * @throws ConnexionException
      *             which are the exceptions due to connexion issues.
      */
+
     @Override
-    public boolean delete(Computer computer, Connection con) throws DaoException {
+    public boolean delete(long id) throws DaoException {
         boolean isDeleteOk = false;
+        Connection con = DB_MANAGER.getConnection();
         int response = 0;
         // Connection con = INSTANCE.connect();
 
         try {
             PreparedStatement statement = con.prepareStatement(DELETE_REQUEST);
-            statement.setLong(1, computer.getId());
+            statement.setLong(1, id);
             response = statement.executeUpdate();
             if (response == 1) {
                 isDeleteOk = true;
@@ -200,8 +204,8 @@ public enum ComputerDao implements AbstractDao<Computer> {
         } catch (Exception e) {
             throw new DaoException(e);
         } // finally {
-        // INSTANCE.closeConnection(con);
-        // }
+          // INSTANCE.closeConnection(con);
+          // }
 
         return isDeleteOk;
     }
@@ -222,7 +226,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
     public boolean updateComputer(Computer computer) throws DaoException {
         boolean isUpdateOk = false;
         int response = 0;
-        Connection con = INSTANCE.connect();
+        Connection con = DB_MANAGER.getConnection();
 
         try {
             PreparedStatement statement = con.prepareStatement(UPDATE_REQUEST);
@@ -247,7 +251,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            INSTANCE.closeConnection(con);
+            DB_MANAGER.closeConnection();
         }
 
         return isUpdateOk;
@@ -267,7 +271,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
     public boolean createComputer(Computer computer) throws DaoException {
         boolean creationOk = false;
         int result;
-        Connection con = INSTANCE.connect();
+        Connection con = DB_MANAGER.getConnection();
         try {
             PreparedStatement statement = con.prepareStatement(CREATE_REQUEST);
             statement.setString(1, computer.getName());
@@ -295,7 +299,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
         } catch (Exception e) {
             throw new DaoException(e);
         } finally {
-            INSTANCE.closeConnection(con);
+            DB_MANAGER.closeConnection();
         }
         return creationOk;
     }
@@ -310,16 +314,13 @@ public enum ComputerDao implements AbstractDao<Computer> {
      * @throws DaoExecption
      *             delete went wrong or prepared statement failed.
      */
-    public void deleteByCompany(long companyId, Connection con) throws DaoException {
+    public void deleteByCompany(long companyId) throws DaoException {
         int response = 0;
-
+        Connection con = DB_MANAGER.getConnection();
         try {
             PreparedStatement statement = con.prepareStatement(DELETE_BY_COMP_REQUEST);
             statement.setLong(1, companyId);
             response = statement.executeUpdate();
-            if (response != 1) {
-                throw new DaoException("Error during Computer deletion on query: " + DELETE_BY_COMP_REQUEST);
-            }
             statement.close();
         } catch (Exception e) {
             throw new DaoException(e);

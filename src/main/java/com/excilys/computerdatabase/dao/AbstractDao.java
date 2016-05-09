@@ -38,7 +38,7 @@ public interface AbstractDao<T> {
      * @throws DaoException
      *             if something went wrong.
      */
-    public abstract boolean delete(T t, Connection con) throws DaoException;
+    public abstract boolean delete(long id) throws DaoException;
 
     /**
      * Method that will get the current connection and return it.
@@ -49,7 +49,7 @@ public interface AbstractDao<T> {
      */
     public default Connection connect() {
         try {
-            return DBConnection.INSTANCE.getConnection();
+            return DBManager.INSTANCE.getConnection();
         } catch (ConnectionException e) {
             throw new DaoException(e);
         }

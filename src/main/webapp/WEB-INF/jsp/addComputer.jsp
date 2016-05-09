@@ -26,30 +26,47 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
+					<span class="container" id="error-message" ${ empty errors ? 'style = "display: none"':'' } >
+			            <div class="alert alert-danger">
+			                <c:forEach items="${ errors }" var="error" >
+			                	<c:out value="${ error.value }" />
+			                	<br/>
+			                </c:forEach>
+			                <!-- stacktrace -->
+			            </div>
+			        </span>
 					<h1>Add Computer</h1>
 					<form action="add" method="POST" id="add-form">
 						<fieldset>
 
-							<div class="form-group" id="computerNameDiv">
+							<div class="form-group ${ empty errors.name ? '' : 'has-error' }">
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" id="computerName"
-									placeholder="Computer name" name="computerName" required>
+									placeholder="Computer name" name="computerName" required value="${ computer.name }">
 							</div>
-							<div class="form-group" id="introducedDiv">
-								<label for="introduced">Introduced date (dd/MM/yyyy)</label> <input
+							<div class="form-group ${ empty errors.introduced ? '' : 'has-error' }">
+								<label for="introduced">Introduced date (dd-MM-yyyy)</label> <input
 									type="date" class="form-control" id="introduced"
-									placeholder="Introduced date" name="introduced">
+									placeholder="Introduced date" name="introduced" value="${ computer.introduced }">
 							</div>
-							<div class="form-group" id="discontinuedDiv">
-								<label for="discontinued">Discontinued date (dd/MM/yyyy)</label> <input
+							<div class="form-group ${ empty errors.discontinued ? '' : 'has-error' }">
+								<label for="discontinued">Discontinued date (dd-MM-yyyy)</label> <input
 									type="date" class="form-control" id="discontinued"
-									placeholder="Discontinued date" name="discontinued">
+									placeholder="Discontinued date" name="discontinued" value="${ computer.discontinued }">
 							</div>
 							<div class="form-group">
 								<label for="companyId">Company</label> <select
 									class="form-control" id="companyId" name="companyId">
+									<option value="-1"></option>
 									<c:forEach items="${companies}" var="company">
-										<option value="${company.id}">${company.name}</option>
+										<c:choose >
+											<c:when test="${ company.id != computer.companyId }" >
+												<option value="${ company.id }">${ company.name }</option>
+											</c:when>
+											<c:otherwise>
+												<option value="${ company.id }" selected >${ company.name } </option>
+											</c:otherwise>
+										</c:choose>
 									</c:forEach>
 								</select>
 							</div>
@@ -84,7 +101,7 @@
 			}
 		});
 		
-		var regExp = '(0[1-9]|[12][0-9]|3[01])[\/](0[1-9]|1[012])[\/](19[7-9][0-9]|20[0-3][0-9])';
+		var regExp = '(0[1-9]|[12][0-9]|3[01])[\-](0[1-9]|1[012])[\-](19[7-9][0-9]|20[0-3][0-9])';
 		$('#introduced').focusout(function() {
 			if((!$(this).val().match(regExp)) && ($(this).val().length > 0)) {
 				$(this).parent().addClass('has-error');

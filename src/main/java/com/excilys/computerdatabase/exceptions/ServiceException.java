@@ -17,4 +17,15 @@ public class ServiceException extends RuntimeException {
         super(e);
         LOGGER.error(e.getMessage());
     }
+
+    /**
+     * Constructor of the Service Exception class
+     * 
+     * @param e
+     *            is the message of the Exception to throw.
+     */
+    public ServiceException(String e) {
+        super(e);
+        LOGGER.error(e);
+    }
 }

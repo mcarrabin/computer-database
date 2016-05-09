@@ -1,10 +1,22 @@
 package com.excilys.computerdatabase.validator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.excilys.computerdatabase.entities.Company;
-import com.excilys.computerdatabase.exceptions.ValidatorException;
 
 public enum CompanyValidator {
     INSTANCE;
+    private Map<String, String> errorMessages = new HashMap<>();
+
+    public Map<String, String> getErrorMessages() {
+        return this.errorMessages;
+    }
+
+    public void setErrorMessage(Map<String, String> message) {
+        this.errorMessages = message;
+    }
+
     /**
      * Method which checks the name value. It must starts with a letter.
      *
@@ -12,7 +24,7 @@ public enum CompanyValidator {
      */
     public void isNameValid(String name) {
         if (name.length() == 0 || !name.matches("^[a-zA-Z0-9\\ &.\\-]+$")) {
-            throw new ValidatorException(
+            errorMessages.put("companyName",
                     "the Company name is empty or not valid (expected: starts with a letter and not empty).");
         }
     }
@@ -23,8 +35,8 @@ public enum CompanyValidator {
      * @param id
      */
     public void isIdValid(String id) {
-        if (id.matches("\\d*[1-9]\\d*")) {
-            throw new ValidatorException("the Company id is not valid (expected: positive number).");
+        if (!id.matches("^[1-9][0-9]*$")) {
+            errorMessages.put("companyId", "the Company id is not valid (expected: positive number).");
         }
     }
 
@@ -35,7 +47,7 @@ public enum CompanyValidator {
      */
     public void isIdValid(long id) {
         if (id <= 0) {
-            throw new ValidatorException("the Company id is not valid (expected: positive number).");
+            errorMessages.put("companyId", "the Company id is not valid (expected: positive number).");
         }
     }
 
@@ -47,9 +59,11 @@ public enum CompanyValidator {
      * @throws Validator
      *             exception if either the name or id is incorrect.
      */
-    public void validateCompany(Company company) {
+    public Map<String, String> validateCompany(Company company) {
         isIdValid(company.getId());
         isNameValid(company.getName());
+
+        return errorMessages;
     }
 
     /**
@@ -60,8 +74,10 @@ public enum CompanyValidator {
      * @throws Validator
      *             exception if either the name or id is incorrect.
      */
-    public void validateCompany(String id, String name) {
+    public Map<String, String> validateCompany(String id, String name) {
         isIdValid(id);
         isNameValid(name);
+
+        return errorMessages;
     }
 }

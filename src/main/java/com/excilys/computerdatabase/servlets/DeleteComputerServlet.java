@@ -14,7 +14,6 @@ public class DeleteComputerServlet extends HttpServlet {
     private static final RequestAnalyzer REQUEST_ANALYZER = RequestAnalyzer.INSTANCE;
     private static final ComputerService COMPUTER_SERVICE = ComputerService.INSTANCE;
 
-    private static final String ERROR_URL = "/WEB-INF/jsp/404.html";
     private static final String HOME_URI = "/WEB-INF/jsp/page.jsp";
 
     private static final String HOME_URL = "/home";
@@ -30,7 +29,7 @@ public class DeleteComputerServlet extends HttpServlet {
         } else {
             for (String s : idsString) {
                 Long id = Long.valueOf(s);
-                COMPUTER_SERVICE.deleteComputer(id);
+                COMPUTER_SERVICE.delete(id);
             }
         }
         res.sendRedirect(req.getContextPath() + HOME_URL);

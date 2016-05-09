@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 public enum DateMapper {
     INSTANCE;
     // Pattern of the date
-    private final static String FORMAT_TYPE = "dd/MM/yyyy";
+    private final static String FORMAT_TYPE = "dd-MM-yyyy";
 
     /**
      * Method that will translate a String to a LocalDateTime.
