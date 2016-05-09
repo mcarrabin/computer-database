@@ -18,6 +18,6 @@ public class SqlSort {
                 return s.getSqlSyntax();
             }
         }
-        return "c.name";
+        return "";
     }
 }

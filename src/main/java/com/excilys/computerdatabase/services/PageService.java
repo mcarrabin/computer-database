@@ -1,14 +1,14 @@
 package com.excilys.computerdatabase.services;
 
 import com.excilys.computerdatabase.dao.ComputerDao;
-import com.excilys.computerdatabase.dao.DBManager;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
 import com.excilys.computerdatabase.mappers.SqlSort;
 
 public enum PageService {
     INSTANCE;
-    private static final DBManager DB_MANAGER = DBManager.INSTANCE;
+    private static final ComputerService COMPUTER_SERVICE = ComputerService.INSTANCE;
+    private static final ComputerDao COMPUTER_DAO = ComputerDao.INSTANCE;
 
     /**
      * Méthode qui va calculer le nombre total de page affichable en se basant
@@ -24,11 +24,10 @@ public enum PageService {
      */
     public Page<Computer> getPage(int nbreLine, int numPage, String name, String orderBy, String sorting) {
         Page<Computer> page = new Page<Computer>();
-        ComputerDao computerDao = ComputerDao.INSTANCE;
         long computersTotalCount = 0;
         String sqlSort = SqlSort.getSortColumn(orderBy);
         try {
-            computersTotalCount = computerDao.getNumTotalComputer(name);
+            computersTotalCount = COMPUTER_DAO.getNumTotalComputer(name);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -36,7 +35,7 @@ public enum PageService {
         int maxPage = (int) computersTotalCount / nbreLine + 1;
 
         if (numPage <= maxPage) {
-            page = ComputerService.INSTANCE.getComputerByPage(nbreLine, numPage, name, sqlSort + " " + sorting);
+            page = COMPUTER_SERVICE.getComputerByPage(nbreLine, numPage, name, sqlSort + " " + sorting);
             page.setItemsTotalCount(computersTotalCount);
             page.setMaxPage(maxPage);
             page.setSearch(name);

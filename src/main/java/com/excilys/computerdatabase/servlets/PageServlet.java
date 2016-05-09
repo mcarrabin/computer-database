@@ -59,10 +59,10 @@ public class PageServlet extends HttpServlet {
         itemsPerPage = i >= MIN_ELEMENTS_PER_PAGE ? i : MIN_ELEMENTS_PER_PAGE;
 
         // Parse orderBy param
-        String orderByParam = REQUEST_ANALYZER.getStringParameter(PARAM_ORDER_BY, req, "name");
+        String orderByParam = REQUEST_ANALYZER.getStringParameter(PARAM_ORDER_BY, req, "");
 
         // Parse currentsorting param
-        String sortParam = REQUEST_ANALYZER.getStringParameter(PARAM_CURRENT_SORTING, req, "asc");
+        String sortParam = REQUEST_ANALYZER.getStringParameter(PARAM_CURRENT_SORTING, req, "");
 
         // Get page from service
         Page<Computer> page = PageService.INSTANCE.getPage(itemsPerPage, currentPage, searchString, orderByParam,

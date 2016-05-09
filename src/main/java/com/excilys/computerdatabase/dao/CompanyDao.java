@@ -13,12 +13,12 @@ import com.excilys.computerdatabase.mappers.CompanyMapper;
 public enum CompanyDao implements AbstractDao<Company> {
     INSTANCE;
 
+    private static final CompanyMapper COMPANY_MAPPER = CompanyMapper.INSTANCE;
     private static final DBManager DB_MANAGER = DBManager.INSTANCE;
 
     private static final String GET_ALL_REQUEST = "select * from company order by name";
     private static final String GET_BY_ID_REQUEST = "select * from company where id = ?";
     private static final String DELETE_COMPANY_REQUEST = "delete from company where id = ?";
-    private static final String DELETE_COMPUTER_REQUEST = "delete from computer where company_id = ?";
 
     /**
      * Method that will get every companies stored in the database.
@@ -38,8 +38,7 @@ public enum CompanyDao implements AbstractDao<Company> {
         try {
             PreparedStatement statement = con.prepareStatement(GET_ALL_REQUEST);
             result = statement.executeQuery();
-            CompanyMapper compMapper = CompanyMapper.INSTANCE;
-            companies = compMapper.mapAll(result);
+            companies = COMPANY_MAPPER.mapAll(result);
             statement.close();
             result.close();
         } catch (Exception e) {
@@ -75,8 +74,7 @@ public enum CompanyDao implements AbstractDao<Company> {
                 PreparedStatement statement = con.prepareStatement(GET_BY_ID_REQUEST);
                 statement.setLong(1, id);
                 result = statement.executeQuery();
-                CompanyMapper compMapper = CompanyMapper.INSTANCE;
-                company = compMapper.mapAll(result).get(0);
+                company = COMPANY_MAPPER.mapAll(result).get(0);
                 statement.close();
                 result.close();
             } catch (Exception e) {

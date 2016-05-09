@@ -15,17 +15,19 @@ import com.excilys.computerdatabase.mappers.ComputerMapper;
 public enum ComputerDao implements AbstractDao<Computer> {
     INSTANCE;
 
+    private static final ComputerMapper COMPUTER_MAPPER = ComputerMapper.INSTANCE;
     private static final DBManager DB_MANAGER = DBManager.INSTANCE;
 
-    private static final String GET_BY_PAGE_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id where c.name like ? or comp.name like ? order by ";
-    private static final String GET_BY_PAGE_LIMIT_REQUEST = " limit ?, ?";
-    private static final String GET_ALL_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id order by c.name";
+    private static final String GET_BY_PAGE_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id";
+    private static final String GET_ALL_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id";
     private static final String GET_BY_ID_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id where c.id = ? ";
-    private static final String GET_TOTAL_COUNT_REQUEST = "select count(*) as number from computer c left join company comp on comp.id = c.company_id where comp.name like ? or c.name like ?";
+    private static final String GET_TOTAL_COUNT_REQUEST = "select count(*) as number from computer c left join company comp on comp.id = c.company_id";
     private static final String UPDATE_REQUEST = "update computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
     private static final String DELETE_REQUEST = "delete from computer where id = ? ";
     private static final String DELETE_BY_COMP_REQUEST = "delete from computer where company_id = ?";
     private static final String CREATE_REQUEST = "insert into computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?)";
+
+    private static final String LIKE_REQUEST = "where c.name like ? or comp.name like ? ";
 
     /**
      * Méthode qui va construire une liste de toutes les entrées computer
@@ -44,8 +46,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
             PreparedStatement statement = con.prepareStatement(GET_ALL_REQUEST);
             result = statement.executeQuery();
 
-            ComputerMapper cm = ComputerMapper.INSTANCE;
-            computers = cm.mapAll(result);
+            computers = COMPUTER_MAPPER.mapAll(result);
             statement.close();
             result.close();
         } catch (Exception e) {
@@ -76,8 +77,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
             statement.setLong(1, id);
             result = statement.executeQuery();
             if (result.next()) {
-                ComputerMapper cm = ComputerMapper.INSTANCE;
-                computer = cm.mapUnique(result);
+                computer = COMPUTER_MAPPER.mapUnique(result);
                 statement.close();
                 result.close();
             }
@@ -109,22 +109,35 @@ public enum ComputerDao implements AbstractDao<Computer> {
         ResultSet result = null;
         Page<Computer> page = null;
         Connection con = DB_MANAGER.getConnection();
-        String query = GET_BY_PAGE_REQUEST + orderBy + GET_BY_PAGE_LIMIT_REQUEST;
+        String query = GET_BY_PAGE_REQUEST;
 
-        if (orderBy.trim().length() == 0) {
-            orderBy = "c.name asc";
+        // if there is a search required, add the condition.
+        if (!search.trim().isEmpty()) {
+            query += LIKE_REQUEST;
         }
+
+        // if there is a sorting required, add the order by condition.
+        if (orderBy.trim().length() > 0) {
+            query += " order by " + orderBy;
+        }
+
+        query += " limit ?, ?";
 
         try {
             PreparedStatement statement = con.prepareStatement(query);
-            statement.setString(1, "%" + search + "%");
-            statement.setString(2, "%" + search + "%");
-            statement.setInt(3, nbreLine * (numPage - 1));
-            statement.setInt(4, nbreLine);
+            if (!search.trim().isEmpty()) {
+                statement.setString(1, "%" + search + "%");
+                statement.setString(2, "%" + search + "%");
+                statement.setInt(3, nbreLine * (numPage - 1));
+                statement.setInt(4, nbreLine);
+            } else {
+                statement.setInt(1, nbreLine * (numPage - 1));
+                statement.setInt(2, nbreLine);
+            }
+
             result = statement.executeQuery();
 
-            ComputerMapper cm = ComputerMapper.INSTANCE;
-            computers = cm.mapAll(result);
+            computers = COMPUTER_MAPPER.mapAll(result);
             page = new Page<Computer>().getBuilder().elements(computers).currentPage(numPage).build();
             statement.close();
             result.close();
@@ -150,14 +163,18 @@ public enum ComputerDao implements AbstractDao<Computer> {
      * @throws ConnexionException
      *             if something went wrong for connection opening of closing.
      */
-    public long getNumTotalComputer(String name) throws DaoException {
+    public long getNumTotalComputer(String search) throws DaoException {
         long result = 0;
         ResultSet res = null;
         Connection con = DB_MANAGER.getConnection();
+        String query = GET_TOTAL_COUNT_REQUEST;
         try {
             PreparedStatement statement = con.prepareStatement(GET_TOTAL_COUNT_REQUEST);
-            statement.setString(1, "%" + name + "%");
-            statement.setString(2, "%" + name + "%");
+            if (!search.trim().isEmpty()) {
+                query += LIKE_REQUEST;
+                statement.setString(1, "%" + search + "%");
+                statement.setString(2, "%" + search + "%");
+            }
             res = statement.executeQuery();
             if (res.next()) {
                 result = res.getLong("number");

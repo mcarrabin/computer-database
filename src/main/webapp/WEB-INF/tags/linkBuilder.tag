@@ -29,13 +29,16 @@
 				<c:when test="${ currentSorting == 'asc'}" >
 					<c:out value="&sort=desc" />
 				</c:when>
-				<c:otherwise>
+				<c:when test="${ currentSorting == 'desc'}" >
 					<c:out value="&sort=asc" />
+				</c:when>
+				<c:otherwise>
+					<c:out value="" />
 				</c:otherwise>
 			</c:choose>
 		</c:when>
 		<c:otherwise>
-			<c:out value="&sort=asc" />
+			<c:out value="" />
 		</c:otherwise>
 	</c:choose>
 </c:set>

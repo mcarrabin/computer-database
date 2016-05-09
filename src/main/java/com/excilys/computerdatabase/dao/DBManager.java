@@ -53,7 +53,7 @@ public enum DBManager {
         ds.setJdbcUrl(URL);
         ds.setUsername(LOGIN);
         ds.setPassword(PASSWORD);
-        ds.setMaximumPoolSize(50);
+        ds.setMaximumPoolSize(20);
     }
 
     /**
