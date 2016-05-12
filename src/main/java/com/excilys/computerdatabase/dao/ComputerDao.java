@@ -27,7 +27,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
     private static final String DELETE_BY_COMP_REQUEST = "delete from computer where company_id = ?";
     private static final String CREATE_REQUEST = "insert into computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?)";
 
-    private static final String LIKE_REQUEST = "where c.name like ? or comp.name like ? ";
+    private static final String LIKE_REQUEST = " where c.name like ? or comp.name like ? ";
 
     /**
      * Méthode qui va construire une liste de toutes les entrées computer
@@ -117,7 +117,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
         }
 
         // if there is a sorting required, add the order by condition.
-        if (orderBy.trim().length() > 0) {
+        if (!orderBy.trim().isEmpty()) {
             query += " order by " + orderBy;
         }
 
@@ -169,9 +169,12 @@ public enum ComputerDao implements AbstractDao<Computer> {
         Connection con = DB_MANAGER.getConnection();
         String query = GET_TOTAL_COUNT_REQUEST;
         try {
-            PreparedStatement statement = con.prepareStatement(GET_TOTAL_COUNT_REQUEST);
             if (!search.trim().isEmpty()) {
                 query += LIKE_REQUEST;
+            }
+
+            PreparedStatement statement = con.prepareStatement(query);
+            if (!search.trim().isEmpty()) {
                 statement.setString(1, "%" + search + "%");
                 statement.setString(2, "%" + search + "%");
             }

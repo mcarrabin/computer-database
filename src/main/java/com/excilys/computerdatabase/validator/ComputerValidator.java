@@ -122,8 +122,8 @@ public enum ComputerValidator {
 
         isDateValid(computer.getIntroduced(), "introduced");
         isDateValid(computer.getDiscontinued(), "discontinued");
-        LocalDate introduced = DateMapper.toLocalDateTime(computer.getIntroduced()).toLocalDate();
-        LocalDate discontinued = DateMapper.toLocalDateTime(computer.getDiscontinued()).toLocalDate();
+        LocalDate introduced = DateMapper.toLocalDate(computer.getIntroduced());
+        LocalDate discontinued = DateMapper.toLocalDate(computer.getDiscontinued());
 
         areDatesOk(introduced, discontinued);
 
@@ -143,8 +143,8 @@ public enum ComputerValidator {
 
         isDateValid(pIntroduced, "introduced");
         isDateValid(pDiscontinued, "discontinued");
-        LocalDate introduced = DateMapper.toLocalDateTime(pIntroduced).toLocalDate();
-        LocalDate discontinued = DateMapper.toLocalDateTime(pDiscontinued).toLocalDate();
+        LocalDate introduced = DateMapper.toLocalDate(pIntroduced);
+        LocalDate discontinued = DateMapper.toLocalDate(pDiscontinued);
 
         areDatesOk(introduced, discontinued);
 

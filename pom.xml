@@ -13,9 +13,6 @@
   	<jsp>2.0</jsp>
   	<jstl>1.2</jstl>
 	<hikari>2.4.5</hikari>
-        <gatling.version>2.1.7</gatling.version>
-        <gatling-plugin.version>2.1.7</gatling-plugin.version>
-        <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
    <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
  </properties>
   
@@ -98,14 +95,6 @@
 	    <version>${hikari}</version>
 	    <scope>compile</scope>
 	</dependency>
-
-	<!-- Gatling -->
-        <dependency>
-            <groupId>io.gatling.highcharts</groupId>
-            <artifactId>gatling-charts-highcharts</artifactId>
-            <version>${gatling.version}</version>
-            <scope>test</scope>
-        </dependency>
   </dependencies>
   
   <build>
@@ -118,23 +107,6 @@
           <target>1.8</target>
         </configuration>
       </plugin>
-	<plugin>
-		<groupId>net.alchim31.maven</groupId>
-		<artifactId>scala-maven-plugin</artifactId>
-		<version>${scala-maven-plugin.version}</version>
-	</plugin>
-	<plugin>
-		<groupId>io.gatling</groupId>
-		<artifactId>gatling-maven-plugin</artifactId>
-		<version>${gatling-plugin.version}</version>
-		<executions>
-		    <execution>
-		        <goals>
-		            <goal>execute</goal>
-		        </goals>
-		    </execution>
-		</executions>
-	</plugin>
     </plugins>
   </build>
 </project>

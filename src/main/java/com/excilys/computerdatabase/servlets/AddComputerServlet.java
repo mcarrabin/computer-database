@@ -69,8 +69,8 @@ public class AddComputerServlet extends HttpServlet {
             doGet(req, resp);
         } else {
 
-            LocalDate introduced = DateMapper.toLocalDateTime(introducedParam).toLocalDate();
-            LocalDate discontinued = DateMapper.toLocalDateTime(discontinuedParam).toLocalDate();
+            LocalDate introduced = DateMapper.toLocalDate(introducedParam);
+            LocalDate discontinued = DateMapper.toLocalDate(discontinuedParam);
 
             Computer computer = new Computer().getBuilder().company(company).name(computerNameParam)
                     .introduced(introduced).discontinued(discontinued).build();

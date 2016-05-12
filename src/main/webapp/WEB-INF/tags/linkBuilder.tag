@@ -24,18 +24,18 @@
 </c:set>
 <c:set var="sortingVar" >
 	<c:choose>
-		<c:when test="${ orderBy == currentOrderBy }" >
+		<c:when test="${ orderBy == currentOrderBy && not empty orderBy }" >
 			<c:choose>
 				<c:when test="${ currentSorting == 'asc'}" >
 					<c:out value="&sort=desc" />
 				</c:when>
-				<c:when test="${ currentSorting == 'desc'}" >
-					<c:out value="&sort=asc" />
-				</c:when>
 				<c:otherwise>
-					<c:out value="" />
+					<c:out value="&sort=asc" />
 				</c:otherwise>
 			</c:choose>
+		</c:when>
+		<c:when test="${ orderBy != currentOrderBy && not empty orderBy }" >
+			<c:out value="&sort=asc" />
 		</c:when>
 		<c:otherwise>
 			<c:out value="" />

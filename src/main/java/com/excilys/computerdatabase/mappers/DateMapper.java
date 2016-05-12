@@ -1,7 +1,6 @@
 package com.excilys.computerdatabase.mappers;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public enum DateMapper {
@@ -17,11 +16,11 @@ public enum DateMapper {
      * @return the LocalDateTime.
      */
 
-    public static LocalDateTime toLocalDateTime(String date) {
-        LocalDateTime result = null;
+    public static LocalDate toLocalDate(String date) {
+        LocalDate result = null;
         if (date != null && date.length() != 0) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_TYPE);
-            result = LocalDate.parse(date, formatter).atStartOfDay();
+            result = LocalDate.parse(date, formatter);
         }
         return result;
     }
@@ -33,7 +32,7 @@ public enum DateMapper {
      *            is the LocalDateTime date to transform.
      * @return the String format date.
      */
-    public static String toString(LocalDateTime date) {
+    public static String toString(LocalDate date) {
         if (date == null) {
             return "";
         } else {
