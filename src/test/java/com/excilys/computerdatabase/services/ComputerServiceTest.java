@@ -13,7 +13,8 @@ import com.excilys.computerdatabase.exceptions.DaoException;
 import com.excilys.computerdatabase.exceptions.ServiceException;
 
 public class ComputerServiceTest extends junit.framework.TestCase {
-    private final static ComputerService COMPUTER_SERVICE = ComputerService.INSTANCE;
+    private static final ComputerService COMPUTER_SERVICE = ComputerService.INSTANCE;
+
     private static Computer computer1;
     private static Computer computer2;
     private static Company company1;
@@ -92,16 +93,18 @@ public class ComputerServiceTest extends junit.framework.TestCase {
      */
     @Test
     public void testGetComputerById() throws ServiceException {
-        String name = "CM-5", companyName = "Thinking Machines";
+        String name = "CM-5";
+        String companyName = "Thinking Machines";
         LocalDate dateTime = LocalDate.of(1991, Month.JANUARY, 01);
-        LocalDate dateTime2 = LocalDate.of(2006, Month.JANUARY, 10);
-        long id = 5;
+        long idComputer = 5;
+        long idCompany = 2;
         Computer computer = COMPUTER_SERVICE.getById(5);
-        assertEquals(id, computer.getId());
+
+        assertEquals(idComputer, computer.getId());
         assertEquals(name, computer.getName());
         assertEquals(companyName, computer.getCompany().getName());
         assertEquals(dateTime, computer.getIntroduced());
-        assertEquals(id, computer.getCompany().getId());
+        assertEquals(idCompany, computer.getCompany().getId());
 
     }
 
