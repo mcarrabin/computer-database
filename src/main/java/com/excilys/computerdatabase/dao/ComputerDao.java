@@ -30,11 +30,11 @@ public enum ComputerDao implements AbstractDao<Computer> {
     private static final String LIKE_REQUEST = " where c.name like ? or comp.name like ? ";
 
     /**
-     * Méthode qui va construire une liste de toutes les entrées computer
+     * Methode qui va construire une liste de toutes les entrees computer
      * contenues en BDD.
      *
      * @return la liste de toutes ces ArrayList<ComputerEntity> computers = new
-     *         ArrayList<ComputerEntity>(); entrées
+     *         ArrayList<ComputerEntity>(); entrees
      */
     @Override
     public List<Computer> getAll() {
@@ -59,12 +59,12 @@ public enum ComputerDao implements AbstractDao<Computer> {
     }
 
     /**
-     * Méthode qui va récupérer une entree de la table computer en se basant sur
-     * l'id passé en paramètre.
+     * Methode qui va recuperer une entree de la table computer en se basant sur
+     * l'id passe en parametre.
      *
      * @param id
-     *            id de l'ordinateur à récupérer
-     * @return l'ordinateur récupéré en BDD
+     *            id de l'ordinateur a recuperer
+     * @return l'ordinateur recupere en BDD
      */
     @Override
     public Computer getById(long id) throws DaoException {
@@ -194,11 +194,11 @@ public enum ComputerDao implements AbstractDao<Computer> {
     }
 
     /**
-     * Méthode qui va supprimer l'entree dont l'id correspond avec l'id de
-     * l'objet passé en paramètre.
+     * Methode qui va supprimer l'entree dont l'id correspond avec l'id de
+     * l'objet passe en parametre.
      *
      * @param computer
-     *            objet à supprimer dans la bdd.
+     *            objet a supprimer dans la bdd.
      * @return true if the computer is deleted, else false.
      * @throws DaoException
      *             which are the exceptions handled by the Dao classes.
@@ -231,8 +231,8 @@ public enum ComputerDao implements AbstractDao<Computer> {
     }
 
     /**
-     * Méthode qui va lancer la requête de mise à jour dans la BDD en se basant
-     * sur l'id pour retrouver l'entrée à mettre à jour.
+     * Methode qui va lancer la requete de mise a jour dans la BDD en se basant
+     * sur l'id pour retrouver l'entree a mettre a jour.
      *
      * @param computer
      *            contient l'ordinnateur avec les nouvelles valeurs.
@@ -278,7 +278,7 @@ public enum ComputerDao implements AbstractDao<Computer> {
     }
 
     /**
-     * Méthode appelée pour créer un computer et l'insérer en bdd.
+     * Methode appelee pour creer un computer et l'inserer en bdd.
      *
      * @param computer
      *            is the Computer object to create.
