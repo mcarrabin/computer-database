@@ -13,6 +13,7 @@
   	<jsp>2.0</jsp>
   	<jstl>1.2</jstl>
 	<hikari>2.4.5</hikari>
+	<spring>4.2.6.RELEASE<spring>
    <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
  </properties>
   
@@ -95,6 +96,15 @@
 	    <version>${hikari}</version>
 	    <scope>compile</scope>
 	</dependency>
+  </dependencies>
+
+  <!-- Spring -->
+  <dependencies>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring}</version>
+    </dependency>
   </dependencies>
   
   <build>
