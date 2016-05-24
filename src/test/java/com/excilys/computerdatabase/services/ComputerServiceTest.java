@@ -5,6 +5,8 @@ import java.time.Month;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.entities.Computer;
@@ -13,7 +15,9 @@ import com.excilys.computerdatabase.exceptions.DaoException;
 import com.excilys.computerdatabase.exceptions.ServiceException;
 
 public class ComputerServiceTest extends junit.framework.TestCase {
-    private static final ComputerService COMPUTER_SERVICE = ComputerService.INSTANCE;
+    @Autowired
+    @Qualifier("computerService")
+    private ComputerService computerService;
 
     private static Computer computer1;
     private static Computer computer2;
@@ -98,7 +102,7 @@ public class ComputerServiceTest extends junit.framework.TestCase {
         LocalDate dateTime = LocalDate.of(1991, Month.JANUARY, 01);
         long idComputer = 5;
         long idCompany = 2;
-        Computer computer = COMPUTER_SERVICE.getById(5);
+        Computer computer = computerService.getById(5);
 
         assertEquals(idComputer, computer.getId());
         assertEquals(name, computer.getName());

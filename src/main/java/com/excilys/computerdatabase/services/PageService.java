@@ -1,23 +1,32 @@
 package com.excilys.computerdatabase.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.excilys.computerdatabase.dao.ComputerDao;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
 import com.excilys.computerdatabase.mappers.SqlSort;
 
-public enum PageService {
-    INSTANCE;
-    private static final ComputerService COMPUTER_SERVICE = ComputerService.INSTANCE;
-    private static final ComputerDao COMPUTER_DAO = ComputerDao.INSTANCE;
+@Service("pageService")
+public class PageService {
+    @Autowired
+    @Qualifier("computerService")
+    private ComputerService computerService;
+
+    @Autowired
+    @Qualifier("computerDao")
+    private ComputerDao computerDao;
 
     /**
-     * Méthode qui va calculer le nombre total de page affichable en se basant
-     * sur le nombre de ligne par page reçu en paramètre.
+     * Methode qui va calculer le nombre total de page affichable en se basant
+     * sur le nombre de ligne par page reçu en parametre.
      *
      * @param nbreLine
      *            nbre de ligne par page voulu
      * @param numPage
-     *            numéro de la page voulue
+     *            numero de la page voulue
      * @param name
      *            filtre sur les noms de Computer.
      * @return la page construite
@@ -27,7 +36,7 @@ public enum PageService {
         long computersTotalCount = 0;
         String sqlSort = SqlSort.getSortColumn(orderBy);
         try {
-            computersTotalCount = COMPUTER_DAO.getNumTotalComputer(name);
+            computersTotalCount = computerDao.getNumTotalComputer(name);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -35,7 +44,7 @@ public enum PageService {
         int maxPage = (int) computersTotalCount / nbreLine + 1;
 
         if (numPage <= maxPage) {
-            page = COMPUTER_SERVICE.getComputerByPage(nbreLine, numPage, name, sqlSort + " " + sorting);
+            page = computerService.getComputerByPage(nbreLine, numPage, name, sqlSort + " " + sorting);
             page.setItemsTotalCount(computersTotalCount);
             page.setMaxPage(maxPage);
             page.setSearch(name);

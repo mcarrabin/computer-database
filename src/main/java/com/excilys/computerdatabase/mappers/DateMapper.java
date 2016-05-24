@@ -3,8 +3,11 @@ package com.excilys.computerdatabase.mappers;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public enum DateMapper {
-    INSTANCE;
+import org.springframework.stereotype.Component;
+
+@Component("dateMapper")
+public class DateMapper {
+    // INSTANCE;
     // Pattern of the date
     private final static String FORMAT_TYPE = "dd-MM-yyyy";
 

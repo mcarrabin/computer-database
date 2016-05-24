@@ -5,11 +5,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.exceptions.MapperException;
 
-public enum CompanyMapper implements Mapper<Company> {
-    INSTANCE;
+@Component("companyMapper")
+public class CompanyMapper implements Mapper<Company> {
 
     /**
      * Méthode qui va créer et retourner un objet CompanyEntity complété avec le

@@ -6,19 +6,37 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
+
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.exceptions.DaoException;
 import com.excilys.computerdatabase.mappers.CompanyMapper;
 
-public enum CompanyDao implements AbstractDao<Company> {
-    INSTANCE;
+@Repository("companyDao")
+public class CompanyDao implements AbstractDao<Company> {
 
-    private static final CompanyMapper COMPANY_MAPPER = CompanyMapper.INSTANCE;
-    private static final DBManager DB_MANAGER = DBManager.INSTANCE;
+    @Autowired
+    @Qualifier("companyMapper")
+    private CompanyMapper companyMapper;
+
+    @Autowired
+    @Qualifier("dbManager")
+    private DBManager dbManager;
 
     private static final String GET_ALL_REQUEST = "select * from company order by name";
     private static final String GET_BY_ID_REQUEST = "select * from company where id = ?";
     private static final String DELETE_COMPANY_REQUEST = "delete from company where id = ?";
+
+    /**
+     * Method that will return a connection from the dbManager instance.
+     *
+     * @return a connection to the database.
+     */
+    public Connection connect() {
+        return dbManager.getConnection();
+    }
 
     /**
      * Method that will get every companies stored in the database.
@@ -33,18 +51,16 @@ public enum CompanyDao implements AbstractDao<Company> {
     public List<Company> getAll() throws DaoException {
         ResultSet result;
         List<Company> companies = new ArrayList<Company>();
-        Connection con = DB_MANAGER.getConnection();
+        Connection con = connect();
 
         try {
             PreparedStatement statement = con.prepareStatement(GET_ALL_REQUEST);
             result = statement.executeQuery();
-            companies = COMPANY_MAPPER.mapAll(result);
+            companies = companyMapper.mapAll(result);
             statement.close();
             result.close();
         } catch (Exception e) {
             throw new DaoException(e);
-        } finally {
-            DB_MANAGER.closeConnection();
         }
 
         return companies;
@@ -68,19 +84,17 @@ public enum CompanyDao implements AbstractDao<Company> {
         } else {
             ResultSet result;
             Company company = null;
-            Connection con = DB_MANAGER.getConnection();
+            Connection con = connect();
 
             try {
                 PreparedStatement statement = con.prepareStatement(GET_BY_ID_REQUEST);
                 statement.setLong(1, id);
                 result = statement.executeQuery();
-                company = COMPANY_MAPPER.mapAll(result).get(0);
+                company = companyMapper.mapAll(result).get(0);
                 statement.close();
                 result.close();
             } catch (Exception e) {
                 throw new DaoException(e);
-            } finally {
-                DB_MANAGER.closeConnection();
             }
 
             return company;
@@ -99,14 +113,13 @@ public enum CompanyDao implements AbstractDao<Company> {
      */
     @Override
     public boolean delete(long id) throws DaoException {
-        Connection con = DB_MANAGER.getConnection();
+        Connection con = connect();
         try {
 
             PreparedStatement stmt = con.prepareStatement(DELETE_COMPANY_REQUEST);
             stmt.setLong(1, id);
             stmt.executeUpdate();
 
-            con.commit();
             stmt.close();
             return true;
         } catch (Exception e) {

@@ -3,20 +3,26 @@ package com.excilys.computerdatabase.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.excilys.computerdatabase.dao.ComputerDao;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
 import com.excilys.computerdatabase.exceptions.ServiceException;
 
-public enum ComputerService implements Service<Computer> {
-    INSTANCE;
-    private static final ComputerDao COMPUTER_DAO = ComputerDao.INSTANCE;
+@Service("computerService")
+public class ComputerService implements IService<Computer> {
+    @Autowired
+    @Qualifier("computerDao")
+    private ComputerDao computerDao;
 
     @Override
     public List<Computer> getAll() {
         List<Computer> computers = new ArrayList<>();
         try {
-            computers = COMPUTER_DAO.getAll();
+            computers = computerDao.getAll();
         } catch (Exception e) {
             throw new ServiceException(e);
         }
@@ -27,7 +33,7 @@ public enum ComputerService implements Service<Computer> {
     public Computer getById(long id) {
         Computer computer = null;
         try {
-            computer = COMPUTER_DAO.getById(id);
+            computer = computerDao.getById(id);
         } catch (Exception e) {
             throw new ServiceException(e);
         }
@@ -51,7 +57,7 @@ public enum ComputerService implements Service<Computer> {
     public Page<Computer> getComputerByPage(int nbreLine, int numPage, String name, String orderBy) {
         Page<Computer> page = null;
         try {
-            page = COMPUTER_DAO.getByPage(nbreLine, numPage, name, orderBy);
+            page = computerDao.getByPage(nbreLine, numPage, name, orderBy);
         } catch (Exception e) {
             throw new ServiceException(e);
         }
@@ -62,7 +68,7 @@ public enum ComputerService implements Service<Computer> {
     public boolean update(Computer computer) {
         boolean result = false;
         try {
-            result = COMPUTER_DAO.updateComputer(computer);
+            result = computerDao.updateComputer(computer);
         } catch (Exception e) {
             throw new ServiceException(e);
         }
@@ -73,8 +79,8 @@ public enum ComputerService implements Service<Computer> {
     public boolean delete(long id) {
         boolean result = false;
         try {
-            Computer computer = COMPUTER_DAO.getById(id);
-            result = COMPUTER_DAO.delete(computer.getId());
+            Computer computer = computerDao.getById(id);
+            result = computerDao.delete(computer.getId());
         } catch (Exception e) {
             throw new ServiceException(e);
         }
@@ -85,7 +91,7 @@ public enum ComputerService implements Service<Computer> {
     public boolean create(Computer computer) {
         boolean result = false;
         try {
-            result = COMPUTER_DAO.createComputer(computer);
+            result = computerDao.createComputer(computer);
         } catch (Exception e) {
             throw new ServiceException(e);
         }

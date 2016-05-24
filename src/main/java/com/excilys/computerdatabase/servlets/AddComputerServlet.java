@@ -6,10 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.computerdatabase.dto.ComputerDto;
 import com.excilys.computerdatabase.dto.ComputerDto.ComputerDtoBuilder;
@@ -34,12 +39,25 @@ public class AddComputerServlet extends HttpServlet {
     private static final String ATT_ERRORS = "errors";
     private static final String ATT_COMPUTER = "computer";
 
-    private static final RequestAnalyzer REQUEST_ANALYZER = RequestAnalyzer.INSTANCE;
-    private static final ComputerValidator COMPUTER_VAL = ComputerValidator.INSTANCE;
+    @Autowired
+    @Qualifier("requestAnalyzer")
+    private RequestAnalyzer requestAnalyzer;
+
+    @Autowired
+    @Qualifier("computerValidator")
+    private ComputerValidator computerValidator;
+
+    @Autowired
+    @Qualifier("computerService")
+    private ComputerService computerService;
+
+    @Autowired
+    @Qualifier("companyService")
+    private CompanyService companyService;
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        List<Company> companies = CompanyService.INSTANCE.getAll();
+        List<Company> companies = companyService.getAll();
 
         req.setAttribute(ATT_COMPANIES, companies);
         req.getRequestDispatcher(ADD_COMPUTER_PAGE).forward(req, res);
@@ -49,18 +67,18 @@ public class AddComputerServlet extends HttpServlet {
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Map<String, String> validatorErrors = new HashMap<>();
 
-        String computerNameParam = REQUEST_ANALYZER.getStringParameter(PARAM_COMPUTER_NAME, req, "");
-        String companyIdParam = REQUEST_ANALYZER.getStringParameter(PARAM_COMPANY_ID, req, "");
-        String introducedParam = REQUEST_ANALYZER.getStringParameter(PARAM_INTRODUCED_DATE, req, "");
-        String discontinuedParam = REQUEST_ANALYZER.getStringParameter(PARAM_DISCONTINUED_DATE, req, "");
+        String computerNameParam = requestAnalyzer.getStringParameter(PARAM_COMPUTER_NAME, req, "");
+        String companyIdParam = requestAnalyzer.getStringParameter(PARAM_COMPANY_ID, req, "");
+        String introducedParam = requestAnalyzer.getStringParameter(PARAM_INTRODUCED_DATE, req, "");
+        String discontinuedParam = requestAnalyzer.getStringParameter(PARAM_DISCONTINUED_DATE, req, "");
 
         Company company = null;
         if (companyIdParam.trim().length() > 0 && !companyIdParam.trim().equalsIgnoreCase("-1")) {
             long companyId = Long.parseLong(companyIdParam);
-            company = CompanyService.INSTANCE.getById(companyId);
+            company = companyService.getById(companyId);
         }
 
-        validatorErrors = COMPUTER_VAL.validate(computerNameParam, introducedParam, discontinuedParam);
+        validatorErrors = computerValidator.validate(computerNameParam, introducedParam, discontinuedParam);
         ComputerDto computerDto = new ComputerDtoBuilder().name(computerNameParam).introduced(introducedParam)
                 .discontinued(discontinuedParam).companyId(companyIdParam).build();
         if (validatorErrors.size() > 0) {
@@ -76,8 +94,14 @@ public class AddComputerServlet extends HttpServlet {
                     .introduced(introduced).discontinued(discontinued).build();
             // COMPUTER_VAL.validateComputer(computer);
 
-            ComputerService.INSTANCE.create(computer);
+            computerService.create(computer);
             resp.sendRedirect(HOME_PAGE);
         }
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
     }
 }

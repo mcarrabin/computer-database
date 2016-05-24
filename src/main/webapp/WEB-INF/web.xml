@@ -11,6 +11,16 @@
         <location>/WEB-INF/jsp/500.html</location>
   </error-page>
   
+<!--   <servlet> -->
+<!-- 	<servlet-name>spring</servlet-name> -->
+<!-- 	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class> -->
+<!-- 	<init-param> -->
+<!-- 	  <param-name>contextConfigLocation</param-name> -->
+<!-- 	  <param-value>WEB-INF/applicationContext.xml</param-value> -->
+<!-- 	</init-param> -->
+<!-- 	<load-on-startup>1</load-on-startup> -->
+<!--   </servlet> -->
+  
   <servlet>
   	<servlet-name>PageServlet</servlet-name>
   	<servlet-class>com.excilys.computerdatabase.servlets.PageServlet</servlet-class>
@@ -44,5 +54,13 @@
   	<servlet-name>DeleteComputerServlet</servlet-name>
   	<url-pattern>/computer/delete</url-pattern>
   </servlet-mapping>
+  
+  <welcome-file-list>
+    <welcome-file>PageServlet</welcome-file>
+  </welcome-file-list>
+  
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+</listener>
   
 </web-app>

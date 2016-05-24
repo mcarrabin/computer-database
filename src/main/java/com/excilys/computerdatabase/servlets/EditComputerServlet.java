@@ -5,10 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.computerdatabase.dto.ComputerDto;
 import com.excilys.computerdatabase.entities.Company;
@@ -20,11 +25,26 @@ import com.excilys.computerdatabase.utils.RequestAnalyzer;
 import com.excilys.computerdatabase.validator.ComputerValidator;
 
 public class EditComputerServlet extends HttpServlet {
-    private static final RequestAnalyzer REQUEST_ANALYZER = RequestAnalyzer.INSTANCE;
-    private static final ComputerValidator COMPUTER_VALIDATOR = ComputerValidator.INSTANCE;
-    private static final ComputerService COMPUTER_SERVICE = ComputerService.INSTANCE;
-    private static final CompanyService COMPANY_SERVICE = CompanyService.INSTANCE;
-    private static final ComputerDtoMapper DTO_MAPPER = ComputerDtoMapper.INSTANCE;
+
+    @Autowired
+    @Qualifier("requestAnalyzer")
+    private RequestAnalyzer requestAnalyzer;
+
+    @Autowired
+    @Qualifier("computerValidator")
+    private ComputerValidator computerValidator;
+
+    @Autowired
+    @Qualifier("computerService")
+    private ComputerService computerService;
+
+    @Autowired
+    @Qualifier("companyService")
+    private CompanyService companyService;
+
+    @Autowired
+    @Qualifier("computerDtoMapper")
+    private ComputerDtoMapper dtoMapper;
 
     private static final String HOME_URL = "/home";
     private static final String EDIT_COMPUTER_URL = "/WEB-INF/jsp/editComputer.jsp";
@@ -43,19 +63,19 @@ public class EditComputerServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         // Parse the Computer id parameter.
-        String idParam = REQUEST_ANALYZER.getStringParameter(PARAM_ID_COMPUTER, req, "-1");
+        String idParam = requestAnalyzer.getStringParameter(PARAM_ID_COMPUTER, req, "-1");
         long id = Long.parseLong(idParam);
 
         // Get the computer based on the id (call to ComputerService). If
         // Computer not found, call to page 404.
-        Computer computer = COMPUTER_SERVICE.getById(id);
+        Computer computer = computerService.getById(id);
         if (computer == null) {
             req.getRequestDispatcher(NOT_FOUND_URL).forward(req, res);
         } else {
-            ComputerDto dto = DTO_MAPPER.toDto(computer);
+            ComputerDto dto = dtoMapper.toDto(computer);
 
             // get all companies and add an empty one.
-            List<Company> companies = COMPANY_SERVICE.getAll();
+            List<Company> companies = companyService.getAll();
 
             // call the edit computer jsp passing the ComputerDto as response
             // parameter.
@@ -70,22 +90,22 @@ public class EditComputerServlet extends HttpServlet {
         Map<String, String> errorsMessages = new HashMap<>();
 
         // Parse parameters
-        String id = REQUEST_ANALYZER.getStringParameter(PARAM_ID_COMPUTER, req, "-1");
-        String name = REQUEST_ANALYZER.getStringParameter(PARAM_NAME_COMPUTER, req, "");
-        String introduced = REQUEST_ANALYZER.getStringParameter(PARAM_INTRODUCED_COMPUTER, req, "");
-        String discontinued = REQUEST_ANALYZER.getStringParameter(PARAM_DISCONTINUED_COMPUTER, req, "");
-        String companyId = REQUEST_ANALYZER.getStringParameter(PARAM_ID_COMPANY, req, "-1");
+        String id = requestAnalyzer.getStringParameter(PARAM_ID_COMPUTER, req, "-1");
+        String name = requestAnalyzer.getStringParameter(PARAM_NAME_COMPUTER, req, "");
+        String introduced = requestAnalyzer.getStringParameter(PARAM_INTRODUCED_COMPUTER, req, "");
+        String discontinued = requestAnalyzer.getStringParameter(PARAM_DISCONTINUED_COMPUTER, req, "");
+        String companyId = requestAnalyzer.getStringParameter(PARAM_ID_COMPANY, req, "-1");
 
         // build dto
         Company company = null;
         if (!companyId.equalsIgnoreCase("-1")) {
-            company = COMPANY_SERVICE.getById(Long.parseLong(companyId));
+            company = companyService.getById(Long.parseLong(companyId));
         }
 
-        ComputerDto dto = REQUEST_ANALYZER.getComputerDtoFromParam(id, name, introduced, discontinued, companyId,
+        ComputerDto dto = requestAnalyzer.getComputerDtoFromParam(id, name, introduced, discontinued, companyId,
                 company.getName());
 
-        errorsMessages = COMPUTER_VALIDATOR.validate(name, introduced, discontinued);
+        errorsMessages = computerValidator.validate(name, introduced, discontinued);
         if (errorsMessages.size() > 0) {
             req.setAttribute(ATT_ERRORS, errorsMessages);
             req.setAttribute(ATT_COMPUTER_DTO, dto);
@@ -93,12 +113,18 @@ public class EditComputerServlet extends HttpServlet {
         } else {
 
             // Build a computer object if the dto is validated.
-            Computer computer = DTO_MAPPER.fromDto(dto);
+            Computer computer = dtoMapper.fromDto(dto);
 
             // Call the createComputer method of the ComputerService if the
             // computer is fine.
-            COMPUTER_SERVICE.update(computer);
+            computerService.update(computer);
             res.sendRedirect(req.getContextPath() + HOME_URL);
         }
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
     }
 }

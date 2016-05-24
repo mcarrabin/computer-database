@@ -2,11 +2,14 @@ package com.excilys.computerdatabase.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.computerdatabase.dto.ComputerDto;
 import com.excilys.computerdatabase.dto.ComputerDto.ComputerDtoBuilder;
 
-public enum RequestAnalyzer {
-    INSTANCE;
+@Component("requestAnalyzer")
+public class RequestAnalyzer {
+    // INSTANCE;
 
     /**
      * This method will get the parameter from the request.

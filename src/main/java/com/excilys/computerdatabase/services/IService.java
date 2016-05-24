@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.excilys.computerdatabase.exceptions.ServiceException;
 
-public interface Service<T> {
+public interface IService<T> {
 
     /**
      * Method that will ask every object of type T to the corresponding Dao.

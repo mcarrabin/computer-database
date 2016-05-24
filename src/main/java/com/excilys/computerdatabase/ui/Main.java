@@ -13,6 +13,10 @@ import com.excilys.computerdatabase.services.ComputerService;
 import com.excilys.computerdatabase.services.PageService;
 
 public class Main {
+    public static ComputerService computerService;
+    public static PageService pageService;
+    public static CompanyService companyServices;
+
     /**
      * Start of the app.
      *
@@ -21,12 +25,9 @@ public class Main {
      */
     public static void main(String... args) {
         int actionAFaire = 0;
-        ComputerService computerService = ComputerService.INSTANCE;
-        CompanyService companyService = CompanyService.INSTANCE;
-        PageService pageService = PageService.INSTANCE;
         do {
             actionAFaire = displayMenu();
-            doAction(actionAFaire, computerService, companyService, pageService);
+            doAction(actionAFaire);
         } while (continuerMainMenu());
     }
 
@@ -122,8 +123,7 @@ public class Main {
      * @param pageService
      *            is the current instance of PageService
      */
-    public static void doAction(int action, ComputerService computerService, CompanyService companyService,
-            PageService pageService) {
+    public static void doAction(int action) {
         Computer computer = new Computer();
         Page<Computer> page = null;
         Scanner sc = new Scanner(System.in);
@@ -134,7 +134,8 @@ public class Main {
         case 1:
             try {
                 List<Company> companies = new ArrayList<Company>();
-                companies = companyService.getAll();
+                // companies = companyService.getAll();
+
                 for (Company company : companies) {
                     System.out.println(company.toString());
                 }
@@ -240,7 +241,7 @@ public class Main {
         case 8:
             System.out.println("Saisissez l'id d'une compagnie à supprimer: ");
             long companyId = intEntry(sc, 1, -1);
-            companyService.delete(companyId);
+            // companyService.delete(companyId);
             break;
         }
     }

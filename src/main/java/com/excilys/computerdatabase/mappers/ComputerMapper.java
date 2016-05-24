@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.entities.Company.CompanyBuilder;
@@ -18,8 +19,8 @@ import com.excilys.computerdatabase.exceptions.MapperException;
  * @author excilys
  *
  */
-public enum ComputerMapper implements Mapper<Computer> {
-    INSTANCE;
+@Component("computerMapper")
+public class ComputerMapper implements Mapper<Computer> {
     private static Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
 
     /**

@@ -3,10 +3,12 @@ package com.excilys.computerdatabase.validator;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.computerdatabase.entities.Company;
 
-public enum CompanyValidator {
-    INSTANCE;
+@Component("companyValidator")
+public class CompanyValidator {
     private Map<String, String> errorMessages = new HashMap<>();
 
     public Map<String, String> getErrorMessages() {

@@ -4,13 +4,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.computerdatabase.dto.ComputerDto;
 import com.excilys.computerdatabase.dto.ComputerDto.ComputerDtoBuilder;
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.entities.Computer;
 
-public enum ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
-    INSTANCE;
+@Component("computerDtoMapper")
+public class ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
 
     /**
      * Method that will map a Computer object to a ComputerDto object.

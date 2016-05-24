@@ -4,12 +4,20 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
 import com.excilys.computerdatabase.dto.ComputerDto;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.mappers.DateMapper;
 
-public enum ComputerValidator {
-    INSTANCE;
+@Component("computerValidator")
+public class ComputerValidator {
+    @Autowired
+    @Qualifier("companyValidator")
+    private CompanyValidator companyValidator;
+
     private Map<String, String> errorMessages = new HashMap<String, String>();
 
     public Map<String, String> getErrorMessages() {
@@ -95,7 +103,7 @@ public enum ComputerValidator {
      */
     public void validateComputer(Computer computer) {
         if (computer.getCompany() != null) {
-            CompanyValidator.INSTANCE.validateCompany(computer.getCompany());
+            companyValidator.validateCompany(computer.getCompany());
         }
         isNameValid(computer.getName());
         areDatesOk(computer.getIntroduced(), computer.getDiscontinued());
@@ -112,8 +120,7 @@ public enum ComputerValidator {
     public Map<String, String> validate(ComputerDto computer) {
         Map<String, String> companyErrors = new HashMap<>();
         if (computer.getCompanyId() != null) {
-            companyErrors = CompanyValidator.INSTANCE.validateCompany(computer.getCompanyId(),
-                    computer.getCompanyName());
+            companyErrors = companyValidator.validateCompany(computer.getCompanyId(), computer.getCompanyName());
         }
         errorMessages.putAll(companyErrors);
 
