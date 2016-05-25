@@ -5,21 +5,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.exceptions.MapperException;
 
 @Component("companyMapper")
-public class CompanyMapper implements Mapper<Company> {
+public class CompanyMapper implements Mapper<Company>, RowMapper<Company> {
 
-    /**
-     * Méthode qui va créer et retourner un objet CompanyEntity complété avec le
-     * contenu du resultSet.
-     *
-     * @param result
-     * @return l'objet CompanyEntity créé et complété
-     */
     @Override
     public Company mapUnique(ResultSet result) throws MapperException {
         String name;
@@ -34,13 +28,6 @@ public class CompanyMapper implements Mapper<Company> {
         return company;
     }
 
-    /**
-     * Méthode qui va boucler sur le result set et créer une liste d'objet
-     * Company.
-     *
-     * @param result
-     * @return la liste de Company créé
-     */
     @Override
     public List<Company> mapAll(ResultSet result) throws MapperException {
         List<Company> companies = new ArrayList<Company>();
@@ -52,5 +39,12 @@ public class CompanyMapper implements Mapper<Company> {
             throw new MapperException(e);
         }
         return companies;
+    }
+
+    @Override
+    public Company mapRow(ResultSet rs, int arg1) throws SQLException {
+        Company company = new Company().getBuilder().name(rs.getString(2)).id(rs.getLong(1)).build();
+
+        return company;
     }
 }

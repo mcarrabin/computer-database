@@ -58,13 +58,6 @@ public class ComputerDao implements AbstractDao<Computer> {
         return dbManager.getConnection();
     }
 
-    /**
-     * Methode qui va construire une liste de toutes les entrees computer
-     * contenues en BDD.
-     *
-     * @return la liste de toutes ces ArrayList<ComputerEntity> computers = new
-     *         ArrayList<ComputerEntity>(); entrees
-     */
     @Override
     public List<Computer> getAll() {
         jdbcTemplate = new JdbcTemplate(dataSource);
@@ -72,15 +65,6 @@ public class ComputerDao implements AbstractDao<Computer> {
 
         return computers;
     }
-
-    /**
-     * Methode qui va recuperer une entree de la table computer en se basant sur
-     * l'id passe en parametre.
-     *
-     * @param id
-     *            id de l'ordinateur a recuperer
-     * @return l'ordinateur recupere en BDD
-     */
 
     @Override
     public Computer getById(long id) throws DaoException {
@@ -163,25 +147,6 @@ public class ComputerDao implements AbstractDao<Computer> {
         return result;
     }
 
-    /**
-     * Methode qui va supprimer l'entree dont l'id correspond avec l'id de
-     * l'objet passe en parametre.
-     *
-     * @param computer
-     *            objet a supprimer dans la bdd.
-     * @return true if the computer is deleted, else false.
-     * @throws DaoException
-     *             which are the exceptions handled by the Dao classes.
-     * @throws ConnexionException
-     *             which are the exceptions due to connexion issues.
-     */
-
-    /**
-     * Method that will delete a computer.
-     *
-     * @param id
-     *            is the id of the computer to delete.
-     */
     @Override
     public boolean delete(long id) throws DaoException {
         jdbcTemplate = new JdbcTemplate(dataSource);

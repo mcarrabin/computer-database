@@ -32,16 +32,6 @@ public class ComputerMapper implements Mapper<Computer>, RowMapper<Computer> {
     @Qualifier("dateMapper")
     private DateMapper dateMapper;
 
-    /**
-     * Méthode qui va créer et retourner un objet complété avec le contenu du
-     * resultSet.
-     *
-     * @param result
-     *            is the resultSet Line to parse into a Computer object.
-     *
-     * @return The Computer object built base on the ResultSet received as a
-     *         parameter.
-     */
     @Override
     public Computer mapUnique(ResultSet result) throws MapperException {
         LocalDate introduced, discontinued;
@@ -67,14 +57,6 @@ public class ComputerMapper implements Mapper<Computer>, RowMapper<Computer> {
         return computer;
     }
 
-    /**
-     * Method that will parse a result set into a Computer List.
-     *
-     * @param result
-     *            is the ResultSet to parse.
-     *
-     * @return a list of Computer objects.
-     */
     @Override
     public List<Computer> mapAll(ResultSet result) throws MapperException {
         List<Computer> computers = new ArrayList<Computer>();
