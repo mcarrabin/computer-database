@@ -1,12 +1,17 @@
 package com.excilys.computerdatabase.mappers;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import com.excilys.computerdatabase.entities.Company;
@@ -20,8 +25,12 @@ import com.excilys.computerdatabase.exceptions.MapperException;
  *
  */
 @Component("computerMapper")
-public class ComputerMapper implements Mapper<Computer> {
+public class ComputerMapper implements Mapper<Computer>, RowMapper<Computer> {
     private static Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
+
+    @Autowired
+    @Qualifier("dateMapper")
+    private DateMapper dateMapper;
 
     /**
      * Méthode qui va créer et retourner un objet complété avec le contenu du
@@ -79,5 +88,28 @@ public class ComputerMapper implements Mapper<Computer> {
             throw new MapperException(e);
         }
         return computers;
+    }
+
+    @Override
+    public Computer mapRow(ResultSet rs, int arg1) throws SQLException {
+        Computer computer = null;
+        Company company = null;
+        String introducedDate = rs.getString(3);
+        String discontinuedDate = rs.getString(4);
+        LocalDate introduced = null;
+        LocalDate discontinued = null;
+
+        if (introducedDate != null && !introducedDate.trim().isEmpty()) {
+            introduced = Timestamp.valueOf(introducedDate).toLocalDateTime().toLocalDate();
+        }
+        if (discontinuedDate != null && !discontinuedDate.trim().isEmpty()) {
+            discontinued = Timestamp.valueOf(discontinuedDate).toLocalDateTime().toLocalDate();
+        }
+
+        company = new Company().getBuilder().name(rs.getString(7)).id(rs.getLong(5)).build();
+        computer = new Computer().getBuilder().id(rs.getLong(1)).name(rs.getString(2)).company(company)
+                .discontinued(discontinued).introduced(introduced).build();
+
+        return computer;
     }
 }

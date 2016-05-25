@@ -17,6 +17,10 @@ public class DBManager {
     @Qualifier("dataSource")
     private HikariDataSource ds;
 
+    public HikariDataSource getDataSource() {
+        return ds;
+    }
+
     /**
      * Method that will build and return a Connection.
      *

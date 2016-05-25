@@ -53,8 +53,8 @@
 								<label for="companyId">Company</label> <select
 									class="form-control" id="companyId" name="companyId">
 									<c:forEach items="${companies}" var="company">
+										<option value="-1"></option>
 										<c:choose >
-											<option value="-1"></option>
 											<c:when test="${ company.id != computer.companyId }" >
 												<option value="${ company.id }">${ company.name }</option>
 											</c:when>

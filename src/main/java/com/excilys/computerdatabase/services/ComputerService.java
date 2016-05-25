@@ -1,6 +1,5 @@
 package com.excilys.computerdatabase.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,25 +19,20 @@ public class ComputerService implements IService<Computer> {
 
     @Override
     public List<Computer> getAll() {
-        List<Computer> computers = new ArrayList<>();
         try {
-            computers = computerDao.getAll();
+            return computerDao.getAll();
         } catch (Exception e) {
             throw new ServiceException(e);
         }
-        return computers;
     }
 
     @Override
     public Computer getById(long id) {
-        Computer computer = null;
         try {
-            computer = computerDao.getById(id);
+            return computerDao.getById(id);
         } catch (Exception e) {
             throw new ServiceException(e);
         }
-
-        return computer;
     }
 
     /**
@@ -55,46 +49,39 @@ public class ComputerService implements IService<Computer> {
      * @return a page object.
      */
     public Page<Computer> getComputerByPage(int nbreLine, int numPage, String name, String orderBy) {
-        Page<Computer> page = null;
         try {
-            page = computerDao.getByPage(nbreLine, numPage, name, orderBy);
+            Page<Computer> page = computerDao.getByPage(nbreLine, numPage, name, orderBy);
+            return page;
         } catch (Exception e) {
             throw new ServiceException(e);
         }
-        return page;
     }
 
     @Override
     public boolean update(Computer computer) {
-        boolean result = false;
         try {
-            result = computerDao.updateComputer(computer);
+            return computerDao.updateComputer(computer);
         } catch (Exception e) {
             throw new ServiceException(e);
         }
-        return result;
     }
 
     @Override
     public boolean delete(long id) {
-        boolean result = false;
         try {
             Computer computer = computerDao.getById(id);
-            result = computerDao.delete(computer.getId());
+            return computerDao.delete(computer.getId());
         } catch (Exception e) {
             throw new ServiceException(e);
         }
-        return result;
     }
 
     @Override
     public boolean create(Computer computer) {
-        boolean result = false;
         try {
-            result = computerDao.createComputer(computer);
+            return computerDao.createComputer(computer);
         } catch (Exception e) {
             throw new ServiceException(e);
         }
-        return result;
     }
 }

@@ -1,23 +1,27 @@
 package com.excilys.computerdatabase.dao;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
 import com.excilys.computerdatabase.exceptions.DaoException;
 import com.excilys.computerdatabase.mappers.ComputerMapper;
+import com.excilys.computerdatabase.mappers.DateMapper;
+import com.zaxxer.hikari.HikariDataSource;
 
 @Repository("computerDao")
 public class ComputerDao implements AbstractDao<Computer> {
+
+    @Autowired
+    @Qualifier("dateMapper")
+    public DateMapper dateMapper;
 
     @Autowired
     @Qualifier("computerMapper")
@@ -26,6 +30,9 @@ public class ComputerDao implements AbstractDao<Computer> {
     @Autowired
     @Qualifier("dbManager")
     public DBManager dbManager;
+
+    private HikariDataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
 
     private static final String GET_BY_PAGE_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id";
     private static final String GET_ALL_REQUEST = "select * from computer c left join company comp on comp.id = c.company_id";
@@ -37,6 +44,10 @@ public class ComputerDao implements AbstractDao<Computer> {
     private static final String CREATE_REQUEST = "insert into computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?)";
 
     private static final String LIKE_REQUEST = " where c.name like ? or comp.name like ? ";
+
+    public void setDataSource(HikariDataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     /**
      * Method that will return a connection from the dbManager instance.
@@ -56,20 +67,8 @@ public class ComputerDao implements AbstractDao<Computer> {
      */
     @Override
     public List<Computer> getAll() {
-        List<Computer> computers = new ArrayList<Computer>();
-        ResultSet result = null;
-        Connection con = connect();
-
-        try {
-            PreparedStatement statement = con.prepareStatement(GET_ALL_REQUEST);
-            result = statement.executeQuery();
-
-            computers = computerMapper.mapAll(result);
-            statement.close();
-            result.close();
-        } catch (Exception e) {
-            throw new DaoException(e);
-        }
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        List<Computer> computers = jdbcTemplate.queryForList(GET_ALL_REQUEST, Computer.class);
 
         return computers;
     }
@@ -82,25 +81,12 @@ public class ComputerDao implements AbstractDao<Computer> {
      *            id de l'ordinateur a recuperer
      * @return l'ordinateur recupere en BDD
      */
+
     @Override
     public Computer getById(long id) throws DaoException {
-        ResultSet result = null;
-        Computer computer = null;
-        Connection con = connect();
 
-        try {
-            PreparedStatement statement = con.prepareStatement(GET_BY_ID_REQUEST);
-            statement.setLong(1, id);
-            result = statement.executeQuery();
-            if (result.next()) {
-                computer = computerMapper.mapUnique(result);
-                statement.close();
-                result.close();
-            }
-            statement.close();
-        } catch (Exception e) {
-            throw new DaoException(e);
-        }
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        Computer computer = jdbcTemplate.queryForObject(GET_BY_ID_REQUEST, new Object[] { id }, new ComputerMapper());
         return computer;
     }
 
@@ -120,9 +106,8 @@ public class ComputerDao implements AbstractDao<Computer> {
      */
     public Page<Computer> getByPage(int nbreLine, int numPage, String search, String orderBy) throws DaoException {
         List<Computer> computers = new ArrayList<Computer>();
-        ResultSet result = null;
-        Page<Computer> page = null;
-        Connection con = connect();
+        jdbcTemplate = new JdbcTemplate(dataSource);
+
         String query = GET_BY_PAGE_REQUEST;
 
         // if there is a search required, add the condition.
@@ -136,28 +121,15 @@ public class ComputerDao implements AbstractDao<Computer> {
         }
 
         query += " limit ?, ?";
-
-        try {
-            PreparedStatement statement = con.prepareStatement(query);
-            if (!search.trim().isEmpty()) {
-                statement.setString(1, "%" + search + "%");
-                statement.setString(2, "%" + search + "%");
-                statement.setInt(3, nbreLine * (numPage - 1));
-                statement.setInt(4, nbreLine);
-            } else {
-                statement.setInt(1, nbreLine * (numPage - 1));
-                statement.setInt(2, nbreLine);
-            }
-
-            result = statement.executeQuery();
-
-            computers = computerMapper.mapAll(result);
-            page = new Page<Computer>().getBuilder().elements(computers).currentPage(numPage).build();
-            statement.close();
-            result.close();
-        } catch (Exception e) {
-            throw new DaoException(e);
+        if (!search.trim().isEmpty()) {
+            computers = jdbcTemplate.query(query,
+                    new Object[] { "%" + search + "%", "%" + search + "%", nbreLine * (numPage - 1), nbreLine },
+                    new ComputerMapper());
+        } else {
+            computers = jdbcTemplate.query(query, new Object[] { nbreLine * (numPage - 1), nbreLine },
+                    new ComputerMapper());
         }
+        Page<Computer> page = new Page<Computer>().getBuilder().elements(computers).currentPage(numPage).build();
 
         return page;
     }
@@ -177,27 +149,15 @@ public class ComputerDao implements AbstractDao<Computer> {
      */
     public long getNumTotalComputer(String search) throws DaoException {
         long result = 0;
-        ResultSet res = null;
-        Connection con = connect();
+        jdbcTemplate = new JdbcTemplate(dataSource);
         String query = GET_TOTAL_COUNT_REQUEST;
-        try {
-            if (!search.trim().isEmpty()) {
-                query += LIKE_REQUEST;
-            }
 
-            PreparedStatement statement = con.prepareStatement(query);
-            if (!search.trim().isEmpty()) {
-                statement.setString(1, "%" + search + "%");
-                statement.setString(2, "%" + search + "%");
-            }
-            res = statement.executeQuery();
-            if (res.next()) {
-                result = res.getLong("number");
-            }
-            statement.close();
-            res.close();
-        } catch (Exception e) {
-            throw new DaoException(e);
+        if (!search.trim().isEmpty()) {
+            query += LIKE_REQUEST;
+            result = jdbcTemplate.queryForObject(query, new Object[] { "%" + search + "%", "%" + search + "%" },
+                    long.class);
+        } else {
+            result = jdbcTemplate.queryForObject(query, long.class);
         }
 
         return result;
@@ -216,23 +176,16 @@ public class ComputerDao implements AbstractDao<Computer> {
      *             which are the exceptions due to connexion issues.
      */
 
+    /**
+     * Method that will delete a computer.
+     *
+     * @param id
+     *            is the id of the computer to delete.
+     */
     @Override
     public boolean delete(long id) throws DaoException {
-        boolean isDeleteOk = false;
-        Connection con = connect();
-        int response = 0;
-
-        try {
-            PreparedStatement statement = con.prepareStatement(DELETE_REQUEST);
-            statement.setLong(1, id);
-            response = statement.executeUpdate();
-            if (response == 1) {
-                isDeleteOk = true;
-            }
-            statement.close();
-        } catch (Exception e) {
-            throw new DaoException(e);
-        }
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        boolean isDeleteOk = jdbcTemplate.update(DELETE_REQUEST, id) > 0 ? true : false;
 
         return isDeleteOk;
     }
@@ -251,33 +204,10 @@ public class ComputerDao implements AbstractDao<Computer> {
      *             which are the exceptions due to connexion issues.
      */
     public boolean updateComputer(Computer computer) throws DaoException {
-        boolean isUpdateOk = false;
-        int response = 0;
-        Connection con = connect();
-
-        try {
-            PreparedStatement statement = con.prepareStatement(UPDATE_REQUEST);
-            statement.setString(1, computer.getName());
-            if (computer.getIntroduced() != null) {
-                statement.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced().atStartOfDay()));
-            } else {
-                statement.setNull(2, java.sql.Types.TIMESTAMP);
-            }
-            if (computer.getDiscontinued() != null) {
-                statement.setTimestamp(3, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
-            } else {
-                statement.setNull(3, java.sql.Types.TIMESTAMP);
-            }
-            statement.setLong(4, computer.getCompany().getId());
-            statement.setLong(5, computer.getId());
-            response = statement.executeUpdate();
-            if (response == 1) {
-                isUpdateOk = true;
-            }
-            statement.close();
-        } catch (Exception e) {
-            throw new DaoException(e);
-        }
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        boolean isUpdateOk = jdbcTemplate.update(UPDATE_REQUEST, computer.getName(),
+                DateMapper.toTimeStamp(computer.getIntroduced()), DateMapper.toTimeStamp(computer.getDiscontinued()),
+                computer.getCompany().getId(), computer.getId()) > 0 ? true : false;
 
         return isUpdateOk;
     }
@@ -294,36 +224,10 @@ public class ComputerDao implements AbstractDao<Computer> {
      *             which are the exceptions due to connexion issues.
      */
     public boolean createComputer(Computer computer) throws DaoException {
-        boolean creationOk = false;
-        int result;
-        Connection con = connect();
-        try {
-            PreparedStatement statement = con.prepareStatement(CREATE_REQUEST);
-            statement.setString(1, computer.getName());
-            if (computer.getIntroduced() != null) {
-                statement.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced().atStartOfDay()));
-            } else {
-                statement.setNull(2, java.sql.Types.TIMESTAMP);
-            }
-            if (computer.getDiscontinued() != null) {
-                statement.setTimestamp(3, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
-            } else {
-                statement.setNull(3, java.sql.Types.TIMESTAMP);
-            }
-
-            if (computer.getCompany() == null) {
-                statement.setNull(4, java.sql.Types.BIGINT);
-            } else {
-                statement.setLong(4, computer.getCompany().getId());
-            }
-            result = statement.executeUpdate();
-            if (result == 1) {
-                creationOk = true;
-            }
-            statement.close();
-        } catch (Exception e) {
-            throw new DaoException(e);
-        }
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        boolean creationOk = jdbcTemplate.update(CREATE_REQUEST, computer.getName(),
+                DateMapper.toTimeStamp(computer.getIntroduced()), DateMapper.toTimeStamp(computer.getDiscontinued()),
+                computer.getCompany().getId()) > 0 ? true : false;
         return creationOk;
     }
 
@@ -334,19 +238,14 @@ public class ComputerDao implements AbstractDao<Computer> {
      * @param companyId
      *            is the id of the company which every computer to delete are
      *            linked on.
+     * @return true if delete went well else false.
      * @throws DaoExecption
      *             delete went wrong or prepared statement failed.
      */
-    public void deleteByCompany(long companyId) throws DaoException {
-        int response = 0;
-        Connection con = connect();
-        try {
-            PreparedStatement statement = con.prepareStatement(DELETE_BY_COMP_REQUEST);
-            statement.setLong(1, companyId);
-            response = statement.executeUpdate();
-            statement.close();
-        } catch (Exception e) {
-            throw new DaoException(e);
-        }
+    public boolean deleteByCompany(long companyId) throws DaoException {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        boolean isDeleteOk = jdbcTemplate.update(DELETE_BY_COMP_REQUEST, companyId) > 0 ? true : false;
+
+        return isDeleteOk;
     }
 }

@@ -1,5 +1,6 @@
 package com.excilys.computerdatabase.mappers;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -43,5 +44,21 @@ public class DateMapper {
             String result = date.format(formatter);
             return result;
         }
+    }
+
+    /**
+     * Method to convert a LocalDate into a Timestamp.
+     *
+     * @param date
+     *            is the LocalDate format date.
+     * @return the Timestamp format date.
+     */
+    public static Timestamp toTimeStamp(LocalDate date) {
+        Timestamp result = null;
+        if (date != null) {
+            result = Timestamp.valueOf(date.atStartOfDay());
+        }
+
+        return result;
     }
 }

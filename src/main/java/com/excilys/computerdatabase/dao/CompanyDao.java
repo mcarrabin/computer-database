@@ -8,11 +8,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.exceptions.DaoException;
 import com.excilys.computerdatabase.mappers.CompanyMapper;
+import com.zaxxer.hikari.HikariDataSource;
 
 @Repository("companyDao")
 public class CompanyDao implements AbstractDao<Company> {
@@ -25,9 +27,16 @@ public class CompanyDao implements AbstractDao<Company> {
     @Qualifier("dbManager")
     private DBManager dbManager;
 
+    private HikariDataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
+
     private static final String GET_ALL_REQUEST = "select * from company order by name";
     private static final String GET_BY_ID_REQUEST = "select * from company where id = ?";
     private static final String DELETE_COMPANY_REQUEST = "delete from company where id = ?";
+
+    public void setDataSource(HikariDataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     /**
      * Method that will return a connection from the dbManager instance.

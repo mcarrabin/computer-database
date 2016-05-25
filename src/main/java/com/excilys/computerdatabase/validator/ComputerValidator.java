@@ -34,7 +34,7 @@ public class ComputerValidator {
      * @param name
      */
     public void isNameValid(String name) {
-        if (name.length() == 0 || !name.matches("^[a-zA-Z0-9\\ \\-&]+$")) {
+        if (name.length() == 0 || !name.matches("^[a-zA-Z0-9\\ \\-&.]+$")) {
             errorMessages.put("name",
                     "the Computer name is empty or not valid (expected: not empty, starts with a letter and contains only letters, spaces, '-' or '&').");
 
