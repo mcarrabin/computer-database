@@ -58,11 +58,11 @@ public class Company {
         return this.name;
     }
 
-    private void setId(long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    private void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 

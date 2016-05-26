@@ -4,56 +4,28 @@
   
   <error-page>
         <error-code>404</error-code>
-        <location>/WEB-INF/jsp/404.html</location>
+        <location>/404</location>
   </error-page>
   <error-page>
         <error-code>500</error-code>
-        <location>/WEB-INF/jsp/500.html</location>
+        <location>/500</location>
   </error-page>
   
-<!--   <servlet> -->
-<!-- 	<servlet-name>spring</servlet-name> -->
-<!-- 	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class> -->
-<!-- 	<load-on-startup>1</load-on-startup> -->
-<!--   </servlet> -->
+  <context-param>
+  	<param-name>contextConfigLocation</param-name>
+  	<param-value>/WEB-INF/applicationContext.xml</param-value>
+  </context-param>
   
   <servlet>
-  	<servlet-name>PageServlet</servlet-name>
-  	<servlet-class>com.excilys.computerdatabase.servlets.PageServlet</servlet-class>
-  </servlet>
-  <servlet>
-  	<servlet-name>AddComputerServlet</servlet-name>
-  	<servlet-class>com.excilys.computerdatabase.servlets.AddComputerServlet</servlet-class>
-  </servlet>
-  <servlet>
-  	<servlet-name>EditComputerServlet</servlet-name>
-  	<servlet-class>com.excilys.computerdatabase.servlets.EditComputerServlet</servlet-class>
-  </servlet>
-  <servlet>
-  	<servlet-name>DeleteComputerServlet</servlet-name>
-  	<servlet-class>com.excilys.computerdatabase.servlets.DeleteComputerServlet</servlet-class>
+	<servlet-name>spring</servlet-name>
+	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	<load-on-startup>1</load-on-startup>
   </servlet>
   
   <servlet-mapping>
-  	<servlet-name>PageServlet</servlet-name>
-  	<url-pattern>/home</url-pattern>
+    <servlet-name>spring</servlet-name>
+    <url-pattern>/</url-pattern>
   </servlet-mapping>
-  <servlet-mapping>
-  	<servlet-name>AddComputerServlet</servlet-name>
-  	<url-pattern>/computer/add</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-  	<servlet-name>EditComputerServlet</servlet-name>
-  	<url-pattern>/computer/edit</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-  	<servlet-name>DeleteComputerServlet</servlet-name>
-  	<url-pattern>/computer/delete</url-pattern>
-  </servlet-mapping>
-  
-  <welcome-file-list>
-    <welcome-file>PageServlet</welcome-file>
-  </welcome-file-list>
   
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

@@ -1,19 +1,16 @@
-package com.excilys.computerdatabase.servlets;
+package com.excilys.computerdatabase.controllers;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.computerdatabase.dto.ComputerDto;
 import com.excilys.computerdatabase.entities.Company;
@@ -24,7 +21,8 @@ import com.excilys.computerdatabase.services.ComputerService;
 import com.excilys.computerdatabase.utils.RequestAnalyzer;
 import com.excilys.computerdatabase.validator.ComputerValidator;
 
-public class EditComputerServlet extends HttpServlet {
+@Controller
+public class EditComputerController {
 
     @Autowired
     @Qualifier("requestAnalyzer")
@@ -46,55 +44,57 @@ public class EditComputerServlet extends HttpServlet {
     @Qualifier("computerDtoMapper")
     private ComputerDtoMapper dtoMapper;
 
-    private static final String HOME_URL = "/home";
-    private static final String EDIT_COMPUTER_URL = "/WEB-INF/jsp/editComputer.jsp";
-    private static final String NOT_FOUND_URL = "/WEB-INF/jsp/404.html";
-
     private static final String PARAM_ID_COMPUTER = "computerId";
     private static final String PARAM_NAME_COMPUTER = "computerName";
     private static final String PARAM_INTRODUCED_COMPUTER = "introduced";
     private static final String PARAM_DISCONTINUED_COMPUTER = "discontinued";
     private static final String PARAM_ID_COMPANY = "companyId";
 
+    private static final String URL_404 = "redirect:/404";
+    private static final String URL_HOME = "redirect:/home";
+    private static final String URL_COMPUTER_EDIT = "/computer/edit";
+    private static final String JSP_EDIT = "editComputer";
+
     private static final String ATT_COMPUTER_DTO = "computer";
     private static final String ATT_COMPANIES = "companies";
     private static final String ATT_ERRORS = "errors";
 
-    @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    @RequestMapping(value = URL_COMPUTER_EDIT, method = RequestMethod.GET)
+    public String doActionGet(@RequestParam Map<String, String> params, ModelMap model) {
         // Parse the Computer id parameter.
-        String idParam = requestAnalyzer.getStringParameter(PARAM_ID_COMPUTER, req, "-1");
+        String idParam = params.get(PARAM_ID_COMPUTER);
         long id = Long.parseLong(idParam);
 
         // Get the computer based on the id (call to ComputerService). If
         // Computer not found, call to page 404.
         Computer computer = computerService.getById(id);
         if (computer == null) {
-            req.getRequestDispatcher(NOT_FOUND_URL).forward(req, res);
+            return URL_404;
         } else {
             ComputerDto dto = dtoMapper.toDto(computer);
 
-            // get all companies and add an empty one.
+            // get all companies
             List<Company> companies = companyService.getAll();
 
             // call the edit computer jsp passing the ComputerDto as response
             // parameter.
-            req.setAttribute(ATT_COMPUTER_DTO, dto);
-            req.setAttribute(ATT_COMPANIES, companies);
-            req.getRequestDispatcher(EDIT_COMPUTER_URL).forward(req, res);
+            model.addAttribute(ATT_COMPUTER_DTO, dto);
+            model.addAttribute(ATT_COMPANIES, companies);
+            return JSP_EDIT;
         }
+
     }
 
-    @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    @RequestMapping(value = URL_COMPUTER_EDIT, method = RequestMethod.POST)
+    public String doActionPost(@RequestParam Map<String, String> params, ModelMap model) {
         Map<String, String> errorsMessages = new HashMap<>();
 
         // Parse parameters
-        String id = requestAnalyzer.getStringParameter(PARAM_ID_COMPUTER, req, "-1");
-        String name = requestAnalyzer.getStringParameter(PARAM_NAME_COMPUTER, req, "");
-        String introduced = requestAnalyzer.getStringParameter(PARAM_INTRODUCED_COMPUTER, req, "");
-        String discontinued = requestAnalyzer.getStringParameter(PARAM_DISCONTINUED_COMPUTER, req, "");
-        String companyId = requestAnalyzer.getStringParameter(PARAM_ID_COMPANY, req, "-1");
+        String id = params.get(PARAM_ID_COMPUTER);
+        String name = params.get(PARAM_NAME_COMPUTER);
+        String introduced = params.get(PARAM_INTRODUCED_COMPUTER);
+        String discontinued = params.get(PARAM_DISCONTINUED_COMPUTER);
+        String companyId = params.get(PARAM_ID_COMPANY);
 
         // build dto
         Company company = null;
@@ -107,24 +107,18 @@ public class EditComputerServlet extends HttpServlet {
 
         errorsMessages = computerValidator.validate(name, introduced, discontinued);
         if (errorsMessages.size() > 0) {
-            req.setAttribute(ATT_ERRORS, errorsMessages);
-            req.setAttribute(ATT_COMPUTER_DTO, dto);
-            doGet(req, res);
+            model.addAttribute(ATT_ERRORS, errorsMessages);
+            model.addAttribute(ATT_COMPUTER_DTO, dto);
+            return doActionGet(params, model);
         } else {
 
             // Build a computer object if the dto is validated.
             Computer computer = dtoMapper.fromDto(dto);
 
-            // Call the createComputer method of the ComputerService if the
+            // Call the updateComputer method of the ComputerService if the
             // computer is fine.
             computerService.update(computer);
-            res.sendRedirect(req.getContextPath() + HOME_URL);
+            return URL_HOME;
         }
-    }
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
 import com.excilys.computerdatabase.exceptions.DaoException;
@@ -31,6 +32,8 @@ public class ComputerDao implements AbstractDao<Computer> {
     @Qualifier("dbManager")
     public DBManager dbManager;
 
+    @Autowired
+    @Qualifier("dataSource")
     private HikariDataSource dataSource;
     private JdbcTemplate jdbcTemplate;
 
@@ -62,13 +65,11 @@ public class ComputerDao implements AbstractDao<Computer> {
     public List<Computer> getAll() {
         jdbcTemplate = new JdbcTemplate(dataSource);
         List<Computer> computers = jdbcTemplate.queryForList(GET_ALL_REQUEST, Computer.class);
-
         return computers;
     }
 
     @Override
     public Computer getById(long id) throws DaoException {
-
         jdbcTemplate = new JdbcTemplate(dataSource);
         Computer computer = jdbcTemplate.queryForObject(GET_BY_ID_REQUEST, new Object[] { id }, new ComputerMapper());
         return computer;
@@ -95,17 +96,17 @@ public class ComputerDao implements AbstractDao<Computer> {
         String query = GET_BY_PAGE_REQUEST;
 
         // if there is a search required, add the condition.
-        if (!search.trim().isEmpty()) {
+        if (search != null && !search.trim().isEmpty()) {
             query += LIKE_REQUEST;
         }
 
         // if there is a sorting required, add the order by condition.
-        if (!orderBy.trim().isEmpty()) {
+        if (orderBy != null && !orderBy.trim().isEmpty()) {
             query += " order by " + orderBy;
         }
 
         query += " limit ?, ?";
-        if (!search.trim().isEmpty()) {
+        if (search != null && !search.trim().isEmpty()) {
             computers = jdbcTemplate.query(query,
                     new Object[] { "%" + search + "%", "%" + search + "%", nbreLine * (numPage - 1), nbreLine },
                     new ComputerMapper());
@@ -136,7 +137,7 @@ public class ComputerDao implements AbstractDao<Computer> {
         jdbcTemplate = new JdbcTemplate(dataSource);
         String query = GET_TOTAL_COUNT_REQUEST;
 
-        if (!search.trim().isEmpty()) {
+        if (search != null && !search.trim().isEmpty()) {
             query += LIKE_REQUEST;
             result = jdbcTemplate.queryForObject(query, new Object[] { "%" + search + "%", "%" + search + "%" },
                     long.class);
@@ -190,9 +191,10 @@ public class ComputerDao implements AbstractDao<Computer> {
      */
     public boolean createComputer(Computer computer) throws DaoException {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        Company company = computer.getCompany();
         boolean creationOk = jdbcTemplate.update(CREATE_REQUEST, computer.getName(),
                 DateMapper.toTimeStamp(computer.getIntroduced()), DateMapper.toTimeStamp(computer.getDiscontinued()),
-                computer.getCompany().getId()) > 0 ? true : false;
+                (company == null ? null : company.getId())) > 0 ? true : false;
         return creationOk;
     }
 

@@ -24,11 +24,14 @@ public class CompanyDao implements AbstractDao<Company> {
     @Qualifier("dbManager")
     private DBManager dbManager;
 
+    @Autowired
+    @Qualifier("dataSource")
     private HikariDataSource dataSource;
+
     private JdbcTemplate jdbcTemplate;
 
-    private static final String GET_ALL_REQUEST = "select * from company order by name";
-    private static final String GET_BY_ID_REQUEST = "select * from company where id = ?";
+    private static final String GET_ALL_REQUEST = "select id, name from company order by name";
+    private static final String GET_BY_ID_REQUEST = "select id, name from company where id = ?";
     private static final String DELETE_COMPANY_REQUEST = "delete from company where id = ?";
 
     public void setDataSource(HikariDataSource dataSource) {
@@ -47,9 +50,7 @@ public class CompanyDao implements AbstractDao<Company> {
     @Override
     public List<Company> getAll() throws DaoException {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        List<Company> companies = jdbcTemplate.queryForList(GET_ALL_REQUEST, Company.class);
-
-        return companies;
+        return jdbcTemplate.query(GET_ALL_REQUEST, new Object[] {}, new CompanyMapper());
     }
 
     @Override

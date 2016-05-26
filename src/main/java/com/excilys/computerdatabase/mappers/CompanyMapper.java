@@ -44,7 +44,6 @@ public class CompanyMapper implements Mapper<Company>, RowMapper<Company> {
     @Override
     public Company mapRow(ResultSet rs, int arg1) throws SQLException {
         Company company = new Company().getBuilder().name(rs.getString(2)).id(rs.getLong(1)).build();
-
         return company;
     }
 }

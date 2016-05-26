@@ -1,20 +1,17 @@
-package com.excilys.computerdatabase.servlets;
+package com.excilys.computerdatabase.controllers;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.computerdatabase.dto.ComputerDto;
 import com.excilys.computerdatabase.dto.ComputerDto.ComputerDtoBuilder;
@@ -26,14 +23,8 @@ import com.excilys.computerdatabase.services.ComputerService;
 import com.excilys.computerdatabase.utils.RequestAnalyzer;
 import com.excilys.computerdatabase.validator.ComputerValidator;
 
-public class AddComputerServlet extends HttpServlet {
-    private static final String PARAM_COMPUTER_NAME = "computerName";
-    private static final String PARAM_INTRODUCED_DATE = "introduced";
-    private static final String PARAM_DISCONTINUED_DATE = "discontinued";
-    private static final String PARAM_COMPANY_ID = "companyId";
-
-    private static final String ADD_COMPUTER_PAGE = "/WEB-INF/jsp/addComputer.jsp";
-    private static final String HOME_PAGE = "/computerdatabase/home";
+@Controller
+public class AddComputerController {
 
     private static final String ATT_COMPANIES = "companies";
     private static final String ATT_ERRORS = "errors";
@@ -55,22 +46,21 @@ public class AddComputerServlet extends HttpServlet {
     @Qualifier("companyService")
     private CompanyService companyService;
 
-    @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    @RequestMapping(value = "/computer/add", method = RequestMethod.GET)
+    public String doActionGet(@RequestParam Map<String, String> params, ModelMap model) {
         List<Company> companies = companyService.getAll();
 
-        req.setAttribute(ATT_COMPANIES, companies);
-        req.getRequestDispatcher(ADD_COMPUTER_PAGE).forward(req, res);
+        model.addAttribute(ATT_COMPANIES, companies);
+        return "addComputer";
     }
 
-    @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @RequestMapping(value = "/computer/add", method = RequestMethod.POST)
+    public String doActionPost(@RequestParam Map<String, String> params, ModelMap model) {
         Map<String, String> validatorErrors = new HashMap<>();
-
-        String computerNameParam = requestAnalyzer.getStringParameter(PARAM_COMPUTER_NAME, req, "");
-        String companyIdParam = requestAnalyzer.getStringParameter(PARAM_COMPANY_ID, req, "");
-        String introducedParam = requestAnalyzer.getStringParameter(PARAM_INTRODUCED_DATE, req, "");
-        String discontinuedParam = requestAnalyzer.getStringParameter(PARAM_DISCONTINUED_DATE, req, "");
+        String computerNameParam = params.get("computerName");
+        String companyIdParam = params.get("companyId");
+        String introducedParam = params.get("introduced");
+        String discontinuedParam = params.get("discontinued");
 
         Company company = null;
         if (companyIdParam.trim().length() > 0 && !companyIdParam.trim().equalsIgnoreCase("-1")) {
@@ -82,26 +72,18 @@ public class AddComputerServlet extends HttpServlet {
         ComputerDto computerDto = new ComputerDtoBuilder().name(computerNameParam).introduced(introducedParam)
                 .discontinued(discontinuedParam).companyId(companyIdParam).build();
         if (validatorErrors.size() > 0) {
-            req.setAttribute(ATT_COMPUTER, computerDto);
-            req.setAttribute(ATT_ERRORS, validatorErrors);
-            doGet(req, resp);
+            model.addAttribute(ATT_COMPUTER, computerDto);
+            model.addAttribute(ATT_ERRORS, validatorErrors);
+            return doActionGet(params, model);
         } else {
-
             LocalDate introduced = DateMapper.toLocalDate(introducedParam);
             LocalDate discontinued = DateMapper.toLocalDate(discontinuedParam);
 
             Computer computer = new Computer().getBuilder().company(company).name(computerNameParam)
                     .introduced(introduced).discontinued(discontinued).build();
-            // COMPUTER_VAL.validateComputer(computer);
 
             computerService.create(computer);
-            resp.sendRedirect(HOME_PAGE);
+            return "redirect:/home";
         }
-    }
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
     }
 }
