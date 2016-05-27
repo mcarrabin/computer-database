@@ -27,3 +27,15 @@ input[type='checkbox'] {
     border-radius: 5px;
     white-space: nowrap;
 }
+
+a.glyphicon:hover{
+	text-decoration:none;
+}
+
+​.flag {
+	width: 25px;
+}
+
+.navbar-right{
+	margin-right:10px;
+}

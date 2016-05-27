@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="customTag" %>
 <%@ taglib uri="/WEB-INF/tld/pagination.tld" prefix="tld"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,11 +15,7 @@
 <link href="${pageContext.request.contextPath}/resources/css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
-    <header class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="home"> Application - Computer Database </a>
-        </div>
-    </header>
+    <customTag:header />
 
     <section id="main">
         <div class="container">
@@ -84,7 +81,7 @@
 	                        			<c:out value="glyphicon glyphicon-arrow-down" />
 	                        		</c:when>
 	                        	</c:choose>
-                        	"></i>Computer name
+                        	"></i><spring:message code="column.computerName" />
                             <a href="<customTag:linkBuilder 
                             			root="home" 
                             			currentOrderBy="${ page.orderBy }" 
@@ -106,7 +103,7 @@
 	                        			<c:out value="glyphicon glyphicon-arrow-down" />
 	                        		</c:when>
 	                        	</c:choose>
-                        	"></i>Introduced date
+                        	"></i><spring:message code="column.introduced" />
                         	<a href="<customTag:linkBuilder 
                             			root="home"
                             			currentOrderBy="${ page.orderBy }" 
@@ -129,7 +126,7 @@
 	                        			<c:out value="glyphicon glyphicon-arrow-down" />
 	                        		</c:when>
 	                        	</c:choose>
-                        	"></i>Discontinued date
+                        	"></i><spring:message code="column.discontinued" />
                             <a href="<customTag:linkBuilder 
                             			root="home" 
                             			currentOrderBy="${ page.orderBy }" 
@@ -151,7 +148,7 @@
 	                        			<c:out value="glyphicon glyphicon-arrow-down" />
 	                        		</c:when>
 	                        	</c:choose>
-                        	"></i>Company
+                        	"></i><spring:message code="column.companyName" />
                             <a href="<customTag:linkBuilder 
                             			root="home" 
                             			currentOrderBy="${ page.orderBy }" 
@@ -170,15 +167,14 @@
 	                <c:forEach items="${page.elements}" var="computer" >
 	                    <tr>
 	                        <td class="editMode">
-	                            <input type="checkbox" name="cb" class="cb" value="${ computer.id }" id="${computer.name}_id">
+	                            <input type="checkbox" name="cb" class="cb" value="${ computer.computerId }" id="${computer.computerName}_id">
 	                        </td>
 	                        <td>
-	                            <a id="${computer.name}_name" href="computer/edit?computerId=${ computer.id }" ><c:out value="${computer.name}" /></a>
+	                            <a id="${computer.computerName}_name" href="computer/edit?computerId=${ computer.computerId }" ><c:out value="${computer.computerName}" /></a>
 	                        </td>
 	                        <td><c:out value="${computer.introduced}" /></td>
 	                        <td><c:out value="${computer.discontinued}" /></td>
 	                        <td><c:out value="${computer.companyName }" /></td>
-	
 	                    </tr>
                     </c:forEach>
                 </tbody>

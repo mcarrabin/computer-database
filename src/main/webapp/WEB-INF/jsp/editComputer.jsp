@@ -10,22 +10,18 @@
 <link href="${pageContext.request.contextPath}/resources/css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
-    <header class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="${pageContext.request.contextPath}/home"> Application - Computer Database </a>
-        </div>
-    </header>
+    <customTag:header />
     <section id="main">
         <div class="container">
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
                     <div class="label label-default pull-right">
-                        id: ${ computer.id }
+                        id: ${ computer.computerId }
                     </div>
                     <span class="container" id="error-message" ${ empty errors ? 'style = "display: none"':'' } >
 			            <div class="alert alert-danger">
 			                <c:forEach items="${ errors }" var="error" >
-			                	<c:out value="${ error.value }" />
+			                	<c:out value="${ error.key }: ${ error.value }" />
 			                	<br/>
 			                </c:forEach>
 			                <!-- stacktrace -->
@@ -35,17 +31,17 @@
                     <h1>Edit Computer</h1>
 
                     <form action="edit" method="POST">
-                        <input type="hidden" value="${ computer.id }" id="id" name="computerId"/>
+                        <input type="hidden" value="${ computer.computerId }" id="id" name="computerId"/>
                         <fieldset>
-                            <div class="form-group">
+                            <div class="form-group ${ empty error.computerName ? '' : 'has-error' }">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="computerName" placeholder="Computer name" name="computerName" value="${ computer.name }" />
+                                <input type="text" class="form-control" id="computerName" placeholder="Computer name" name="computerName" value="${ computer.computerName }" />
                             </div>
-                            <div class="form-group">
+                            <div class="form-group ${ empty error.introduced ? '' : 'has-error' }">
                                 <label for="introduced">Introduced date (dd-MM-yyyy)</label>
                                 <input type="date" class="form-control" id="introduced" placeholder="Introduced date" name="introduced" value="${ computer.introduced }" />
                             </div>
-                            <div class="form-group">
+                            <div class="form-group ${ empty error.discontinued ? '' : 'has-error' }">
                                 <label for="discontinued">Discontinued date (dd-MM-yyyy)</label>
                                 <input type="date" class="form-control" id="discontinued" placeholder="Discontinued date" name="discontinued" value="${ computer.discontinued }" />
                             </div>

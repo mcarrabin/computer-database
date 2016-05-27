@@ -60,11 +60,11 @@ public class ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
         if (dto.getDiscontinued() != null) {
             discontinuedDate = DateMapper.toLocalDate(dto.getDiscontinued());
         }
-        long computerId = Long.parseLong(dto.getId());
+        long computerId = Long.parseLong(dto.getComputerId());
         long companyId = Long.parseLong(dto.getCompanyId());
 
         company = new Company().getBuilder().name(dto.getCompanyName()).id(companyId).build();
-        computer = new Computer().getBuilder().id(computerId).name(dto.getName()).introduced(introducedDate)
+        computer = new Computer().getBuilder().id(computerId).name(dto.getComputerName()).introduced(introducedDate)
                 .discontinued(discontinuedDate).company(company).build();
 
         return computer;

@@ -15,12 +15,7 @@
 	rel="stylesheet" media="screen">
 </head>
 <body>
-	<header class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container">
-			<a class="navbar-brand" href="${ pageContext.request.contextPath }/home"> Application -
-				Computer Database </a>
-		</div>
-	</header>
+    <customTag:header />
 
 	<section id="main">
 		<div class="container">
@@ -29,7 +24,7 @@
 					<span class="container" id="error-message" ${ empty errors ? 'style = "display: none"':'' } >
 			            <div class="alert alert-danger">
 			                <c:forEach items="${ errors }" var="error" >
-			                	<c:out value="${ error.value }" />
+			                	<c:out value="${ error.field }: ${ error.rejectedValue }: ${ error.defaultMessage }" />
 			                	<br/>
 			                </c:forEach>
 			                <!-- stacktrace -->
@@ -39,17 +34,17 @@
 					<form action="add" method="POST" id="add-form">
 						<fieldset>
 
-							<div class="form-group ${ empty errors.name ? '' : 'has-error' }">
+							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" id="computerName"
-									placeholder="Computer name" name="computerName" required value="${ computer.name }">
+									placeholder="Computer name" name="computerName" required value="${ computer.computerName }">
 							</div>
-							<div class="form-group ${ empty errors.introduced ? '' : 'has-error' }">
+							<div class="form-group">
 								<label for="introduced">Introduced date (dd-MM-yyyy)</label> <input
 									type="date" class="form-control" id="introduced"
 									placeholder="Introduced date" name="introduced" value="${ computer.introduced }">
 							</div>
-							<div class="form-group ${ empty errors.discontinued ? '' : 'has-error' }">
+							<div class="form-group">
 								<label for="discontinued">Discontinued date (dd-MM-yyyy)</label> <input
 									type="date" class="form-control" id="discontinued"
 									placeholder="Discontinued date" name="discontinued" value="${ computer.discontinued }">

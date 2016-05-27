@@ -173,7 +173,8 @@ public class ComputerDao implements AbstractDao<Computer> {
         jdbcTemplate = new JdbcTemplate(dataSource);
         boolean isUpdateOk = jdbcTemplate.update(UPDATE_REQUEST, computer.getName(),
                 DateMapper.toTimeStamp(computer.getIntroduced()), DateMapper.toTimeStamp(computer.getDiscontinued()),
-                computer.getCompany().getId(), computer.getId()) > 0 ? true : false;
+                computer.getCompany() == null ? null : computer.getCompany().getId(), computer.getId()) > 0 ? true
+                        : false;
 
         return isUpdateOk;
     }

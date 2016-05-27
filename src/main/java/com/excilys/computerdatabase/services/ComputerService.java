@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.excilys.computerdatabase.dao.ComputerDao;
+import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
 import com.excilys.computerdatabase.exceptions.ServiceException;
@@ -59,6 +60,10 @@ public class ComputerService implements IService<Computer> {
 
     @Override
     public boolean update(Computer computer) {
+        Company company = null;
+        if (computer.getCompany() != null && computer.getCompany().getId() == -1) {
+            computer.setCompany(company);
+        }
         try {
             return computerDao.updateComputer(computer);
         } catch (Exception e) {
@@ -78,6 +83,10 @@ public class ComputerService implements IService<Computer> {
 
     @Override
     public boolean create(Computer computer) {
+        Company company = null;
+        if (computer.getCompany() != null && computer.getCompany().getId() == -1) {
+            computer.setCompany(company);
+        }
         try {
             return computerDao.createComputer(computer);
         } catch (Exception e) {

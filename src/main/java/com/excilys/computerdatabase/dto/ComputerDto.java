@@ -1,10 +1,16 @@
 package com.excilys.computerdatabase.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class ComputerDto {
-    private String id;
-    private String name;
-    private String introduced;
+    private String computerId;
+
+    @NotNull
+    private String computerName;
+
     private String discontinued;
+
+    private String introduced;
     private String companyId;
     private String companyName;
 
@@ -33,7 +39,7 @@ public class ComputerDto {
          * @return the ComputerDtoBuilder updated.
          */
         public ComputerDtoBuilder id(String id) {
-            this.computerDto.setId(id);
+            this.computerDto.setComputerId(id);
             return this;
         }
 
@@ -45,7 +51,7 @@ public class ComputerDto {
          * @return the updated ComputerDtoBuilder object.
          */
         public ComputerDtoBuilder name(String name) {
-            this.computerDto.setName(name);
+            this.computerDto.setComputerName(name);
             return this;
         }
 
@@ -105,27 +111,27 @@ public class ComputerDto {
 
     }
 
-    public String getId() {
-        return id;
+    public String getComputerId() {
+        return computerId;
     }
 
-    private void setId(String id) {
-        this.id = id;
+    public void setComputerId(String id) {
+        this.computerId = id;
     }
 
-    public String getName() {
-        return name;
+    public String getComputerName() {
+        return computerName;
     }
 
-    private void setName(String name) {
-        this.name = name;
+    public void setComputerName(String computerName) {
+        this.computerName = computerName;
     }
 
     public String getIntroduced() {
         return introduced;
     }
 
-    private void setIntroduced(String introduced) {
+    public void setIntroduced(String introduced) {
         this.introduced = introduced;
     }
 
@@ -133,7 +139,7 @@ public class ComputerDto {
         return discontinued;
     }
 
-    private void setDiscontinued(String discontinued) {
+    public void setDiscontinued(String discontinued) {
         this.discontinued = discontinued;
     }
 
@@ -141,7 +147,7 @@ public class ComputerDto {
         return companyId;
     }
 
-    private void setCompanyId(String companyId) {
+    public void setCompanyId(String companyId) {
         this.companyId = companyId;
     }
 
@@ -149,7 +155,7 @@ public class ComputerDto {
         return companyName;
     }
 
-    private void setCompanyName(String companyName) {
+    public void setCompanyName(String companyName) {
         this.companyName = companyName;
     }
 }
