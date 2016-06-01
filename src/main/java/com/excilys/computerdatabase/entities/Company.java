@@ -1,7 +1,20 @@
 package com.excilys.computerdatabase.entities;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "company")
 public class Company {
+    @GeneratedValue
+    @Column(name = "id")
+    @Id
     private long id;
+
+    @Column(name = "name")
     private String name;
 
     public static class CompanyBuilder {
@@ -71,7 +84,7 @@ public class Company {
      *
      * @return a new CompanyBuilder.
      */
-    public CompanyBuilder getBuilder() {
+    public static CompanyBuilder getBuilder() {
         return new CompanyBuilder();
     }
 

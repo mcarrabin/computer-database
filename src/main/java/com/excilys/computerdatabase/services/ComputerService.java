@@ -3,10 +3,9 @@ package com.excilys.computerdatabase.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.excilys.computerdatabase.dao.ComputerDao;
+import com.excilys.computerdatabase.dao.AbstractDao;
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
@@ -15,8 +14,7 @@ import com.excilys.computerdatabase.exceptions.ServiceException;
 @Service("computerService")
 public class ComputerService implements IService<Computer> {
     @Autowired
-    @Qualifier("computerDao")
-    private ComputerDao computerDao;
+    public AbstractDao<Computer> computerDao;
 
     @Override
     public List<Computer> getAll() {
@@ -59,36 +57,36 @@ public class ComputerService implements IService<Computer> {
     }
 
     @Override
-    public boolean update(Computer computer) {
+    public void update(Computer computer) {
         Company company = null;
         if (computer.getCompany() != null && computer.getCompany().getId() == -1) {
             computer.setCompany(company);
         }
         try {
-            return computerDao.updateComputer(computer);
+            computerDao.update(computer);
         } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public boolean delete(long id) {
+    public void delete(long id) {
         try {
             Computer computer = computerDao.getById(id);
-            return computerDao.delete(computer.getId());
+            computerDao.delete(computer);
         } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public boolean create(Computer computer) {
+    public void create(Computer computer) {
         Company company = null;
         if (computer.getCompany() != null && computer.getCompany().getId() == -1) {
             computer.setCompany(company);
         }
         try {
-            return computerDao.createComputer(computer);
+            computerDao.create(computer);
         } catch (Exception e) {
             throw new ServiceException(e);
         }

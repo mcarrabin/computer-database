@@ -30,7 +30,7 @@ public interface IService<T> {
      *            is the updated object to update in database.
      * @return true if update went well, else false.
      */
-    default boolean update(T t) {
+    default void update(T t) {
         throw new ServiceException("This methot is not implemented for this kind of Object");
     }
 
@@ -41,7 +41,7 @@ public interface IService<T> {
      *            is the object to create.
      * @return true if create went well, else false.
      */
-    default boolean create(T t) {
+    default void create(T t) {
         throw new ServiceException("This methot is not implemented for this kind of Object");
     }
 
@@ -52,6 +52,6 @@ public interface IService<T> {
      *            is the id of the object we want to delete.
      * @return true if delete went well, else false.
      */
-    boolean delete(long id);
+    void delete(long id);
 
 }

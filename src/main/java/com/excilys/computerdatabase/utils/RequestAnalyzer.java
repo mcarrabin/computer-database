@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 import com.excilys.computerdatabase.dto.ComputerDto;
-import com.excilys.computerdatabase.dto.ComputerDto.ComputerDtoBuilder;
 
 @Component("requestAnalyzer")
 public class RequestAnalyzer {
@@ -48,7 +47,7 @@ public class RequestAnalyzer {
      */
     public ComputerDto getComputerDtoFromParam(String id, String name, String introduced, String discontinued,
             String companyId, String companyName) {
-        ComputerDto dto = new ComputerDtoBuilder().id(id).name(name).introduced(introduced).discontinued(discontinued)
+        ComputerDto dto = ComputerDto.getBuilder().id(id).name(name).introduced(introduced).discontinued(discontinued)
                 .companyId(companyId).companyName(companyName).build();
         return dto;
     }

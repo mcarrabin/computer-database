@@ -3,7 +3,7 @@ package com.excilys.computerdatabase.mappers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +15,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import com.excilys.computerdatabase.entities.Company;
-import com.excilys.computerdatabase.entities.Company.CompanyBuilder;
 import com.excilys.computerdatabase.entities.Computer;
-import com.excilys.computerdatabase.entities.Computer.ComputerBuilder;
 import com.excilys.computerdatabase.exceptions.MapperException;
 
 /**
@@ -34,21 +32,21 @@ public class ComputerMapper implements Mapper<Computer>, RowMapper<Computer> {
 
     @Override
     public Computer mapUnique(ResultSet result) throws MapperException {
-        LocalDate introduced, discontinued;
+        LocalDateTime introduced, discontinued;
         Long companyId, id;
         Computer computer = null;
         try {
             String name = result.getString("c.name");
             introduced = result.getTimestamp("c.introduced") == null ? null
-                    : result.getTimestamp("introduced").toLocalDateTime().toLocalDate();
+                    : result.getTimestamp("introduced").toLocalDateTime();
             discontinued = result.getTimestamp("c.discontinued") == null ? null
-                    : result.getTimestamp("discontinued").toLocalDateTime().toLocalDate();
+                    : result.getTimestamp("discontinued").toLocalDateTime();
             companyId = result.getLong("comp.id");
             String companyName = result.getString("comp.name");
             id = result.getLong("id");
 
-            Company company = new CompanyBuilder().id(companyId).name(companyName).build();
-            computer = new ComputerBuilder().id(id).name(name).introduced(introduced).discontinued(discontinued)
+            Company company = Company.getBuilder().id(companyId).name(companyName).build();
+            computer = Computer.getBuilder().id(id).name(name).introduced(introduced).discontinued(discontinued)
                     .company(company).build();
         } catch (Exception e) {
             throw new MapperException(e);
@@ -78,14 +76,14 @@ public class ComputerMapper implements Mapper<Computer>, RowMapper<Computer> {
         Company company = null;
         String introducedDate = rs.getString(3);
         String discontinuedDate = rs.getString(4);
-        LocalDate introduced = null;
-        LocalDate discontinued = null;
+        LocalDateTime introduced = null;
+        LocalDateTime discontinued = null;
 
         if (introducedDate != null && !introducedDate.trim().isEmpty()) {
-            introduced = Timestamp.valueOf(introducedDate).toLocalDateTime().toLocalDate();
+            introduced = Timestamp.valueOf(introducedDate).toLocalDateTime();
         }
         if (discontinuedDate != null && !discontinuedDate.trim().isEmpty()) {
-            discontinued = Timestamp.valueOf(discontinuedDate).toLocalDateTime().toLocalDate();
+            discontinued = Timestamp.valueOf(discontinuedDate).toLocalDateTime();
         }
 
         company = new Company().getBuilder().name(rs.getString(7)).id(rs.getLong(5)).build();

@@ -1,6 +1,6 @@
 package com.excilys.computerdatabase.controllers;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -72,10 +72,10 @@ public class AddComputerController {
             model.addAttribute(ATT_ERRORS, result.getAllErrors());
             return doActionGet(computerDto, result, model);
         } else {
-            LocalDate introduced = DateMapper.toLocalDate(computerDto.getIntroduced());
-            LocalDate discontinued = DateMapper.toLocalDate(computerDto.getDiscontinued());
+            LocalDateTime introduced = DateMapper.toLocalDateTime(computerDto.getIntroduced());
+            LocalDateTime discontinued = DateMapper.toLocalDateTime(computerDto.getDiscontinued());
 
-            Computer computer = new Computer().getBuilder().company(company).name(computerDto.getComputerName())
+            Computer computer = Computer.getBuilder().company(company).name(computerDto.getComputerName())
                     .introduced(introduced).discontinued(discontinued).build();
 
             computerService.create(computer);

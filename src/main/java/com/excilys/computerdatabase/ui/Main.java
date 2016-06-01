@@ -1,9 +1,13 @@
 package com.excilys.computerdatabase.ui;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.entities.Computer;
@@ -12,10 +16,23 @@ import com.excilys.computerdatabase.services.CompanyService;
 import com.excilys.computerdatabase.services.ComputerService;
 import com.excilys.computerdatabase.services.PageService;
 
+@Component
 public class Main {
-    public static ComputerService computerService;
-    public static PageService pageService;
-    public static CompanyService companyServices;
+
+    @Autowired
+    private ComputerService computerService;
+
+    @Autowired
+    private PageService pageService;
+
+    @Autowired
+    private CompanyService companyService;
+
+    public static Scanner sc = new Scanner(System.in);
+
+    public Main() {
+
+    }
 
     /**
      * Start of the app.
@@ -24,11 +41,13 @@ public class Main {
      *            not used here.
      */
     public static void main(String... args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        Main m = context.getBean(Main.class);
         int actionAFaire = 0;
         do {
-            actionAFaire = displayMenu();
-            doAction(actionAFaire);
-        } while (continuerMainMenu());
+            actionAFaire = m.displayMenu();
+            m.doAction(actionAFaire);
+        } while (m.continuerMainMenu());
     }
 
     /**
@@ -36,9 +55,9 @@ public class Main {
      *
      * @return the id of the action.
      */
-    public static int displayMenu() {
+    public int displayMenu() {
         int result = -1;
-        Scanner sc = new Scanner(System.in);
+        // Scanner sc = new Scanner(System.in);
         boolean isReponseCorrecte = false;
         while (!isReponseCorrecte) {
             System.out.println("Que voulez-vous faire ?");
@@ -72,7 +91,7 @@ public class Main {
      *            is the maximal value. -1 if there is no maximum limit.
      * @return the int value typed. -1 if the typed value is not an int.
      */
-    public static int newEntry(Scanner sc, int min, int max) {
+    public int newEntry(Scanner sc, int min, int max) {
         String result = sc.nextLine();
         try {
             int i = Integer.parseInt(result);
@@ -91,9 +110,9 @@ public class Main {
      * @return true if the user type "o", false if he types "n". If any other
      *         response, the user will have to type another response.
      */
-    public static boolean continuerMainMenu() {
+    public boolean continuerMainMenu() {
         String reponse = null;
-        Scanner sc = new Scanner(System.in);
+        // Scanner sc = new Scanner(System.in);
         boolean isReponseCorrecte = false;
         while (!isReponseCorrecte) {
             System.out.println("Voulez-vous continuer? [O/n]");
@@ -123,18 +142,15 @@ public class Main {
      * @param pageService
      *            is the current instance of PageService
      */
-    public static void doAction(int action) {
+    public void doAction(int action) {
         Computer computer = new Computer();
+        // Scanner sc = new Scanner(System.in);
         Page<Computer> page = null;
-        Scanner sc = new Scanner(System.in);
-        boolean actionRealized = false;
-        List<Computer> computers = new ArrayList<Computer>();
         long id;
         switch (action) {
         case 1:
             try {
-                List<Company> companies = new ArrayList<Company>();
-                // companies = companyService.getAll();
+                List<Company> companies = this.companyService.getAll();
 
                 for (Company company : companies) {
                     System.out.println(company.toString());
@@ -147,7 +163,7 @@ public class Main {
 
         case 2:
             try {
-                computers = computerService.getAll();
+                List<Computer> computers = this.computerService.getAll();
                 for (Computer c : computers) {
                     System.out.println(c.toString());
                 }
@@ -161,7 +177,7 @@ public class Main {
             try {
                 System.out.println("Quel ordinateur voulez-vous afficher? ");
                 id = newEntry(sc, 0, -1);
-                computer = computerService.getById(id);
+                computer = this.computerService.getById(id);
                 System.out.println(computer.toString());
                 break;
             } catch (Exception e) {
@@ -172,10 +188,7 @@ public class Main {
         case 4:
             try {
                 computer = typeComputer();
-                actionRealized = computerService.create(computer);
-                if (actionRealized) {
-                    actionValid("création");
-                }
+                this.computerService.create(computer);
                 break;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -186,13 +199,9 @@ public class Main {
             try {
                 System.out.println("Quel ordinateur voulez-vous modifier? ");
                 id = newEntry(sc, 0, -1);
-                computer = computerService.getById(id);
+                computer = this.computerService.getById(id);
                 computer = typeComputerUpdates(computer);
                 computer.setId(id);
-                actionRealized = computerService.update(computer);
-                if (actionRealized) {
-                    actionValid("modification");
-                }
                 break;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -203,10 +212,7 @@ public class Main {
             try {
                 System.out.println("Quel ordinateur voulez-vous supprimer? ");
                 id = newEntry(sc, 0, -1);
-                actionRealized = computerService.delete(id);
-                if (actionRealized) {
-                    actionValid("suppression");
-                }
+                this.computerService.delete(id);
                 break;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -222,7 +228,7 @@ public class Main {
                     System.out.println("Quelle page voulez-vous afficher? (0 pour retourner au menu principal");
                     numPage = intEntry(sc, 0, -1);
                     if (numPage > 0) {
-                        page = pageService.getPage(nbreLine, numPage, "Amiga", "", "");
+                        page = this.pageService.getPage(nbreLine, numPage, "", "", "");
                         if (page.getElements().size() > 0) {
                             System.out.println(page.toString());
                         } else {
@@ -241,7 +247,7 @@ public class Main {
         case 8:
             System.out.println("Saisissez l'id d'une compagnie à supprimer: ");
             long companyId = intEntry(sc, 1, -1);
-            // companyService.delete(companyId);
+            this.companyService.delete(companyId);
             break;
         }
     }
@@ -251,13 +257,12 @@ public class Main {
      *
      * @return the Computer filled with the values typed by the user.
      */
-    public static Computer typeComputer() {
+    public Computer typeComputer() {
         Computer computer = new Computer();
         String name;
-        LocalDate introduced, discontinued;
-        Scanner sc = new Scanner(System.in);
+        LocalDateTime introduced, discontinued;
         long companyId;
-        Company company = new Company();
+        // Scanner sc = new Scanner(System.in);
 
         System.out.println("Saisissez un nom: ");
         name = sc.nextLine();
@@ -267,7 +272,7 @@ public class Main {
         discontinued = typeDate();
         System.out.println("Saisie de l'id d'une company: ");
         companyId = intEntry(sc, 0, -1);
-        company.getBuilder().id(companyId);
+        Company company = Company.getBuilder().id(companyId).build();
 
         computer.setName(name);
         computer.setIntroduced(introduced);
@@ -282,11 +287,11 @@ public class Main {
      *
      * @return la date saisie après vérification.
      */
-    public static LocalDate typeDate() {
-        LocalDate res = null;
-        Scanner sc = new Scanner(System.in);
+    public LocalDateTime typeDate() {
+        LocalDateTime res = null;
         int jour, mois, annee;
         boolean isDateOK = false;
+        // Scanner sc = new Scanner(System.in);
         while (!isDateOK) {
             try {
                 System.out.println("Saisissez un jour: ");
@@ -298,7 +303,7 @@ public class Main {
                 if (jour == 0 && mois == 0 && annee == 0) {
                     res = null;
                 } else {
-                    res = LocalDate.of(annee, mois, jour);
+                    res = LocalDateTime.of(annee, mois, jour, 0, 0, 0);
                 }
                 isDateOK = true;
             } catch (Exception e) {
@@ -321,7 +326,7 @@ public class Main {
      *            have to be done.
      * @return the int typed by the user if it passes the tests, else -1.
      */
-    public static int intEntry(Scanner sc, int min, int max) {
+    public int intEntry(Scanner sc, int min, int max) {
         String temp = sc.nextLine();
         if (temp != null && temp.length() > 0) {
             try {
@@ -345,10 +350,10 @@ public class Main {
      *            initial object
      * @return Computer object updated
      */
-    public static Computer typeComputerUpdates(Computer computer) {
+    public Computer typeComputerUpdates(Computer computer) {
         Company company = computer.getCompany();
+        // Scanner sc = new Scanner(System.in);
         int field;
-        Scanner sc = new Scanner(System.in);
         do {
             field = updateMenu();
             switch (field) {
@@ -365,7 +370,7 @@ public class Main {
                 long companyId;
                 System.out.println("Saisissez un nouveau company_id:");
                 companyId = intEntry(sc, 0, -1);
-                company.getBuilder().id(companyId);
+                company = Company.getBuilder().id(companyId).build();
                 computer.setCompany(company);
                 break;
             }
@@ -379,9 +384,9 @@ public class Main {
      *
      * @return return l'indice du champ à modifier
      */
-    public static int updateMenu() {
+    public int updateMenu() {
+        // Scanner sc = new Scanner(System.in);
         int field;
-        Scanner sc = new Scanner(System.in);
         System.out.println("Quel champ voulez-vous mettre à jour?");
         System.out.println(" 1. Name");
         System.out.println(" 2. Introduced");
@@ -397,9 +402,9 @@ public class Main {
      *
      * @return the value typed by the user as a String.
      */
-    public static String newName() {
+    public String newName() {
+        // Scanner sc = new Scanner(System.in);
         String result;
-        Scanner sc = new Scanner(System.in);
         System.out.println("renseignez la nouvelle valeur du champ name:");
         result = sc.nextLine();
         // sc.close();
@@ -411,8 +416,8 @@ public class Main {
      *
      * @return true si oui, non sinon
      */
-    public static boolean continuerUpdate() {
-        Scanner sc = new Scanner(System.in);
+    public boolean continuerUpdate() {
+        // Scanner sc = new Scanner(System.in);
         String continu = "";
         System.out.println("Voulez-vous mettre un autre champ à jour?[O/n]");
         continu = sc.nextLine();
@@ -427,7 +432,7 @@ public class Main {
      * @param action
      *            libellé de l'action menée
      */
-    public static void actionValid(String action) {
+    public void actionValid(String action) {
         System.out.println("La " + action + " a été réalisée avec succès.");
     }
 }

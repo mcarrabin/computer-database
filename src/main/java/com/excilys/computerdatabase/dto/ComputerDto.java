@@ -158,4 +158,8 @@ public class ComputerDto {
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
     }
+
+    public static ComputerDtoBuilder getBuilder() {
+        return new ComputerDtoBuilder();
+    }
 }

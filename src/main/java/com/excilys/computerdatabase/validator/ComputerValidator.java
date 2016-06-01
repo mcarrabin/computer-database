@@ -1,6 +1,6 @@
 package com.excilys.computerdatabase.validator;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,95 +77,6 @@ public class ComputerValidator implements Validator {
         }
     }
 
-    /**
-     * Method that will verify that introduced and discontinued are coherent.
-     *
-     * @param introduced
-     *            is the introduced date.
-     * @param discontinued
-     *            is the discontinued date.
-     */
-    // public String areDatesOk(LocalDate introduced, LocalDate discontinued) {
-    // if (introduced == null && discontinued != null) {
-    // return "the Computer discontinued date must be null if introduced date
-    // is.";
-    // } else if (introduced != null && discontinued != null &&
-    // discontinued.isBefore(introduced)) {
-    // return "the Computer discontinued date must be after the introduced
-    // date.";
-    // }
-    // return null;
-    //
-    // }
-
-    /**
-     * Method that will check every attributes of the ComputerDto object.
-     *
-     * @param computer
-     *            is the object to verify.
-     * @throws a
-     *             ValidatorException is something went wrong.
-     */
-    // public void validateComputer(Computer computer) {
-    // if (computer.getCompany() != null) {
-    // companyValidator.validateCompany(computer.getCompany());
-    // }
-    // isNameValid(computer.getName());
-    // areDatesOk(computer.getIntroduced(), computer.getDiscontinued());
-    // }
-
-    /**
-     * Method that will check every attributes of the ComputerDto object.
-     *
-     * @param computer
-     *            is the object to verify.
-     * @throws a
-     *             ValidatorException is something went wrong.
-     */
-    // public Map<String, String> validate(ComputerDto computer) {
-    // Map<String, String> companyErrors = new HashMap<>();
-    // if (computer.getCompanyId() != null) {
-    // companyErrors = companyValidator.validateCompany(computer.getCompanyId(),
-    // computer.getCompanyName());
-    // }
-    // errorMessages.putAll(companyErrors);
-    //
-    // isNameValid(computer.getComputerName());
-    // isIdValid(computer.getComputerId());
-    //
-    // isDateValid(computer.getIntroduced(), "introduced");
-    // isDateValid(computer.getDiscontinued(), "discontinued");
-    // LocalDate introduced = DateMapper.toLocalDate(computer.getIntroduced());
-    // LocalDate discontinued =
-    // DateMapper.toLocalDate(computer.getDiscontinued());
-    //
-    // areDatesOk(introduced, discontinued);
-    //
-    // return errorMessages;
-    // }
-
-    /**
-     * Method that will check every attributes of the ComputerDto object.
-     *
-     * @param computer
-     *            is the object to verify.
-     * @throws a
-     *             ValidatorException is something went wrong.
-     */
-    // public Map<String, String> validate(String name, String pIntroduced,
-    // String pDiscontinued) {
-    // // isNameValid(name);
-    //
-    // isDateValid(pIntroduced, "introduced");
-    // isDateValid(pDiscontinued, "discontinued");
-    // LocalDate introduced = DateMapper.toLocalDate(pIntroduced);
-    // LocalDate discontinued = DateMapper.toLocalDate(pDiscontinued);
-    //
-    // areDatesOk(introduced, discontinued);
-    //
-    // return errorMessages;
-    // }
-
     @Override
     public boolean supports(Class<?> clazz) {
         return Computer.class.isAssignableFrom(clazz);
@@ -174,8 +85,8 @@ public class ComputerValidator implements Validator {
     @Override
     public void validate(Object object, Errors errors) {
         ComputerDto computer = (ComputerDto) object;
-        LocalDate introduced = DateMapper.toLocalDate(computer.getIntroduced());
-        LocalDate discontinued = DateMapper.toLocalDate(computer.getDiscontinued());
+        LocalDateTime introduced = DateMapper.toLocalDateTime(computer.getIntroduced());
+        LocalDateTime discontinued = DateMapper.toLocalDateTime(computer.getDiscontinued());
 
         if (isNameValid(computer.getComputerName()) == -1) {
             errors.rejectValue("computerName", "name.invalid");

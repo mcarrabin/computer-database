@@ -1,12 +1,38 @@
 package com.excilys.computerdatabase.entities;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "computer")
 public class Computer {
+
+    @GeneratedValue
+    @Id
+    @Column(name = "id")
     private long id;
-    private LocalDate introduced;
-    private LocalDate discontinued;
+
+    @Column(name = "introduced")
+    @Convert(converter = DateConverter.class)
+    private LocalDateTime introduced;
+
+    @Column(name = "discontinued")
+    @Convert(converter = DateConverter.class)
+    private LocalDateTime discontinued;
+
+    @ManyToOne(targetEntity = Company.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "company_id")
     private Company company;
+
     private String name;
 
     /**
@@ -38,7 +64,7 @@ public class Computer {
          *            is the new value of the introduced attribute to udpate.
          * @return the current PageBuilder with an updated introduced attribute.
          */
-        public ComputerBuilder introduced(LocalDate introduced) {
+        public ComputerBuilder introduced(LocalDateTime introduced) {
             this.computer.setIntroduced(introduced);
             return this;
         }
@@ -51,7 +77,7 @@ public class Computer {
          * @return the current PageBuilder with an updated discontinued
          *         attribute.
          */
-        public ComputerBuilder discontinued(LocalDate discontinued) {
+        public ComputerBuilder discontinued(LocalDateTime discontinued) {
             this.computer.setDiscontinued(discontinued);
             return this;
         }
@@ -97,11 +123,11 @@ public class Computer {
         return this.id;
     }
 
-    public LocalDate getIntroduced() {
+    public LocalDateTime getIntroduced() {
         return this.introduced;
     }
 
-    public LocalDate getDiscontinued() {
+    public LocalDateTime getDiscontinued() {
         return this.discontinued;
     }
 
@@ -117,11 +143,11 @@ public class Computer {
         this.id = id;
     }
 
-    public void setIntroduced(LocalDate introduced) {
+    public void setIntroduced(LocalDateTime introduced) {
         this.introduced = introduced;
     }
 
-    public void setDiscontinued(LocalDate discontinued) {
+    public void setDiscontinued(LocalDateTime discontinued) {
         this.discontinued = discontinued;
     }
 
@@ -138,7 +164,7 @@ public class Computer {
      *
      * @return the ComputerBuilder.
      */
-    public ComputerBuilder getBuilder() {
+    public static ComputerBuilder getBuilder() {
         return new ComputerBuilder();
     }
 
@@ -198,7 +224,9 @@ public class Computer {
 
     @Override
     public String toString() {
-        return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued=" + discontinued
-                + "\n\t company=" + company.toString() + "]";
+        return "";
+        // return "Computer [id=" + id + ", name=" + name + ", introduced=" +
+        // introduced + ", discontinued=" + discontinued
+        // + "\n\t company=" + company.toString() + "]";
     }
 }

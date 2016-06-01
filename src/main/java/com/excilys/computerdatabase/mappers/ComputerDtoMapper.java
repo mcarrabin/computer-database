@@ -1,13 +1,12 @@
 package com.excilys.computerdatabase.mappers;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
 import com.excilys.computerdatabase.dto.ComputerDto;
-import com.excilys.computerdatabase.dto.ComputerDto.ComputerDtoBuilder;
 import com.excilys.computerdatabase.entities.Company;
 import com.excilys.computerdatabase.entities.Computer;
 
@@ -26,16 +25,24 @@ public class ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
         ComputerDto dto = null;
         String dateIntroduced = "";
         String dateDiscontinued = "";
-        if (computer.getIntroduced() != null) {
-            dateIntroduced = DateMapper.toString(computer.getIntroduced());
+        LocalDateTime intro = computer.getIntroduced();
+        LocalDateTime disco = computer.getDiscontinued();
+        if (intro != null) {
+            dateIntroduced = DateMapper.toString(intro);
         }
-        if (computer.getDiscontinued() != null) {
-            dateDiscontinued = DateMapper.toString(computer.getDiscontinued());
+        if (disco != null) {
+            dateDiscontinued = DateMapper.toString(disco);
         }
         String computerId = String.valueOf(computer.getId());
-        String companyId = String.valueOf(computer.getCompany().getId());
+        Company company = computer.getCompany();
+        String companyId = null;
+        String companyName = null;
+        if (company != null) {
+            companyId = String.valueOf(company.getId());
+            companyName = company.getName();
+        }
 
-        dto = new ComputerDtoBuilder().id(computerId).companyName(computer.getCompany().getName()).companyId(companyId)
+        dto = ComputerDto.getBuilder().id(computerId).companyName(companyName).companyId(companyId)
                 .name(computer.getName()).introduced(dateIntroduced).discontinued(dateDiscontinued).build();
 
         return dto;
@@ -52,19 +59,19 @@ public class ComputerDtoMapper implements MapperDto<Computer, ComputerDto> {
     public Computer fromDto(ComputerDto dto) {
         Computer computer = null;
         Company company = null;
-        LocalDate introducedDate = null;
-        LocalDate discontinuedDate = null;
+        LocalDateTime introducedDate = null;
+        LocalDateTime discontinuedDate = null;
         if (dto.getIntroduced() != null) {
-            introducedDate = DateMapper.toLocalDate(dto.getIntroduced());
+            introducedDate = DateMapper.toLocalDateTime(dto.getIntroduced());
         }
         if (dto.getDiscontinued() != null) {
-            discontinuedDate = DateMapper.toLocalDate(dto.getDiscontinued());
+            discontinuedDate = DateMapper.toLocalDateTime(dto.getDiscontinued());
         }
         long computerId = Long.parseLong(dto.getComputerId());
         long companyId = Long.parseLong(dto.getCompanyId());
 
         company = new Company().getBuilder().name(dto.getCompanyName()).id(companyId).build();
-        computer = new Computer().getBuilder().id(computerId).name(dto.getComputerName()).introduced(introducedDate)
+        computer = Computer.getBuilder().id(computerId).name(dto.getComputerName()).introduced(introducedDate)
                 .discontinued(discontinuedDate).company(company).build();
 
         return computer;

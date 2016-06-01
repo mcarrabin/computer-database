@@ -22,24 +22,8 @@ import com.excilys.computerdatabase.utils.RequestAnalyzer;
 @Controller
 public class PageController {
 
-    // private static final String PARAM_SEARCH_STRING = "search";
-    // private static final String PARAM_CURRENT_PAGE = "page";
-    // private static final String PARAM_ITEMS_PER_PAGE = "elements";
-    //
-    // // parameter which defines which column will be sorted.
-    // private static final String PARAM_ORDER_BY = "orderby";
-    //
-    // // parameter which defines which way the column needs to be sorted "asc"
-    // or
-    // // "desc"
-    // private static final String PARAM_CURRENT_SORTING = "sort";
-    //
-    // private static final String ATTR_PAGE = "page";
-
     private static final int MIN_ELEMENTS_PER_PAGE = 10;
     private static final int MIN_PAGE_NUMBER = 1;
-
-    // private static final String PAGE_URL = "/WEB-INF/jsp/page.jsp";
 
     @Autowired
     @Qualifier("requestAnalyzer")

@@ -1,11 +1,15 @@
 package com.excilys.computerdatabase.dao;
 
-import java.sql.Connection;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.computerdatabase.entities.Company;
@@ -14,7 +18,12 @@ import com.excilys.computerdatabase.mappers.CompanyMapper;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Repository("companyDao")
+@Transactional
+@Scope("singleton")
 public class CompanyDao implements AbstractDao<Company> {
+
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Autowired
     @Qualifier("companyMapper")
@@ -28,8 +37,6 @@ public class CompanyDao implements AbstractDao<Company> {
     @Qualifier("dataSource")
     private HikariDataSource dataSource;
 
-    private JdbcTemplate jdbcTemplate;
-
     private static final String GET_ALL_REQUEST = "select id, name from company order by name";
     private static final String GET_BY_ID_REQUEST = "select id, name from company where id = ?";
     private static final String DELETE_COMPANY_REQUEST = "delete from company where id = ?";
@@ -38,36 +45,37 @@ public class CompanyDao implements AbstractDao<Company> {
         this.dataSource = dataSource;
     }
 
-    /**
-     * Method that will return a connection from the dbManager instance.
-     *
-     * @return a connection to the database.
-     */
-    public Connection connect() {
-        return dbManager.getConnection();
-    }
-
+    @SuppressWarnings("unchecked")
     @Override
     public List<Company> getAll() throws DaoException {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.query(GET_ALL_REQUEST, new Object[] {}, new CompanyMapper());
+        List<Company> companies = getSessionFactory().createQuery("from Company").list();
+        return companies;
     }
 
     @Override
     public Company getById(long id) throws DaoException {
-        if (id == -1) {
-            return new Company();
-        } else {
-            jdbcTemplate = new JdbcTemplate(dataSource);
-            Company company = jdbcTemplate.queryForObject(GET_BY_ID_REQUEST, new Object[] { id }, new CompanyMapper());
-            return company;
-        }
+        return (Company) getSessionFactory().get(Company.class, id);
     }
 
     @Override
-    public boolean delete(long id) throws DaoException {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        boolean isDeleteOk = jdbcTemplate.update(DELETE_COMPANY_REQUEST, id) > 0 ? true : false;
-        return isDeleteOk;
+    public void delete(Company company) throws DaoException {
+        // jdbcTemplate = new JdbcTemplate(dataSource);
+        // boolean isDeleteOk = jdbcTemplate.update(DELETE_COMPANY_REQUEST, id)
+        // > 0 ? true : false;
+        // return isDeleteOk;
+    }
+
+    public void setSessionFactory(SessionFactory sf) {
+        this.sessionFactory = sf;
+    }
+
+    protected final Session getSessionFactory() {
+        Session session = null;
+        try {
+            session = sessionFactory.getCurrentSession();
+        } catch (HibernateException e) {
+            session = sessionFactory.openSession();
+        }
+        return session;
     }
 }

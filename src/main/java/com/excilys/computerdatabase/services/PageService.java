@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.excilys.computerdatabase.dao.ComputerDao;
+import com.excilys.computerdatabase.dao.AbstractDao;
 import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.entities.Page;
 import com.excilys.computerdatabase.mappers.SqlSort;
@@ -13,11 +13,10 @@ import com.excilys.computerdatabase.mappers.SqlSort;
 public class PageService {
     @Autowired
     @Qualifier("computerService")
-    private ComputerService computerService;
+    public ComputerService computerService;
 
     @Autowired
-    @Qualifier("computerDao")
-    private ComputerDao computerDao;
+    public AbstractDao<Computer> computerDao;
 
     /**
      * Methode qui va calculer le nombre total de page affichable en se basant
@@ -44,7 +43,8 @@ public class PageService {
         int maxPage = (int) computersTotalCount / nbreLine + 1;
 
         if (numPage <= maxPage) {
-            page = computerService.getComputerByPage(nbreLine, numPage, name, sqlSort + " " + sorting);
+            page = computerService.getComputerByPage(nbreLine, numPage, name,
+                    sqlSort.trim().isEmpty() ? "" : (sqlSort + " " + sorting));
             page.setItemsTotalCount(computersTotalCount);
             page.setMaxPage(maxPage);
             page.setSearch(name);

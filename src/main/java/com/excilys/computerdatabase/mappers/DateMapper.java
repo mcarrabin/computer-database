@@ -2,6 +2,7 @@ package com.excilys.computerdatabase.mappers;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Component;
@@ -20,11 +21,11 @@ public class DateMapper {
      * @return the LocalDateTime.
      */
 
-    public static LocalDate toLocalDate(String date) {
-        LocalDate result = null;
+    public static LocalDateTime toLocalDateTime(String date) {
+        LocalDateTime result = null;
         if (date != null && date.length() != 0) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_TYPE);
-            result = LocalDate.parse(date, formatter);
+            result = LocalDate.parse(date, formatter).atStartOfDay();
         }
         return result;
     }
@@ -36,7 +37,7 @@ public class DateMapper {
      *            is the LocalDateTime date to transform.
      * @return the String format date.
      */
-    public static String toString(LocalDate date) {
+    public static String toString(LocalDateTime date) {
         if (date == null) {
             return "";
         } else {

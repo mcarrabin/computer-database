@@ -7,26 +7,24 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.computerdatabase.dao.CompanyDao;
-import com.excilys.computerdatabase.dao.ComputerDao;
+import com.excilys.computerdatabase.dao.AbstractDao;
 import com.excilys.computerdatabase.dao.DBManager;
 import com.excilys.computerdatabase.entities.Company;
+import com.excilys.computerdatabase.entities.Computer;
 import com.excilys.computerdatabase.exceptions.DaoException;
 import com.excilys.computerdatabase.exceptions.ServiceException;
 
 @Service("companyService")
 public class CompanyService implements IService<Company> {
     @Autowired
-    @Qualifier("companyDao")
-    private CompanyDao companyDao;
+    public AbstractDao<Company> companyDao;
 
     @Autowired
-    @Qualifier("computerDao")
-    private ComputerDao computerDao;
+    public AbstractDao<Computer> computerDao;
 
     @Autowired
     @Qualifier("dbManager")
-    private DBManager dbManager;
+    public DBManager dbManager;
 
     @Override
     public List<Company> getAll() {
@@ -60,14 +58,13 @@ public class CompanyService implements IService<Company> {
      */
     @Transactional
     @Override
-    public boolean delete(long id) {
+    public void delete(long id) {
         Company company = companyDao.getById(id);
         try {
             computerDao.deleteByCompany(company.getId());
-            companyDao.delete(company.getId());
+            companyDao.delete(company);
         } catch (DaoException e) {
             throw new ServiceException(e);
         }
-        return true;
     }
 }

@@ -1,9 +1,9 @@
 package com.excilys.computerdatabase.dao;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
+import com.excilys.computerdatabase.entities.Computer;
+import com.excilys.computerdatabase.entities.Page;
 import com.excilys.computerdatabase.exceptions.DaoException;
 
 public interface AbstractDao<T> {
@@ -15,7 +15,7 @@ public interface AbstractDao<T> {
      * @throws DaoException
      *             which are exceptions thrown by Dao classes.
      */
-    public abstract List<T> getAll() throws DaoException;
+    List<T> getAll() throws DaoException;
 
     /**
      * Method that will get an Object based on id match.
@@ -26,7 +26,7 @@ public interface AbstractDao<T> {
      * @throws DaoException
      *             which are exceptions thrown by Dao classes.
      */
-    public abstract T getById(long id) throws DaoException;
+    T getById(long id) throws DaoException;
 
     /**
      * Method that will delete an object based on the id.
@@ -37,19 +37,69 @@ public interface AbstractDao<T> {
      * @throws DaoException
      *             if something went wrong.
      */
-    public abstract boolean delete(long id) throws DaoException;
+    void delete(T t) throws DaoException;
 
     /**
-     * Method that will close the connexion of the current instance of Dao.
+     * Method that will create an object in BDD.
      *
-     * @throws ConnexionException
-     *             which is the exception related to the connection.
+     * @param t
+     *            is the object to create.
+     * @throws UnsupportedOperationException
+     *             if the method is not overriden (Company object for example).
      */
-    public default void closeConnection(Connection con) {
-        try {
-            con.close();
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
+    default void create(final T t) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Method that will update an object in BDD.
+     *
+     * @param t
+     *            is the object to update.
+     * @throws UnsupportedOperationException
+     *             if the method is not overriden (Company object for example).
+     */
+    default void update(final T t) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Method that will get Computer objects to build a page.
+     *
+     * @param nbreLine
+     *            is the number of elements by page.
+     * @param numPage
+     *            is the page number wanted.
+     * @param search
+     *            is the search filter.
+     * @param orderBy
+     *            is the order by paramater.
+     * @return the built page.
+     */
+    default Page<Computer> getByPage(int nbreLine, int numPage, String search, String orderBy) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Method that will throw a count(*) request in the DB to know how many
+     * computers are send back by server.
+     *
+     * @param search
+     *            is the search parameter.
+     * @return the number of Computer objects found in the DB.
+     */
+    default long getNumTotalComputer(String name) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Method that will be overriden only in the computerDao. It is called when
+     * the user wanna delete a company and every linked computers.
+     *
+     * @param id
+     *            is the id of the company to delete.
+     */
+    default void deleteByCompany(long id) {
+        throw new UnsupportedOperationException();
     }
 }
