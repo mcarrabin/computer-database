@@ -1,0 +1,17 @@
+com/excilys/computerdatabase/dto/ComputerDto.class
+com/excilys/computerdatabase/entities/Computer$ComputerBuilder.class
+com/excilys/computerdatabase/entities/SQLSort.class
+com/excilys/computerdatabase/entities/DateConverter.class
+com/excilys/computerdatabase/entities/Page$1.class
+com/excilys/computerdatabase/entities/Computer.class
+com/excilys/computerdatabase/entities/Page$PageBuilder.class
+com/excilys/computerdatabase/exceptions/ServiceException.class
+com/excilys/computerdatabase/entities/SQLColumnNames.class
+com/excilys/computerdatabase/exceptions/ConnectionException.class
+com/excilys/computerdatabase/entities/Page.class
+com/excilys/computerdatabase/exceptions/ValidatorException.class
+com/excilys/computerdatabase/dto/ComputerDto$ComputerDtoBuilder.class
+com/excilys/computerdatabase/entities/Company$CompanyBuilder.class
+com/excilys/computerdatabase/exceptions/MapperException.class
+com/excilys/computerdatabase/entities/Company.class
+com/excilys/computerdatabase/exceptions/DaoException.class

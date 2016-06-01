@@ -1,0 +1,9 @@
+com/excilys/computerdatabase/validator/ComputerValidator.class
+com/excilys/computerdatabase/mappers/ComputerMapper.class
+com/excilys/computerdatabase/mappers/MapperDto.class
+com/excilys/computerdatabase/mappers/SqlSort.class
+com/excilys/computerdatabase/mappers/ComputerDtoMapper.class
+com/excilys/computerdatabase/mappers/Mapper.class
+com/excilys/computerdatabase/validator/CompanyValidator.class
+com/excilys/computerdatabase/mappers/CompanyMapper.class
+com/excilys/computerdatabase/mappers/DateMapper.class

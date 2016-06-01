@@ -1,0 +1,7 @@
+/home/excilys/Bureau/workspace/computer-database/webapp/src/main/java/com/excilys/computerdatabase/controllers/ErrorsController.java
+/home/excilys/Bureau/workspace/computer-database/webapp/src/main/java/com/excilys/computerdatabase/controllers/EditComputerController.java
+/home/excilys/Bureau/workspace/computer-database/webapp/src/main/java/com/excilys/computerdatabase/controllers/AddComputerController.java
+/home/excilys/Bureau/workspace/computer-database/webapp/src/main/java/com/excilys/computerdatabase/utils/RequestAnalyzer.java
+/home/excilys/Bureau/workspace/computer-database/webapp/src/main/java/com/excilys/computerdatabase/controllers/PageController.java
+/home/excilys/Bureau/workspace/computer-database/webapp/src/main/java/com/excilys/computerdatabase/tags/PaginationTagHandler.java
+/home/excilys/Bureau/workspace/computer-database/webapp/src/main/java/com/excilys/computerdatabase/controllers/DeleteComputerController.java

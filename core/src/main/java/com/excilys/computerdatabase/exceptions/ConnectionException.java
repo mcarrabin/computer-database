@@ -2,11 +2,9 @@ package com.excilys.computerdatabase.exceptions;
 
 import org.slf4j.LoggerFactory;
 
-import com.excilys.computerdatabase.dao.CompanyDao;
-
 public class ConnectionException extends RuntimeException {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ConnectionException.class);
 
     /**
      * Constructor of the ConnectionException class.

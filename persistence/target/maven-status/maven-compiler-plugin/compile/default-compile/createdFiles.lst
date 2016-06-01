@@ -1,0 +1,4 @@
+com/excilys/computerdatabase/dao/ComputerDao.class
+com/excilys/computerdatabase/dao/CompanyDao.class
+com/excilys/computerdatabase/dao/AbstractDao.class
+com/excilys/computerdatabase/dao/DBManager.class

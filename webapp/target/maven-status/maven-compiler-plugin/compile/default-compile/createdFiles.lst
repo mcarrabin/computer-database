@@ -1,0 +1,7 @@
+com/excilys/computerdatabase/utils/RequestAnalyzer.class
+com/excilys/computerdatabase/controllers/EditComputerController.class
+com/excilys/computerdatabase/controllers/PageController.class
+com/excilys/computerdatabase/controllers/AddComputerController.class
+com/excilys/computerdatabase/controllers/DeleteComputerController.class
+com/excilys/computerdatabase/controllers/ErrorsController.class
+com/excilys/computerdatabase/tags/PaginationTagHandler.class
