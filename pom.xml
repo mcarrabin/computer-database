@@ -3,7 +3,7 @@
 	<groupId>com.excilys</groupId>
 	<artifactId>computerdatabase</artifactId>
 	<version>0.3.0-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>pom</packaging>
 <!-- Properties of pom.xml -->
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -25,6 +25,15 @@
         <hikari>2.4.6</hikari>
         <hibernate>4.3.11.Final</hibernate>
     </properties>
+
+    <modules>
+	<module>core</module>
+	<module>persistence</module>
+	<module>service</module>
+	<module>binding</module>
+	<module>webapp</module>
+	<module>console</module>
+    </modules>
     
     <dependencies>
     
