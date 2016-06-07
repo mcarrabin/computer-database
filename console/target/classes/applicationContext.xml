@@ -14,7 +14,6 @@
     
     <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
    
-   
     	<!-- HikariCP configuration -->
    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
        <property name="poolName" value="springHikariCP" />

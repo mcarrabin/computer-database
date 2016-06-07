@@ -18,7 +18,7 @@ public class ServiceException extends RuntimeException {
 
     /**
      * Constructor of the Service Exception class
-     * 
+     *
      * @param e
      *            is the message of the Exception to throw.
      */

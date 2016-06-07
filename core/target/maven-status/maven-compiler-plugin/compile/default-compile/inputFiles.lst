@@ -1,12 +1,14 @@
 /home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/exceptions/DaoException.java
 /home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/entities/SQLSort.java
 /home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/exceptions/ConnectionException.java
+/home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/entities/User.java
+/home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/entities/Company.java
+/home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/entities/SQLColumnNames.java
 /home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/exceptions/ValidatorException.java
 /home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/entities/DateConverter.java
-/home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/entities/Company.java
 /home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/entities/Page.java
 /home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/entities/Computer.java
+/home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/entities/UserRole.java
 /home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/exceptions/MapperException.java
 /home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/exceptions/ServiceException.java
 /home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/dto/ComputerDto.java
-/home/excilys/Bureau/workspace/computer-database/core/src/main/java/com/excilys/computerdatabase/entities/SQLColumnNames.java

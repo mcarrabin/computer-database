@@ -1,4 +1,7 @@
 com/excilys/computerdatabase/services/CompanyService.class
+com/excilys/computerdatabase/services/IPageService.class
 com/excilys/computerdatabase/services/PageService.class
+com/excilys/computerdatabase/services/UserService.class
+com/excilys/computerdatabase/services/IUserService.class
 com/excilys/computerdatabase/services/IService.class
 com/excilys/computerdatabase/services/ComputerService.class

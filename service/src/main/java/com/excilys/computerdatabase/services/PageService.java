@@ -10,7 +10,7 @@ import com.excilys.computerdatabase.entities.Page;
 import com.excilys.computerdatabase.mappers.SqlSort;
 
 @Service("pageService")
-public class PageService {
+public class PageService implements IPageService {
     @Autowired
     @Qualifier("computerService")
     public ComputerService computerService;
@@ -18,36 +18,25 @@ public class PageService {
     @Autowired
     public AbstractDao<Computer> computerDao;
 
-    /**
-     * Methode qui va calculer le nombre total de page affichable en se basant
-     * sur le nombre de ligne par page reçu en parametre.
-     *
-     * @param nbreLine
-     *            nbre de ligne par page voulu
-     * @param numPage
-     *            numero de la page voulue
-     * @param name
-     *            filtre sur les noms de Computer.
-     * @return la page construite
-     */
-    public Page<Computer> getPage(int nbreLine, int numPage, String name, String orderBy, String sorting) {
+    @Override
+    public Page<Computer> getPage(int itemsPerPage, int numPage, String search, String orderBy, String sorting) {
         Page<Computer> page = new Page<Computer>();
         long computersTotalCount = 0;
         String sqlSort = SqlSort.getSortColumn(orderBy);
         try {
-            computersTotalCount = computerDao.getNumTotalComputer(name);
+            computersTotalCount = computerDao.getNumTotalComputer(search);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        int maxPage = (int) computersTotalCount / nbreLine + 1;
+        int maxPage = (int) computersTotalCount / itemsPerPage + 1;
 
         if (numPage <= maxPage) {
-            page = computerService.getComputerByPage(nbreLine, numPage, name,
+            page = computerService.getComputerByPage(itemsPerPage, numPage, search,
                     sqlSort.trim().isEmpty() ? "" : (sqlSort + " " + sorting));
             page.setItemsTotalCount(computersTotalCount);
             page.setMaxPage(maxPage);
-            page.setSearch(name);
+            page.setSearch(search);
             page.setOrderBy(orderBy);
             page.setSorting(sorting);
         }

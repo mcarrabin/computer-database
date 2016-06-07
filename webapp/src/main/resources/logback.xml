@@ -13,10 +13,17 @@
      <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
    </encoder>
  </appender>
+
+	<appender name="consoleAppender"
+		class="ch.qos.logback.ext.spring.DelegatingLogbackAppender" />
+	<logger name="org.springframework" level="DEBUG" additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
  
 
  <root level="error">
    <appender-ref ref="STDOUT" />
    <appender-ref ref="FILE" />
+   <appender-ref ref="consoleAppender" />
  </root>
 </configuration>

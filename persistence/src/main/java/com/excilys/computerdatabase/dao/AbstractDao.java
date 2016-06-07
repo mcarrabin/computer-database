@@ -94,7 +94,7 @@ public interface AbstractDao<T> {
 
     /**
      * Method that will be overriden only in the computerDao. It is called when
-     * the user wanna delete a company and every linked computers.
+     * the user want to delete a company and every linked computers.
      *
      * @param id
      *            is the id of the company to delete.
